@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import (
     QApplication,
+    QSplashScreen,
     QToolButton,
     QWidget,
     QLabel,
@@ -12,18 +13,31 @@ from PyQt6.QtWidgets import (
 )
 
 from PyQt6.QtGui import QAction, QIcon, QFont, QKeySequence, QPixmap
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QTimer, Qt
 from PyQt6 import QtWidgets, uic
 
 import sys
 from const import *
 from buttons import Buttons
+from videos import Video
+from showmanager import ShowManager
+from editor import Editor
+from messageservice import MessagingService
+from listsmanager import PlayList
+from jsonmanager import JsonManager
 import assets_rc
 
 
 class heart(QMainWindow):
     def __init__(self):
         super().__init__()
+
+        self.SelectedSlide = None
+        self.SelectedVideo = None
+        self.SelectedPlaylist = None
+        self.SelectedSlideshow = None
+
+
     
         uic.loadUi("mainpage.ui", self)
         self.main_page = self.centralWidget()
@@ -44,30 +58,32 @@ class heart(QMainWindow):
 
         self.setCentralWidget(self.stack)
 
+
+        self.action_playlist = QAction("New Playlist", self)
+        self.action_slideshow = QAction("New Slideshow", self)
+
+        self.action_lyricshow = QAction("New Lyricsshow", self)
         self.initUI()
+        self.lists_manager = PlayList(self.items_frame, self.playlists_frame)
         self.buttons = Buttons(self)
+        self.videos = Video(self)
+        self.show_manager = ShowManager(self)
+        self.editor = Editor(self)
+        self.message_service = MessagingService()
 
-       
-
+        self.editor_page.preview_slide.setObjectName("preview_slide")
 
        
     def initUI(self):
-
+        
         self.new_list = self.findChild(QToolButton, "new_list")
         New_menu = QMenu(self)
 
-        action_playlist = QAction("New Playlist", self)
-        action_playlist.setShortcut(QKeySequence("Ctrl+Alt+N"))
 
-        action_slideshow = QAction("New Slideshow", self)
-        action_slideshow.setShortcut(QKeySequence("Ctrl+Alt+S"))
 
-        action_lyricshow = QAction("New Lyricsshow", self)
-        action_lyricshow.setShortcut(QKeySequence("Ctrl+Alt+L"))
-
-        New_menu.addAction(action_playlist)
-        New_menu.addAction(action_slideshow)
-        New_menu.addAction(action_lyricshow)
+        New_menu.addAction(self.action_playlist)
+        New_menu.addAction(self.action_slideshow)
+        New_menu.addAction(self.action_lyricshow)
 
         self.new_list.setMenu(New_menu)
         self.new_list.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
@@ -106,12 +122,30 @@ class heart(QMainWindow):
                                     
             """)
         
-
 def main():
     app = QApplication(sys.argv)
-    window = heart()
-    window.show()
+    pixmap = QPixmap("asset/ui/PresentatorSplash.png")
+    splash = QSplashScreen(pixmap)
+    splash.setWindowFlag(Qt.WindowType.FramelessWindowHint)
+    splash.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint)
+    splash.show()
+
+    splash.showMessage(
+        "Starting...",
+        Qt.AlignmentFlag.AlignBottom | Qt.AlignmentFlag.AlignCenter,
+        Qt.GlobalColor.white
+    )
+    def start_app():
+        
+        window = heart()
+        splash.finish(window)
+        window.show()
+        
+
+    QTimer.singleShot(3000, start_app)
+
     sys.exit(app.exec())
+
 
 if __name__ == "__main__":
     main()

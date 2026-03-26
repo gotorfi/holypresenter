@@ -1,0 +1,635 @@
+[
+  {
+    "name": "playlsttest",
+    "id": "playlsttest",
+    "slideshows": [
+      {
+        "id": "47403e60a3984adcafef700da279bbc8",
+        "name": "Onnela",
+        "slides": [
+          {
+            "name": "Slide 1",
+            "tag": "Verse1",
+            "number": 1,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  907,
+                  357,
+                  181,
+                  73
+                ],
+                "content": "New Text",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 2",
+            "tag": "Verse4",
+            "number": 2,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  907,
+                  357,
+                  181,
+                  73
+                ],
+                "content": "New Text",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 3",
+            "tag": null,
+            "number": 3,
+            "elements": []
+          }
+        ],
+        "type": "slideshow"
+      },
+      {
+        "id": "a7304b76fa7f4720aa67a14c101d0ef4",
+        "name": "New Slideshow",
+        "slides": [],
+        "type": "slideshow"
+      },
+      {
+        "id": "4d99e11a12f14d33ae25b6077fc7c91d",
+        "name": "New Slideshow",
+        "slides": [],
+        "type": "slideshow"
+      },
+      {
+        "id": "70d8a962866a4fc08eda828c9fe5684c",
+        "name": "sdasdsadsas",
+        "slides": [],
+        "type": "slideshow"
+      },
+      {
+        "id": "681eb461c2384b7bb07d28e0a0a6fcf9",
+        "name": "Onnela",
+        "slides": [
+          {
+            "name": "Slide 1",
+            "tag": null,
+            "number": null,
+            "elements": []
+          }
+        ],
+        "type": "slideshow"
+      },
+      {
+        "id": "6555fd1dec344b979d187e60dc75ac0c",
+        "name": "Onnela",
+        "slides": [
+          {
+            "name": "Slide 1",
+            "tag": "Verse1",
+            "number": 1,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "kasvoilla piirteet joita en tunnista\nvanhentuneet huomaamatta\njos voisin lent\u00e4\u00e4 pois",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 2",
+            "tag": "Verse1",
+            "number": 2,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "syv\u00e4lt\u00e4 silm\u00e4t verest\u00e4\u00e4\nhetken lapsi niiss\u00e4 v\u00e4l\u00e4ht\u00e4\u00e4\njos voisin lent\u00e4\u00e4 pois",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 3",
+            "tag": "PreChorus1",
+            "number": 3,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "miten vilauksessa vuodet kiit\u00e4\u00e4 voi\nvuodet kiit\u00e4\u00e4, p\u00e4iv\u00e4t matelee\nja varjot tummenee",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 4",
+            "tag": "Chorus1",
+            "number": 4,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "en ehk\u00e4 koskaan kiinni saa\nen yht\u00e4\u00e4n suurta unelmaa",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 5",
+            "tag": "Chorus1",
+            "number": 5,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "en ehk\u00e4 koskaan saavukaan\nen ihmemaahan, onnelaan",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 6",
+            "tag": "Verse2",
+            "number": 6,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "kahvip\u00f6yd\u00e4ll\u00e4 tupakantumppeja\novella polveen asti laskuja\njos voisin lent\u00e4\u00e4 pois",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 7",
+            "tag": "Verse2",
+            "number": 7,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "keitti\u00f6ss\u00e4 istuu kuolema\nistuu ja h\u00f6rppii kahvia\njos voisin lent\u00e4\u00e4 pois",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 8",
+            "tag": "Bridge",
+            "number": 8,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "on niin helppoo luovuttaa\njos vain eteen tuijottaa\nkohti tiet\u00e4 vastaan nousevaa",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 9",
+            "tag": "Bridge",
+            "number": 9,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "eik\u00e4 tajua ollenkaan vilkaista olkansa taa\nkuinka kauas jo on tullutkaan",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 10",
+            "tag": "Chorus2",
+            "number": 10,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "mut en voi luovuttaa",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          }
+        ],
+        "type": "lyrics"
+      }
+    ]
+  },
+  {
+    "name": "playlist0",
+    "id": "playlist0",
+    "slideshows": [
+      {
+        "id": "3bce8afb64bd4849840e6044e1187a4e",
+        "name": "Alusta asti",
+        "slides": [
+          {
+            "name": "Slide 9",
+            "tag": "Verse1",
+            "number": 1,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "Niin kuin alusta asti ollut on,\nyh\u00e4 voimasi on niin suunnaton.",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 2",
+            "tag": "Verse1",
+            "number": 2,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "Yksi sana vain riitti luomiseen,\nSinun k\u00e4tesi kantaa huomiseen.",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 11",
+            "tag": "Verse2",
+            "number": 3,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "Niin kuin alusta asti ollut on, \nyh\u00e4 risti on p\u00e4\u00e4ll\u00e4 kallion.",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 9",
+            "tag": "Verse2",
+            "number": 4,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "Silt\u00e4 ristilt\u00e4 kerran heitettiin meid\u00e4n\nsyntimme merten syvyyksiin.",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 10",
+            "tag": "Chorus1",
+            "number": 5,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "Niin kuin alusta asti ollut on, \nloistaa kasvosi lailla auringon",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 6",
+            "tag": "Chorus1",
+            "number": 6,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "Niist\u00e4 armosi, Jeesus,\nheijastuu niin kuin tuikkivat t\u00e4hdet,\nhohtaa kuu.",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 7",
+            "tag": "Chorus1",
+            "number": 7,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "Niin kuin alusta ollut on, nyt on ja aina",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 10",
+            "tag": "Bridge",
+            "number": 8,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "Halleluja, halleluja, Sin\u00e4 yksin olet pyh\u00e4.\nHalleluja, halleluja, Sin\u00e4 yksin olet korkein.",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 8",
+            "tag": "Verse3",
+            "number": 9,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "Niin kuin alusta asti ollut on,\nyh\u00e4 armosi peitt\u00e4\u00e4 tuomion.",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          },
+          {
+            "name": "Slide 9",
+            "tag": "Verse3",
+            "number": 10,
+            "elements": [
+              {
+                "id": 0,
+                "type": "text",
+                "rect": [
+                  610,
+                  251,
+                  775,
+                  284
+                ],
+                "content": "Vaikka aika on ohikiit\u00e4v\u00e4\u00e4, Sinun sanasi,\nJeesus, aina j\u00e4\u00e4.",
+                "font_size": 48,
+                "color": [
+                  255,
+                  255,
+                  255
+                ],
+                "align": "center"
+              }
+            ]
+          }
+        ],
+        "type": "lyrics"
+      },
+      {
+        "id": "b92d1dfb564445ef8ffbc17b57dfcc2e",
+        "name": "Suurenmoinen",
+        "slides": [
+          {
+            "name": "Slide 1",
+            "tag": null,
+            "number": null,
+            "elements": []
+          }
+        ],
+        "type": "lyrics"
+      }
+    ]
+  }
+]

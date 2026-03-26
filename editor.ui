@@ -28,7 +28,7 @@
        <widget class="QWidget" name="slide_tools" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
-          <widget class="QPushButton" name="pushButton_7">
+          <widget class="QPushButton" name="NewSlide">
            <property name="toolTip">
             <string>New slide</string>
            </property>
@@ -42,7 +42,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_8">
+          <widget class="QPushButton" name="DeleteSlide">
            <property name="toolTip">
             <string>Delete selected slide</string>
            </property>
@@ -56,7 +56,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_9">
+          <widget class="QPushButton" name="SlideUp">
            <property name="toolTip">
             <string>Move selected slide up</string>
            </property>
@@ -70,7 +70,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_10">
+          <widget class="QPushButton" name="SlideDown">
            <property name="toolTip">
             <string>Move selected slide down</string>
            </property>
@@ -94,7 +94,7 @@
            <property name="orientation">
             <enum>Qt::Orientation::Vertical</enum>
            </property>
-           <widget class="QScrollArea" name="scrollArea">
+           <widget class="QScrollArea" name="SlidesList">
             <property name="styleSheet">
              <string notr="true">background-color: rgb(35, 37, 42)</string>
             </property>
@@ -112,7 +112,7 @@
              </property>
             </widget>
            </widget>
-           <widget class="QScrollArea" name="scrollArea_2">
+           <widget class="QScrollArea" name="ElementsList">
             <property name="styleSheet">
              <string notr="true">background-color: rgb(35, 37, 42)</string>
             </property>
@@ -139,7 +139,7 @@
        <widget class="QWidget" name="slide_items_tools" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
-          <widget class="QPushButton" name="pushButton_11">
+          <widget class="QPushButton" name="ElementUp">
            <property name="toolTip">
             <string>Move selected element up</string>
            </property>
@@ -153,7 +153,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_12">
+          <widget class="QPushButton" name="ElementDown">
            <property name="toolTip">
             <string>Move selected element down</string>
            </property>
@@ -180,7 +180,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_13">
+          <widget class="QPushButton" name="DeleteElement">
            <property name="toolTip">
             <string>Delete selected element</string>
            </property>
@@ -206,7 +206,7 @@
        <widget class="QWidget" name="slide_options" native="true">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="NewText">
            <property name="toolTip">
             <string>Add new text element</string>
            </property>
@@ -229,7 +229,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_2">
+          <widget class="QPushButton" name="RenameText">
            <property name="toolTip">
             <string>Rename selected text element</string>
            </property>
@@ -252,7 +252,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_3">
+          <widget class="QPushButton" name="Center">
            <property name="toolTip">
             <string>Center selected element</string>
            </property>
@@ -275,7 +275,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_4">
+          <widget class="QPushButton" name="Music">
            <property name="toolTip">
             <string>Change the tag of the chosen slide</string>
            </property>
@@ -298,7 +298,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_5">
+          <widget class="QPushButton" name="Upload">
            <property name="toolTip">
             <string>Upload image</string>
            </property>
@@ -334,7 +334,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QLabel" name="label">
+          <widget class="QLabel" name="editingslide">
            <property name="styleSheet">
             <string notr="true">font-weight: bold; font-size: 15px</string>
            </property>

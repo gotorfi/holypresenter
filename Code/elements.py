@@ -1,0 +1,586 @@
+from PyQt6.QtWidgets import QLabel, QLineEdit
+from PyQt6.QtCore import QPointF, Qt, QPoint, QRect
+from PyQt6.QtGui import QMouseEvent, QPen, QPixmap
+
+
+
+from PyQt6.QtWidgets import QLabel, QLineEdit
+from PyQt6.QtCore import Qt, QPoint
+from PyQt6.QtGui import QPixmap, QMouseEvent, QPainter, QColor, QFont
+from PyQt6.QtWidgets import QTextEdit
+
+import os
+import shutil
+from PyQt6.QtWidgets import QFileDialog
+
+
+class MultiLineTextEdit(QTextEdit):
+    def __init__(self, parent=None, finish_callback=None):
+        super().__init__(parent)
+        self.finish_callback = finish_callback
+    def insertFromMimeData(self, source):
+        if source.hasText():
+            self.insertPlainText(source.text())
+
+    def keyPressEvent(self, event):
+        # ENTER ilman shift = hyväksy
+        if event.key() == Qt.Key.Key_Return and not (event.modifiers() & Qt.KeyboardModifier.ShiftModifier):
+            if self.finish_callback:
+                self.finish_callback()
+        else:
+            super().keyPressEvent(event)
+            
+
+
+
+
+class DraggableImage(QLabel):
+    def __init__(self, parent, editor):
+        super().__init__(parent)
+        self.editor = editor
+        self.selected = False
+
+
+        self.handle_size = 24
+        self.resizing = False
+        self.dragging = False
+        self.offset = QPoint()
+        self.start_mouse_pos = None
+        self.start_size = None
+        self.original_pixmap = None
+
+        self.handle = QLabel(self)
+        self.handle.setFixedSize(self.handle_size, self.handle_size)
+        self.handle.setPixmap(
+            QPixmap("asset/ui/drag.png").scaled(
+                self.handle_size, self.handle_size,
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation
+            )
+        )
+        self.handle.setStyleSheet("background: transparent; border: none;")
+        self.handle.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
+        self.handle.hide()
+        self.update_handle_position()
+
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
+        self.setStyleSheet("background: transparent;")
+        
+    def update_pixmap(self):
+        if not self.original_pixmap:
+            return
+
+        scaled = self.original_pixmap.scaled(
+            self.width(),
+            self.height(),
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation
+        )
+        self.setPixmap(scaled)
+    def select(self):
+        self.selected = True
+        self.handle.show()
+        self.update()
+
+    def deselect(self):
+        self.selected = False
+        self.handle.hide()
+        self.update()
+
+
+    def snap_to_center(self):
+        parent = self.parent()
+        if not parent:
+            return
+
+        center_x = parent.width() // 2
+        center_y = parent.height() // 2
+
+        my_center_x = self.x() + self.width() // 2
+        my_center_y = self.y() + self.height() // 2
+
+        threshold = 15
+
+        if abs(my_center_x - center_x) < threshold:
+            self.move(center_x - self.width() // 2, self.y())
+
+        if abs(my_center_y - center_y) < threshold:
+            self.move(self.x(), center_y - self.height() // 2)
+    def mousePressEvent(self, event):
+        
+        self.editor.select_element(self)
+
+        if event.button() != Qt.MouseButton.LeftButton:
+            return
+        
+        self.dragging = False
+        self.resizing = False
+        if self.is_on_resize_corner(event.pos()):
+            self.resizing = True
+            self.start_mouse_pos = event.globalPosition().toPoint()
+            self.start_size = self.size()
+        else:
+            self.dragging = True
+            self.offset = event.pos()
+
+    def mouseMoveEvent(self, event):
+        if event.buttons() != Qt.MouseButton.LeftButton:
+            return
+
+        if self.resizing:
+            delta = event.globalPosition().toPoint() - self.start_mouse_pos
+            new_w = max(50, self.start_size.width() + delta.x())
+            new_h = max(50, self.start_size.height() + delta.y())
+
+            parent_rect = self.parent().rect()
+            new_w = min(new_w, parent_rect.width() - self.x())
+            new_h = min(new_h, parent_rect.height() - self.y())
+
+            self.resize(new_w, new_h)
+
+        elif self.dragging:
+            new_pos = self.mapToParent(event.pos() - self.offset)
+
+            parent_rect = self.parent().rect()
+            x = max(0, min(new_pos.x(), parent_rect.width() - self.width()))
+            y = max(0, min(new_pos.y(), parent_rect.height() - self.height()))
+
+            self.move(x, y)
+            self.snap_to_center()
+
+    def mouseReleaseEvent(self, event):
+        self.dragging = False
+        self.resizing = False
+        self.save()
+
+    def is_on_resize_corner(self, pos):
+        return pos.x() > self.width()-20 and pos.y() > self.height()-20
+
+    def save(self):
+        el = self.data_ref
+        el["x"] = self.x()
+        el["y"] = self.y()
+        el["w"] = self.width()
+        el["h"] = self.height()
+    def update_handle_position(self):
+        self.handle.move(
+            self.width() - self.handle_size,
+            self.height() - self.handle_size
+        )
+        self.handle.raise_()
+    def resizeEvent(self, event):
+        self.update_handle_position()
+        self.update_pixmap()
+
+    def paintEvent(self, event):
+        super().paintEvent(event)
+
+        if self.selected:
+            painter = QPainter(self)
+            pen = QPen(QColor("#66ccff"))
+            pen.setWidth(4)
+            painter.setPen(pen)
+            painter.setBrush(Qt.BrushStyle.NoBrush)
+            painter.drawRect(self.rect().adjusted(2, 2, -2, -2))
+
+class DraggableText(QLabel):
+    def __init__(self, parent, editor):
+        super().__init__(parent)
+        self.data_ref = None
+        self.editor = editor
+        self.setObjectName("text_element")
+        
+        self.text_content = "New Text"
+        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        # Fontti
+        self.font_size = 36
+        self.setFont(QFont("Arial", self.font_size, QFont.Weight.Bold))
+
+        self.setGeometry(50, 50, 300, 120)
+
+        # Drag/resize tilat
+        self.dragging = False
+        self.resizing = False
+        self.offset = QPoint()
+        self.start_mouse_pos = None
+        self.start_size = None
+
+        self.handle = QLabel(self)
+        self.handle_size = 24
+        self.handle.setPixmap(
+            QPixmap("asset/ui/drag.png").scaled(
+                self.handle_size, self.handle_size,
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation
+            )
+        )
+        self.setWordWrap(True)
+        self.handle.setFixedSize(self.handle_size, self.handle_size)
+        self.handle.setMouseTracking(True)
+        self.handle.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        self.handle.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
+        self.handle.hide()
+        self.handle.raise_()
+
+        self.selected = False
+        self.update_handle_position()
+        self.handle.setCursor(Qt.CursorShape.SizeFDiagCursor)
+        self.setContentsMargins(0, 0, 0, 0)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
+        self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
+        self.setStyleSheet("background: transparent;")
+
+    # -------------------------
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setRenderHints(
+            QPainter.RenderHint.Antialiasing |
+            QPainter.RenderHint.TextAntialiasing
+        )
+
+        rect = self.rect()
+        flags = Qt.AlignmentFlag.AlignCenter | Qt.TextFlag.TextWordWrap
+
+        
+        painter.setPen(QColor(0, 0, 0))
+        stroke_size = 8
+
+        for dx in range(-stroke_size, stroke_size + 1):
+            for dy in range(-stroke_size, stroke_size + 1):
+                if dx == 0 and dy == 0:
+                    continue
+                painter.drawText(rect.adjusted(dx, dy, dx, dy), flags, self.text_content)
+
+        painter.setPen(QColor(255,255,255))
+        painter.drawText(rect, flags, self.text_content)
+
+        if self.selected:
+            pen = QPen(QColor("#66ccff"))
+            pen.setWidth(5)
+            painter.setPen(pen)
+            painter.setBrush(Qt.BrushStyle.NoBrush)
+            painter.drawRect(rect.adjusted(2, 2, -2, -2))
+
+    # -------------------------
+    def setText(self, text: str):
+        self.text_content = text
+        self.update()
+        
+    def text(self):
+        return self.text_content
+
+    # -------------------------
+    def select(self):
+        self.selected = True
+        self.setStyleSheet("""
+            border: 5px solid #66ccff;
+            background: transparent;
+        """)
+        self.handle.setStyleSheet("border: none; background: transparent;")
+        self.handle.show()
+        self.update_handle_position()
+
+    def deselect(self):
+        self.selected = False
+        self.setStyleSheet("""
+            border: none;
+            background: transparent;
+        """)
+        self.handle.setStyleSheet("border: none; background: transparent;")
+        self.handle.hide()
+
+    # -------------------------
+
+    def snap_to_center(self):
+        parent = self.parent()
+        if not parent:
+            return
+
+        center_x = parent.width() // 2
+        center_y = parent.height() // 2
+
+        my_center_x = self.x() + self.width() // 2
+        my_center_y = self.y() + self.height() // 2
+
+        threshold = 15
+
+        if abs(my_center_x - center_x) < threshold:
+            self.move(center_x - self.width() // 2, self.y())
+
+        if abs(my_center_y - center_y) < threshold:
+            self.move(self.x(), center_y - self.height() // 2)
+
+    def update_handle_position(self):
+        self.handle.move(
+            self.width() - self.handle_size,
+            self.height() - self.handle_size
+        )
+        
+        self.handle.raise_()
+        self.setContentsMargins(0, 0, self.handle_size, self.handle_size)
+
+    def is_on_resize_corner(self, pos):
+        margin = self.handle_size
+        return pos.x() >= self.width() - margin and pos.y() >= self.height() - margin
+
+    # -------------------------
+    # Drag/resize
+    def mousePressEvent(self, event: QMouseEvent):
+        if event.button() != Qt.MouseButton.LeftButton:
+            return
+        self.editor.select_element(self)
+
+        if self.is_on_resize_corner(event.pos()):
+            self.resizing = True
+            self.start_mouse_pos = event.globalPosition().toPoint()
+            self.start_size = self.size()
+            self.dragging = False
+        else:
+            self.dragging = True
+            self.offset = event.pos()
+            self.resizing = False
+
+    def mouseMoveEvent(self, event: QMouseEvent):
+        if event.buttons() != Qt.MouseButton.LeftButton:
+            return
+
+        if self.resizing:
+            current_pos = event.globalPosition().toPoint()
+            delta = current_pos - self.start_mouse_pos
+            new_width = max(50, self.start_size.width() + delta.x())
+            new_height = max(30, self.start_size.height() + delta.y())
+            parent_rect = self.parent().rect()
+            new_width = min(new_width, parent_rect.width() - self.x())
+            new_height = min(new_height, parent_rect.height() - self.y())
+            self.resize(new_width, new_height)
+            return
+
+        if self.dragging:
+            new_pos = self.mapToParent(event.pos() - self.offset)
+            parent_rect = self.parent().rect()
+            x = max(0, min(new_pos.x(), parent_rect.width() - self.width()))
+            y = max(0, min(new_pos.y(), parent_rect.height() - self.height()))
+            self.move(x, y)
+            self.snap_to_center()
+
+    def mouseReleaseEvent(self, event: QMouseEvent):
+        self.dragging = False
+        self.resizing = False
+        self.save_to_slide()
+
+    def resizeEvent(self, event):
+        self.update_handle_position()
+
+    def save_to_slide(self):
+        slide = self.editor.selected_slide
+        if not slide:
+            return
+        for el in slide.get("elements", []):
+            if el.get("ref") == self:
+                el["x"] = self.x()
+                el["y"] = self.y()
+                el["w"] = self.width()
+                el["h"] = self.height()
+                el["text"] = self.text()
+
+class Elements:
+    def __init__(self, parent):
+        self.parent = parent
+        self.selected_element = None
+
+    # -------------------------
+
+
+    def get_image_folder(self):
+        base = os.path.join(os.getcwd(), "savecould", "slideimages")
+        os.makedirs(base, exist_ok=True)
+        return base
+    def add_image_element(self, slide):
+        file_path, _ = QFileDialog.getOpenFileName(
+            self.parent.parent,
+            "Select Image",
+            "",
+            "Images (*.png *.jpg *.jpeg *.bmp)"
+        )
+
+        if not file_path:
+            return
+
+        folder = self.get_image_folder()
+        filename = os.path.basename(file_path)
+        target_path = os.path.join(folder, filename)
+
+        shutil.copy(file_path, target_path)
+
+        preview = self.parent.preview
+        center_x = preview.width() // 2 - 100
+        center_y = preview.height() // 2 - 100
+
+        element_data = {
+            "type": "image",
+            "path": target_path,
+            "x": center_x,
+            "y": center_y,
+            "w": 200,
+            "h": 200
+        }
+
+        if "elements" not in slide:
+            slide["elements"] = []
+
+        slide["elements"].append(element_data)
+
+        self.parent.RenderElements()
+        self.parent.RenderElementsList()
+
+    def add_text_element(self, slide):
+        preview = self.parent.preview
+        center_x = preview.width() // 2 - 150
+        center_y = preview.height() // 2 - 60
+
+        element_data = {
+            "type": "text",
+            "text": "New Text",
+            "x": center_x,
+            "y": center_y,
+            "w": 300,
+            "h": 120
+        }
+
+        if "elements" not in slide:
+            slide["elements"] = []
+
+        slide["elements"].append(element_data)
+        self.parent.RenderElements()
+        self.parent.RenderElementsList()
+
+        last = slide["elements"][-1]
+        ref = last.get("ref")
+
+        if ref:
+            self.select_element(ref)
+
+    # -------------------------
+
+    def select_element(self, element):
+        if self.selected_element:
+            try:
+                self.selected_element.deselect()
+            except RuntimeError:
+                self.selected_element = None
+
+        self.selected_element = element
+        element.select()
+        self.parent.RenderElementsList()
+    # -------------------------
+
+    def delete_element(self):
+        if not self.selected_element:
+            return
+
+        element = self.selected_element
+
+        slide = self.parent.selected_slide
+        if slide:
+            slide["elements"] = [
+                el for el in slide.get("elements", [])
+                if el.get("ref") != element
+            ]
+
+        try:
+            element.deleteLater()
+        except:
+            pass
+
+        self.selected_element = None
+
+        self.parent.RenderElements()
+        self.parent.RenderElementsList()
+
+    # -------------------------
+
+    def rename_text_element(self, element: DraggableText):
+        def finish():
+            text = editor.toPlainText().strip() or "Empty"
+            element.setText(text)
+            editor.deleteLater()
+            element.update()
+            self.parent.RenderElementsList()
+
+        editor = MultiLineTextEdit(element.parent(), finish_callback=finish)
+        editor.setPlainText(element.text())
+        editor.setGeometry(element.x(), element.y(), element.width(), element.height())
+        editor.setFont(element.font())
+        editor.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        editor.setStyleSheet("""
+            background: rgb(100, 100, 255);
+            color: black;
+        """)
+
+        editor.show()
+        editor.setFocus()
+        fm = editor.fontMetrics()
+        text_height = fm.height()
+
+        lines = editor.toPlainText().count("\n") + 1
+        padding = max(0, (editor.height() - text_height * lines) // 2)
+
+        editor.setStyleSheet(f"""
+            background: rgb(100, 100, 255);
+            color: black;
+            padding-top: {padding}px;
+        """)
+
+        def on_focus_out(event):
+            finish()
+            QTextEdit.focusOutEvent(editor, event)
+
+        editor.focusOutEvent = on_focus_out
+
+    def move_element(self, direction):
+        if not self.selected_element:
+            return
+
+        slide = self.parent.selected_slide
+        if not slide:
+            return
+
+        elements = slide.get("elements", [])
+
+        index = None
+        for i, el in enumerate(elements):
+            if el.get("ref") == self.selected_element:
+                index = i
+                break
+
+        if index is None:
+            return
+
+        if direction == "up" and index < len(elements) - 1:
+            elements[index], elements[index + 1] = elements[index + 1], elements[index]
+
+        elif direction == "down" and index > 0:
+            elements[index], elements[index - 1] = elements[index - 1], elements[index]
+
+        self.parent.RenderElements()
+        self.parent.RenderElementsList()
+
+
+
+    def center_element(self):
+        if not self.selected_element:
+            return
+
+        parent = self.selected_element.parent()
+        if not parent:
+            return
+
+        new_x = parent.width() // 2 - self.selected_element.width() // 2
+        new_y = parent.height() // 2 - self.selected_element.height() // 2
+
+        self.selected_element.move(new_x, new_y)
+
+
+        self.selected_element.save()
