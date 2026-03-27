@@ -21,8 +21,8 @@ TAG_COLORS = {
     "Verse4": (125, 105, 255),
     "PreChorus1": (255, 102, 204),
     "PreChorus2": (255, 102, 204),
-    "Chorus1": (255, 145, 195),
-    "Chorus2": (255, 145, 195),
+    "Chorus1": (255, 74, 74),
+    "Chorus2": (255, 74, 74),
     "Bridge": (255, 183, 89),
     None: (150, 150, 150)
 }
@@ -97,15 +97,56 @@ class Editor:
         if not hasattr(self, "current_show"):
             return
 
-        self.current_show["slides"] = self.slides_data
-        self.parent.lists_manager.save()
+        lm = self.parent.lists_manager
+
+        def clean_element(el):
+            return {
+                k: v for k, v in el.items()
+                if k != "ref"
+            }
+
+        def clean_slide(slide):
+            new_slide = {}
+
+            for k, v in slide.items():
+                if k == "elements":
+                    new_slide["elements"] = [clean_element(e) for e in v]
+                else:
+                    new_slide[k] = v
+
+            return new_slide
+
+        def clean_show(show):
+            new_show = show.copy()
+
+            if "slides" in show:
+                new_show["slides"] = [clean_slide(s) for s in show["slides"]]
+
+            return new_show
+
+        clean_playlists = []
+
+        for pl in lm.playlists:
+            new_pl = pl.copy()
+
+            if "slides" in pl:
+                new_pl["slides"] = [clean_show(s) for s in pl["slides"]]
+
+            clean_playlists.append(new_pl)
+
+        lm.json_manager.save(
+            clean_playlists,
+            lm.slides,
+            lm.songs,
+            lm.images
+        )
     def load_show(self, show):
         self.current_show = show
+        print("LOADED SHOW:", show)
+        if "slides" not in self.current_show:
+            self.current_show["slides"] = []
 
-        if "slides" not in show:
-            show["slides"] = []
-
-        self.slides_data = show["slides"]
+        self.slides_data = self.current_show["slides"]
 
         self.selected_slide = None
 
@@ -288,7 +329,6 @@ class Editor:
                 element.show()
         self.center_icon.show()
         self.update_center_icon()
-        self.save()
     # -------------------------
 
     def new_text_element(self):
@@ -392,7 +432,6 @@ class Editor:
                 row.setStyleSheet("background-color: rgba(100, 100, 255, 100);")
             else:
                 row.setStyleSheet("")
-        self.save()
 
 
     def update_preview_background(self):

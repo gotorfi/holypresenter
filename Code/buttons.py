@@ -9,11 +9,12 @@ class Buttons:
         self.parent = parent
         self.pref_window = None
         self.connect_buttons(parent)
+        self.editor_connected = False
 
     def connect_buttons(self, parent):
         parent.actionQuit.triggered.connect(parent.close)
         parent.actionPreferences.triggered.connect(self.open_preferences)
-        parent.editor.clicked.connect(lambda: self.show_editor(True))
+        parent.editor.clicked.connect(self.open_selected_show)
         parent.actionClose_Editor.triggered.connect(lambda: self.show_editor(False))
 
 
@@ -57,7 +58,12 @@ class Buttons:
         self.pref_window.activateWindow()
     def show_editor(self, state):
         if state == True:
-            self.connect_editor_buttons()
+            if not hasattr(self.parent.editor, "current_show"):
+                print("No show loaded")
+                return
+            if not self.editor_connected:
+                self.connect_editor_buttons()
+                self.editor_connected = True
             self.parent.stack.setCurrentWidget(self.parent.editor_page)
             self.parent.actionClose_Editor.setEnabled(True)
             self.parent.editor_page.preview_slide.setStyleSheet("""

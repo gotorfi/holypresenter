@@ -22,6 +22,7 @@ class PlayList:
 
         # Selected items
         self.selected_playlist = None
+        self.selected_show = None
         self.selected_slide = None
         self.selected_song = None
         self.selected_image = None
@@ -55,9 +56,9 @@ class PlayList:
             if "slides" not in pl:
                 pl["slides"] = []
 
-            if "id" not in pl:
-                pl["id"] = str(uuid.uuid4())
-
+            for show in pl["slides"]:
+                if "slides" not in show:
+                    show["slides"] = []
 
         # Initialize playlists frame items
         self.refresh_playlists_frame()
@@ -69,21 +70,29 @@ class PlayList:
             print("No playlist selected")
             return
 
-        item = {"type": "slideshow", "name": name}
-        self.selected_playlist["slides"].append(item)
+        item = {
+            "type": "slideshow",
+            "name": name,
+            "slides": []
+        }
 
+        self.selected_playlist["slides"].append(item)
+        self.json_manager.save(self.playlists, self.slides, self.songs, self.images)
         self.refresh_slides_frame()
-        self.json_manager.save(self.playlists, [], self.songs, self.images)
 
     def add_lyricsshow(self, name="New LyricsShow"):
         if not self.selected_playlist:
             return
 
-        item = {"type": "lyricsshow", "name": name}
-        self.selected_playlist["slides"].append(item)
+        item = {
+            "type": "lyricsshow",
+            "name": name,
+            "slides": []
+        }
 
+        self.selected_playlist["slides"].append(item)
+        self.json_manager.save(self.playlists, self.slides, self.songs, self.images)
         self.refresh_slides_frame()
-        self.json_manager.save(self.playlists, [], self.songs, self.images)
 
     def add_playlist(self, name="New Playlist"):
         new_playlist = {
@@ -130,20 +139,18 @@ class PlayList:
 
         if self.slides_list.currentItem():
             item = self.slides_list.currentItem()
-            target_slide = item.data(Qt.ItemDataRole.UserRole)
+            index = item.data(Qt.ItemDataRole.UserRole)
             list_widget = self.slides_list
 
             if not self.selected_playlist:
                 return
 
-            slides = self.selected_playlist["slides"]
+            slides = self.selected_playlist.get("slides", [])
 
-            for s in slides:
-                if s is target_slide or s["name"] == target_slide["name"] and s["type"] == target_slide["type"]:
-                    target = s
-                    break
-            else:
+            if index is None or index >= len(slides):
                 return
+
+            target = slides[index]
         elif self.playlists_list.currentItem():
             item = self.playlists_list.currentItem()
             data = item.data(Qt.ItemDataRole.UserRole)
@@ -210,6 +217,7 @@ class PlayList:
     # ---------- REFRESH UI ----------
     def refresh_slides_frame(self):
         self.selected_slide = None
+        self.selected_show = None
         self.slides_list.clear()
 
         if not self.selected_playlist:
@@ -219,9 +227,9 @@ class PlayList:
         slides = self.selected_playlist.get("slides", [])
         print("REFRESHING SLIDES:", slides)
 
-        for slide in slides:
+        for i, slide in enumerate(slides):
             item = QListWidgetItem(slide['name'])
-            item.setData(Qt.ItemDataRole.UserRole, slide)
+            item.setData(Qt.ItemDataRole.UserRole, i)
 
             if slide['type'] == "slideshow":
                 item.setIcon(QIcon("asset/ui/slide.png"))
@@ -250,23 +258,29 @@ class PlayList:
         # Playlists
         for pl in self.playlists:
             item = QListWidgetItem(pl['name'])
-            item.setData(Qt.ItemDataRole.UserRole, ("playlist", pl["id"]))  # 🔥 ID
+            item.setData(Qt.ItemDataRole.UserRole, ("playlist", pl["id"]))
             item.setIcon(QIcon("asset/ui/playlist.png"))
             self.playlists_list.addItem(item)
 
     # ---------- CLICK HANDLERS ----------
     def on_slide_clicked(self, item):
-        slide = item.data(Qt.ItemDataRole.UserRole)
+        index = item.data(Qt.ItemDataRole.UserRole)
+
+        slides = self.selected_playlist.get("slides", [])
+        if index >= len(slides):
+            return
+
+        slide = slides[index]
         self.selected_item = None
 
-        if self.selected_slide == slide:
+        if self.selected_show == slide:
             self.selected_slide = None
             item.setBackground(QColor(0,0,0,0))
         else:
             for i in range(self.slides_list.count()):
                 self.slides_list.item(i).setBackground(QColor(0,0,0,0))
 
-            self.selected_slide = slide
+            self.selected_show = slide
             item.setBackground(QColor(100, 100, 255, 100))
 
     def on_playlist_clicked(self, item):

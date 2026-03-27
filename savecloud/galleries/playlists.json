@@ -1,36 +1,87 @@
 {
     "playlists": [
         {
+            "id": "1cfded84-97dc-4843-ada9-14ec1ab64e67",
             "type": "playlist",
             "name": "Test",
             "slides": [
                 {
                     "type": "slideshow",
-                    "name": "New Slideshow"
-                }
-            ],
-            "id": "18658257-c95a-46b5-a879-ad16dd09bce8"
-        },
-        {
-            "type": "playlist",
-            "name": "New Playlist",
-            "slides": [
-                {
-                    "type": "lyricsshow",
-                    "name": "Testtttt"
+                    "name": "Slidess",
+                    "slides": [
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": null,
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "New Text",
+                                    "x": 207,
+                                    "y": 161,
+                                    "w": 927,
+                                    "h": 272
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Verse2",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "New Text",
+                                    "x": 944,
+                                    "y": 167,
+                                    "w": 300,
+                                    "h": 120
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "New Text",
+                                    "x": 114,
+                                    "y": 363,
+                                    "w": 300,
+                                    "h": 120
+                                }
+                            ]
+                        }
+                    ]
                 },
                 {
-                    "type": "slideshow",
-                    "name": "Slideee Lol"
+                    "type": "lyricsshow",
+                    "name": "Lyricss",
+                    "slides": [
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": null,
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "New Text",
+                                    "x": 607,
+                                    "y": 363,
+                                    "w": 300,
+                                    "h": 120
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": null,
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Reeeee",
+                                    "x": 607,
+                                    "y": 363,
+                                    "w": 300,
+                                    "h": 120
+                                }
+                            ]
+                        }
+                    ]
                 }
-            ],
-            "id": "04eaf100-0900-49ae-9c80-d43fd5644520"
-        },
-        {
-            "type": "playlist",
-            "name": "New Playlist",
-            "slides": [],
-            "id": "2a8e541d-eabc-4d80-ae2e-668ef29c0dfd"
+            ]
         }
     ],
     "slides": [],
