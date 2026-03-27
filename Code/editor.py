@@ -300,28 +300,52 @@ class Editor:
 
             if el["type"] == "text":
                 text_str = el.get("text", "")
-                
-                base_size = 32 
-                font = QFont("Arial", int(32 * total_scale_y), QFont.Weight.Black) 
-                painter.setFont(font)
-                
-                metrics = QFontMetrics(font)
-                path = QPainterPath()
-                
-                tw = metrics.horizontalAdvance(text_str)
-                th = metrics.ascent()
-                tx = x + (w - tw) / 2
-                ty = y + (h + th) / 2 - metrics.descent()
-                
-                path.addText(tx, ty, font, text_str)
 
-                pen_w = max(1, int(2 * total_scale_y))
-                pen = QPen(QColor(0, 0, 0), pen_w, Qt.PenStyle.SolidLine, 
-                        Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin)
-                
-                painter.setPen(pen)
-                painter.setBrush(QBrush(QColor(255, 255, 255)))
-                painter.drawPath(path)
+                font_size = max(16, int(32 * total_scale_y))
+                font = QFont("Arial Black", font_size)
+                font.setBold(True)
+                font.setWeight(QFont.Weight.Black)
+
+                painter.setFont(font)
+                metrics = QFontMetrics(font)
+
+                lines = text_str.split("\n")
+
+                line_h = metrics.height()
+                total_h = line_h * len(lines)
+
+                start_y = y + (h - total_h) / 2 + metrics.ascent()
+
+                for i, line in enumerate(lines):
+                    if not line:
+                        continue
+
+                    tw = metrics.horizontalAdvance(line)
+
+                    tx = int(x + (w - tw) / 2)
+                    ty = int(start_y + i * line_h)
+
+
+                    path = QPainterPath()
+                    path.addText(tx, ty, font, line)
+
+                    pen_w = max(2, int(3 * total_scale_y))
+                    pen = QPen(
+                        QColor(0, 0, 0),
+                        pen_w,
+                        Qt.PenStyle.SolidLine,
+                        Qt.PenCapStyle.RoundCap,
+                        Qt.PenJoinStyle.RoundJoin
+                    )
+
+                    painter.setPen(pen)
+                    painter.setBrush(QColor(0, 0, 0))
+                    painter.drawPath(path)
+
+
+                    painter.setPen(Qt.PenStyle.NoPen)
+                    painter.setBrush(QColor(255, 255, 255))
+                    painter.drawPath(path)
 
             elif el["type"] == "image":
                 img = QPixmap(el["path"])
