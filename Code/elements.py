@@ -433,6 +433,7 @@ class Elements:
 
         self.parent.RenderElements()
         self.parent.RenderElementsList()
+        self.parent.on_element_changed()
 
     def add_text_element(self, slide):
         preview = self.parent.preview
@@ -460,6 +461,7 @@ class Elements:
 
         if ref:
             self.select_element(ref)
+        self.parent.on_element_changed()
 
     # -------------------------
 
@@ -468,7 +470,7 @@ class Elements:
             try:
                 self.selected_element.deselect()
             except RuntimeError:
-                self.selected_element = None
+                pass
 
         self.selected_element = element
         element.select()
@@ -497,6 +499,7 @@ class Elements:
 
         self.parent.RenderElements()
         self.parent.RenderElementsList()
+        self.parent.on_element_changed()
 
     # -------------------------
 
@@ -507,6 +510,8 @@ class Elements:
             editor.deleteLater()
             element.update()
             self.parent.RenderElementsList()
+            self.parent.on_element_changed()
+            self.parent.save()
 
         editor = MultiLineTextEdit(element.parent(), finish_callback=finish)
         editor.setPlainText(element.text())
@@ -566,6 +571,7 @@ class Elements:
 
         self.parent.RenderElements()
         self.parent.RenderElementsList()
+        self.parent.on_element_changed()
 
 
 
@@ -582,5 +588,7 @@ class Elements:
 
         self.selected_element.move(new_x, new_y)
 
-
+        self.parent.RenderElements()
+        self.parent.RenderElementsList()
         self.selected_element.save()
+        self.parent.on_element_changed()

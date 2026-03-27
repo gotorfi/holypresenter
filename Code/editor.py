@@ -1,11 +1,13 @@
 from PyQt6.QtWidgets import (
     QWidget, QLabel, QVBoxLayout, QHBoxLayout, QPushButton
 )
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QColor, QFontMetrics, QPixmap
 from PyQt6.QtCore import Qt
 
 from elements import DraggableText, Elements, DraggableImage
-
+from PyQt6.QtGui import QPainterPath, QPen, QBrush
+from PyQt6.QtGui import QPixmap, QPainter
+from PyQt6.QtGui import QFont
 
 TAG_LIST = [
     "Verse1", "Verse2", "Verse3", "Verse4",
@@ -28,15 +30,18 @@ TAG_COLORS = {
 }
 
 class Editor:
+    THUMB_SIZE = (240, 140)
     def __init__(self, parent):
 
         
         self.parent = parent
         self.selected_slide = None
+        
 
 
         # DATA
         self.slides_data = []
+        self.slide_thumbs = []
         self.elements_manager = Elements(self)
         self.tag_index = 0
 
@@ -68,7 +73,11 @@ class Editor:
             """)
         def preview_mouse_press(event):
             if self.elements_manager.selected_element:
-                self.elements_manager.selected_element.deselect()
+                try:
+                    if self.elements_manager.selected_element is not None:
+                        self.elements_manager.selected_element.deselect()
+                except RuntimeError:
+                    pass  
                 self.elements_manager.selected_element = None
 
         self.preview.mousePressEvent = preview_mouse_press
@@ -153,7 +162,6 @@ class Editor:
         self.RenderSlides()
         self.RenderElements()
         self.RenderElementsList()
-
     
     def update_center_icon(self):
         if not self.center_icon or not self.center_icon.pixmap():
@@ -234,11 +242,98 @@ class Editor:
 
     # -------------------------
 
+
+    def generate_thumbnail(self, slide):
+        SUPER_SCALE = 3
+        thumb_w, thumb_h = self.THUMB_SIZE
+        render_w, render_h = thumb_w * SUPER_SCALE, thumb_h * SUPER_SCALE
+
+        full_pixmap = QPixmap(render_w, render_h)
+        full_pixmap.fill(Qt.GlobalColor.transparent)
+
+        painter = QPainter(full_pixmap)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+
+        bg_pix = QPixmap("asset/ui/transparent.png")
+        painter.drawPixmap(0, 0, render_w, render_h, bg_pix)
+
+        if self.preview.width() > 0:
+            total_scale_x = render_w / self.preview.width()
+            total_scale_y = render_h / self.preview.height()
+        else:
+            total_scale_x = total_scale_y = SUPER_SCALE
+
+        for el in slide.get("elements", []):
+
+            x = int(el["x"] * total_scale_x)
+            y = int(el["y"] * total_scale_y)
+            w = int(el["w"] * total_scale_x)
+            h = int(el["h"] * total_scale_y)
+
+            if el["type"] == "text":
+                text_str = el.get("text", "")
+                
+                base_size = 32 
+                font = QFont("Arial", int(32 * total_scale_y), QFont.Weight.Black) 
+                painter.setFont(font)
+                
+                metrics = QFontMetrics(font)
+                path = QPainterPath()
+                
+                tw = metrics.horizontalAdvance(text_str)
+                th = metrics.ascent()
+                tx = x + (w - tw) / 2
+                ty = y + (h + th) / 2 - metrics.descent()
+                
+                path.addText(tx, ty, font, text_str)
+
+                pen_w = max(1, int(2 * total_scale_y))
+                pen = QPen(QColor(0, 0, 0), pen_w, Qt.PenStyle.SolidLine, 
+                        Qt.PenCapStyle.RoundCap, Qt.PenJoinStyle.RoundJoin)
+                
+                painter.setPen(pen)
+                painter.setBrush(QBrush(QColor(255, 255, 255)))
+                painter.drawPath(path)
+
+            elif el["type"] == "image":
+                img = QPixmap(el["path"])
+                if not img.isNull():
+                    painter.drawPixmap(x, y, img.scaled(w, h, 
+                        Qt.AspectRatioMode.KeepAspectRatio, 
+                        Qt.TransformationMode.SmoothTransformation))
+
+        painter.end()
+
+
+        return full_pixmap.scaled(
+            thumb_w, thumb_h, 
+            Qt.AspectRatioMode.IgnoreAspectRatio, 
+            Qt.TransformationMode.SmoothTransformation
+        )
+    
+
+    def update_slide_thumbnail(self, slide_index):
+        if 0 <= slide_index < len(self.slide_thumbs):
+            thumb_widget = self.slide_thumbs[slide_index]
+            slide = self.slides_data[slide_index]
+            thumb_widget.setPixmap(self.generate_thumbnail(slide).scaled(
+                240, 140,
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation
+            ))
+    def on_element_changed(self):
+        if self.selected_slide:
+            slide_index = self.slides_data.index(self.selected_slide)
+            self.update_slide_thumbnail(slide_index)
     def RenderSlides(self):
         for i in reversed(range(self.slides_layout.count())):
             widget = self.slides_layout.itemAt(i).widget()
             if widget:
                 widget.deleteLater()
+
+        self.slide_thumbs = []
 
         for i, slide in enumerate(self.slides_data):
             row = QWidget()
@@ -249,7 +344,7 @@ class Editor:
             row.setLayout(row_layout)
 
             thumb = QLabel()
-            pixmap = QPixmap(slide["thumbnail"])
+            pixmap = self.generate_thumbnail(slide)
             thumb.setPixmap(
                 pixmap.scaled(
                     240, 140,
@@ -258,9 +353,12 @@ class Editor:
                 )
             )
             thumb.setFixedSize(240, 140)
+            row_layout.addWidget(thumb)
+            self.slide_thumbs.append(thumb)  # Tallenna viittaus
+
+            # tag ja label
             tag = slide.get("tag")
             r, g, b = self.get_tag_color(tag)
-
             thumb.setStyleSheet(f"""
                 border: 4px solid rgb({r}, {g}, {b});
                 border-radius: 6px;
@@ -268,13 +366,13 @@ class Editor:
 
             label = QLabel(f"{i + 1}")
             label.setStyleSheet("color: white; font-size: 16px;")
-
+            row_layout.addWidget(label)
+            row_layout.addStretch()
 
             def make_click(idx):
                 def handler(event):
                     self.select_slide(idx)
                 return handler
-
             row.mousePressEvent = make_click(i)
 
             if slide is self.selected_slide:
@@ -285,12 +383,9 @@ class Editor:
             row.style().unpolish(row)
             row.style().polish(row)
 
-            row_layout.addWidget(thumb)
-            row_layout.addWidget(label)
-            row_layout.addStretch()
-
             self.slides_layout.addWidget(row)
-            self.apply_preview_style()
+
+        self.apply_preview_style()
 
     # -------------------------
 
