@@ -45,6 +45,7 @@ class Buttons:
         self.parent.editor_page.ElementUp.clicked.connect(self.parent.editor.move_selected_up)
         self.parent.editor_page.ElementDown.clicked.connect(self.parent.editor.move_selected_down)
         self.parent.editor_page.Center.clicked.connect(self.parent.editor.CenterEvent)
+        self.parent.editor_page.Music.clicked.connect(self.parent.editor.cycle_tag)
 
 
     def open_preferences(self):
@@ -83,3 +84,13 @@ class Buttons:
         else:
             self.parent.stack.setCurrentWidget(self.parent.main_page)
             self.parent.actionClose_Editor.setEnabled(False)
+
+    def open_selected_show(self):
+        show = self.parent.lists_manager.selected_show
+
+        if not show:
+            print("No show selected")
+            return
+
+        self.parent.editor.load_show(show)
+        self.show_editor(True)

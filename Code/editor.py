@@ -7,16 +7,38 @@ from PyQt6.QtCore import Qt
 from elements import DraggableText, Elements, DraggableImage
 
 
-
+TAG_LIST = [
+    "Verse1", "Verse2", "Verse3", "Verse4",
+    "PreChorus1", "PreChorus2",
+    "Chorus1", "Chorus2",
+    "Bridge",
+    None
+]
+TAG_COLORS = {
+    "Verse1": (125, 105, 255),
+    "Verse2": (125, 105, 255),
+    "Verse3": (125, 105, 255),
+    "Verse4": (125, 105, 255),
+    "PreChorus1": (255, 102, 204),
+    "PreChorus2": (255, 102, 204),
+    "Chorus1": (255, 145, 195),
+    "Chorus2": (255, 145, 195),
+    "Bridge": (255, 183, 89),
+    None: (150, 150, 150)
+}
 
 class Editor:
     def __init__(self, parent):
+
+        
         self.parent = parent
         self.selected_slide = None
+
 
         # DATA
         self.slides_data = []
         self.elements_manager = Elements(self)
+        self.tag_index = 0
 
         # UI
         self.slidelabel = parent.editor_page.editingslide
@@ -56,9 +78,40 @@ class Editor:
         self.center_icon.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
         self.center_icon.setStyleSheet("background: transparent;")
         self.center_icon.hide()
+        
+        self.bg = QLabel(self.preview)
+        self.bg.setScaledContents(True)
+        self.bg.lower()
+        self.bg.show()
+
 
         self.update_center_icon()
+        self.apply_preview_style()
+        self.preview.resizeEvent = self.on_preview_resize
 
+    def on_preview_resize(self, event):
+        self.update_preview_background()
+        self.update_center_icon()
+
+    def save(self):
+        if not hasattr(self, "current_show"):
+            return
+
+        self.current_show["slides"] = self.slides_data
+        self.parent.lists_manager.save()
+    def load_show(self, show):
+        self.current_show = show
+
+        if "slides" not in show:
+            show["slides"] = []
+
+        self.slides_data = show["slides"]
+
+        self.selected_slide = None
+
+        self.RenderSlides()
+        self.RenderElements()
+        self.RenderElementsList()
 
     
     def update_center_icon(self):
@@ -86,17 +139,22 @@ class Editor:
         self.RenderSlides()
         self.RenderElements()
         self.RenderElementsList()
+        self.apply_preview_style()
 
     # -------------------------
 
     def add_slide(self):
         slide = {
-            "thumbnail": "asset/ui/transparent.png"
+            "thumbnail": "asset/ui/transparent.png",
+            "tag": None
         }
         self.slides_data.append(slide)
+        self.selected_slide = self.slides_data[-1]
         self.RenderSlides()
         self.RenderElements()
         self.RenderElementsList()
+        self.save()
+        self.apply_preview_style()
 
     # -------------------------
 
@@ -109,6 +167,8 @@ class Editor:
         self.RenderSlides()
         self.RenderElements()
         self.RenderElementsList()
+        self.save()
+        self.apply_preview_style()
 
     # -------------------------
 
@@ -129,6 +189,7 @@ class Editor:
         self.RenderSlides()
         self.RenderElements()
         self.RenderElementsList()
+        self.save()
 
     # -------------------------
 
@@ -156,6 +217,13 @@ class Editor:
                 )
             )
             thumb.setFixedSize(240, 140)
+            tag = slide.get("tag")
+            r, g, b = self.get_tag_color(tag)
+
+            thumb.setStyleSheet(f"""
+                border: 4px solid rgb({r}, {g}, {b});
+                border-radius: 6px;
+            """)
 
             label = QLabel(f"{i + 1}")
             label.setStyleSheet("color: white; font-size: 16px;")
@@ -181,15 +249,15 @@ class Editor:
             row_layout.addStretch()
 
             self.slides_layout.addWidget(row)
+            self.apply_preview_style()
 
     # -------------------------
 
     def RenderElements(self):
         
-        for child in self.preview.children():
-            if isinstance(child, (DraggableText, DraggableImage)):
+        for child in self.preview.findChildren(QWidget):
+            if hasattr(child, "data_ref"):
                 child.deleteLater()
-
         if not self.selected_slide:
             return
 
@@ -220,14 +288,17 @@ class Editor:
                 element.show()
         self.center_icon.show()
         self.update_center_icon()
+        self.save()
     # -------------------------
 
     def new_text_element(self):
         if self.selected_slide:
             self.elements_manager.add_text_element(self.selected_slide)
+            self.save()
     def new_image_element(self):
         if self.selected_slide:
             self.elements_manager.add_image_element(self.selected_slide)
+            self.save()
 
     # -------------------------
 
@@ -238,14 +309,18 @@ class Editor:
             )
     def select_element(self, element):
         self.elements_manager.select_element(element)
+        self.save()
 
     def delete_selected(self):
         self.elements_manager.delete_element()
+        self.save()
     def move_selected_up(self):
         self.elements_manager.move_element("up")
+        self.save()
 
     def move_selected_down(self):
         self.elements_manager.move_element("down")
+        self.save()
     def CenterEvent(self):
         el = self.elements_manager.selected_element
 
@@ -265,6 +340,7 @@ class Editor:
         if el.data_ref:
             el.data_ref["x"] = x
             el.data_ref["y"] = y
+        self.save()
 
     def RenderElementsList(self):
         def short_text(txt):
@@ -316,3 +392,60 @@ class Editor:
                 row.setStyleSheet("background-color: rgba(100, 100, 255, 100);")
             else:
                 row.setStyleSheet("")
+        self.save()
+
+
+    def update_preview_background(self):
+        if not hasattr(self, "bg"):
+            return
+
+        pix = QPixmap("asset/ui/transparent.png")
+
+        self.bg.setPixmap(pix)
+        self.bg.setGeometry(
+            0, 0,
+            self.preview.width(),
+            self.preview.height()
+        )
+        self.bg.raise_()
+        self.bg.lower()
+    def apply_preview_style(self):
+        if not self.selected_slide:
+            self.preview.setStyleSheet("")
+            return
+
+        tag = self.selected_slide.get("tag")
+        r, g, b = self.get_tag_color(tag)
+
+        self.preview.setObjectName("preview")
+        self.preview.setStyleSheet(f"""
+            QWidget#preview {{
+                border: 6px solid rgb({r}, {g}, {b});
+                background: transparent;
+            }}
+        """)
+
+        self.update_preview_background()
+    def get_tag_color(self, tag):
+        return TAG_COLORS.get(tag, (150, 150, 150))
+    def cycle_tag(self):
+        if not self.selected_slide:
+            return
+
+        tags = TAG_LIST
+
+        current = self.selected_slide.get("tag")
+        if current not in tags:
+            self.tag_index = 0
+        else:
+            self.tag_index = tags.index(current)
+
+        self.tag_index = (self.tag_index + 1) % len(tags)
+        new_tag = tags[self.tag_index]
+
+        self.selected_slide["tag"] = new_tag
+
+        self.RenderSlides()
+        self.apply_preview_style()
+        self.save()
+        

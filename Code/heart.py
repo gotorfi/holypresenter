@@ -64,7 +64,7 @@ class heart(QMainWindow):
 
         self.action_lyricshow = QAction("New Lyricsshow", self)
         self.initUI()
-        self.lists_manager = PlayList(self.items_frame, self.playlists_frame)
+        self.lists_manager = PlayList(self, self.items_frame, self.playlists_frame)
         self.buttons = Buttons(self)
         self.videos = Video(self)
         self.show_manager = ShowManager(self)

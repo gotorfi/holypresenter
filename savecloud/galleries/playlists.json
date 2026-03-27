@@ -3,25 +3,37 @@
         {
             "type": "playlist",
             "name": "Test",
-            "slides": []
-        },
-        {
-            "type": "playlist",
-            "name": "Testing if works",
-            "slides": []
+            "slides": [
+                {
+                    "type": "slideshow",
+                    "name": "New Slideshow"
+                }
+            ],
+            "id": "18658257-c95a-46b5-a879-ad16dd09bce8"
         },
         {
             "type": "playlist",
             "name": "New Playlist",
-            "slides": []
-        }
-    ],
-    "slides": [
+            "slides": [
+                {
+                    "type": "lyricsshow",
+                    "name": "Testtttt"
+                },
+                {
+                    "type": "slideshow",
+                    "name": "Slideee Lol"
+                }
+            ],
+            "id": "04eaf100-0900-49ae-9c80-d43fd5644520"
+        },
         {
-            "type": "slideshow",
-            "name": "New Slideshow"
+            "type": "playlist",
+            "name": "New Playlist",
+            "slides": [],
+            "id": "2a8e541d-eabc-4d80-ae2e-668ef29c0dfd"
         }
     ],
+    "slides": [],
     "songs": [],
     "images": []
 }
