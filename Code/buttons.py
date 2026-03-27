@@ -39,7 +39,6 @@ class Buttons:
         self.parent.editor_page.SlideUp.clicked.connect(lambda: self.parent.editor.move_slide("up"))
         self.parent.editor_page.SlideDown.clicked.connect(lambda: self.parent.editor.move_slide("down"))
         self.parent.editor_page.NewText.clicked.connect(self.parent.editor.new_text_element)
-        #self.parent.editor_page.DeleteElement.clicked.connect(self.parent.editor.delete_selected)
         self.parent.editor_page.RenameText.clicked.connect(self.parent.editor.rename_selected)
         self.parent.editor_page.Upload.clicked.connect(self.parent.editor.new_image_element)
         self.parent.editor_page.DeleteElement.clicked.connect(self.parent.editor.delete_selected)

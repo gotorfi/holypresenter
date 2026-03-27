@@ -81,11 +81,11 @@
                             "elements": [
                                 {
                                     "type": "text",
-                                    "text": "New Text",
-                                    "x": 607,
-                                    "y": 363,
-                                    "w": 300,
-                                    "h": 120
+                                    "text": "Nice",
+                                    "x": 75,
+                                    "y": 174,
+                                    "w": 1364,
+                                    "h": 498
                                 }
                             ]
                         },
@@ -95,11 +95,25 @@
                             "elements": [
                                 {
                                     "type": "text",
-                                    "text": "Reeeee",
-                                    "x": 607,
-                                    "y": 363,
-                                    "w": 300,
-                                    "h": 120
+                                    "text": "AHEMEEEE",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": null,
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "♪ Lyrics ♪",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
                                 }
                             ]
                         }

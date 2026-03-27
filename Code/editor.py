@@ -31,12 +31,13 @@ TAG_COLORS = {
 
 class Editor:
     THUMB_SIZE = (240, 140)
-    def __init__(self, parent):
+    def __init__(self, parent, lyrics_mode=False):
 
         
         self.parent = parent
         self.selected_slide = None
-        
+        self.lyrics_mode = lyrics_mode
+        self.EnableLyricsMode(self.lyrics_mode)
 
 
         # DATA
@@ -98,6 +99,14 @@ class Editor:
         self.apply_preview_style()
         self.preview.resizeEvent = self.on_preview_resize
 
+    def EnableLyricsMode(self, enable):
+        self.parent.editor_page.NewText.setEnabled(not enable)
+        self.parent.editor_page.Upload.setEnabled(not enable)
+        self.parent.editor_page.DeleteElement.setEnabled(not enable)
+        self.parent.editor_page.ElementUp.setEnabled(not enable)
+        self.parent.editor_page.ElementDown.setEnabled(not enable)
+
+
     def on_preview_resize(self, event):
         self.update_preview_background()
         self.update_center_icon()
@@ -151,7 +160,10 @@ class Editor:
         )
     def load_show(self, show):
         self.current_show = show
-        print("LOADED SHOW:", show)
+
+        self.lyrics_mode = show.get("type") == "lyricsshow"
+        self.EnableLyricsMode(self.lyrics_mode)
+
         if "slides" not in self.current_show:
             self.current_show["slides"] = []
 
@@ -195,8 +207,22 @@ class Editor:
     def add_slide(self):
         slide = {
             "thumbnail": "asset/ui/transparent.png",
-            "tag": None
+            "tag": None,
+            "elements": []
         }
+
+        if self.lyrics_mode:
+            w, h = self.preview.width(), self.preview.height()
+            text_element = {
+                "type": "text",
+                "text": "♪ Lyrics ♪",
+                "x": int(w * 0.1),
+                "y": int(h * 0.3),
+                "w": int(w * 0.8),
+                "h": int(h * 0.4)
+            }
+            slide["elements"].append(text_element)
+
         self.slides_data.append(slide)
         self.selected_slide = self.slides_data[-1]
         self.RenderSlides()

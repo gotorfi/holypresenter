@@ -507,6 +507,10 @@ class Elements:
         def finish():
             text = editor.toPlainText().strip() or "Empty"
             element.setText(text)
+
+            if hasattr(element, "data_ref") and element.data_ref is not None:
+                element.data_ref["text"] = text
+
             editor.deleteLater()
             element.update()
             self.parent.RenderElementsList()
