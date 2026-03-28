@@ -38,6 +38,10 @@ class ShowManager:
         self.current_frame_index = 0
         self.frame_count = 0
         self.fps = 30
+        self.video_enabled = True
+        self.slide_enabled = True
+        self.current_slide = None
+        self.current_video_path = None
 
         self.preview_frame.resizeEvent = self.on_resize
 
@@ -47,7 +51,10 @@ class ShowManager:
         return super(type(self.preview_frame), self.preview_frame).resizeEvent(event)
 
     def play_video(self, path):
+        self.video_label.clear()
         self.stop_video()
+        self.current_video_path = path
+        self.video_enabled = True
 
         self.cap = cv2.VideoCapture(path)
         if not self.cap.isOpened():
@@ -65,6 +72,7 @@ class ShowManager:
         self.current_frame_index = 0
         self.timer.start(int(1000 / self.fps))
         self.update_length_label()
+        self.update_layers()
 
     def stop_video(self):
         if self.timer.isActive():
@@ -72,6 +80,7 @@ class ShowManager:
         if self.cap:
             self.cap.release()
             self.cap = None
+        
 
     def next_frame(self):
         if not self.cap or self.slider_pressed:
@@ -137,10 +146,27 @@ class ShowManager:
         curr_min, curr_sec = divmod(current_seconds, 60)
         self.length_label.setText(f"{curr_min:02d}:{curr_sec:02d} / {total_min:02d}:{total_sec:02d}")
 
+    def update_layers(self):
+        # VIDEO
+        if self.video_enabled:
+            self.video_label.show()
+        else:
+            self.video_label.clear()
+            self.video_label.hide()
+            
 
+        # SLIDE
+        if self.slide_enabled and self.current_slide:
+            pix = self.render_slide(self.current_slide)
+            self.slide_overlay.setPixmap(pix)
+            self.slide_overlay.show()
+        else:
+            self.slide_overlay.clear()
+            self.slide_overlay.hide()
     def show_slide(self, slide):
-        pix = self.render_slide(slide)
-        self.slide_overlay.setPixmap(pix)
+        self.current_slide = slide
+        self.slide_enabled = True
+        self.update_layers()
     def render_slide(self, slide):
         w = self.preview_frame.width()
         h = self.preview_frame.height()
@@ -222,3 +248,15 @@ class ShowManager:
         painter.end()
 
         return pix
+    def handle_key(self, key):
+        if key == Qt.Key.Key_1:
+            self.video_enabled = False
+            self.slide_enabled = False
+
+        elif key == Qt.Key.Key_2:
+            self.video_enabled = False
+
+        elif key == Qt.Key.Key_3:
+            self.slide_enabled = False
+
+        self.update_layers()

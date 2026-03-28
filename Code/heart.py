@@ -121,7 +121,15 @@ class heart(QMainWindow):
                 background-color: rgb(80, 80, 80);
                                     
             """)
-        
+    def keyPressEvent(self, event):
+        if event.isAutoRepeat():
+            return
+
+        if hasattr(self, "show_manager"):
+            self.show_manager.handle_key(event.key())
+
+        super().keyPressEvent(event)
+            
 def main():
     app = QApplication(sys.argv)
     pixmap = QPixmap("asset/ui/PresentatorSplash.png")
