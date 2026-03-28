@@ -1,8 +1,10 @@
 import cv2
 from PyQt6.QtWidgets import QLabel, QSlider
-from PyQt6.QtGui import QPixmap, QImage
+from PyQt6.QtGui import QIcon, QPixmap, QImage
 from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtGui import QPainter, QFont, QFontMetrics, QColor, QPen, QPainterPath
+from PyQt6.QtWidgets import QGraphicsOpacityEffect
+from PyQt6.QtCore import QPropertyAnimation
 
 
 class ShowManager:
@@ -16,6 +18,17 @@ class ShowManager:
         self.video_label.show()
 
 
+
+        self.video_label_next = QLabel(self.preview_frame)
+        self.video_label_next.setGeometry(0, 0, self.preview_frame.width(), self.preview_frame.height())
+        self.video_label_next.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.video_label_next.hide()
+
+        self.video_opacity = QGraphicsOpacityEffect()
+        self.video_label_next.setGraphicsEffect(self.video_opacity)
+        self.video_opacity.setOpacity(0.0)
+        self.cap_next = None
+
         # SLIDE OVERLAY
         self.slide_overlay = QLabel(self.preview_frame)
         self.slide_overlay.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -23,6 +36,11 @@ class ShowManager:
         self.slide_overlay.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
         self.slide_overlay.setStyleSheet("background: transparent;")
         self.slide_overlay.show()
+
+        
+        self.slide_opacity = QGraphicsOpacityEffect()
+        self.slide_overlay.setGraphicsEffect(self.slide_opacity)
+        self.slide_opacity.setOpacity(1.0)
 
         # Slider ja videolength label main_window:sta
         self.slider: QSlider = main_window.videoslider
@@ -51,10 +69,86 @@ class ShowManager:
         return super(type(self.preview_frame), self.preview_frame).resizeEvent(event)
 
     def play_video(self, path):
-        self.video_label.clear()
-        self.stop_video()
+        fade_on = self.main_window.fade_background.isChecked()
+        duration = self.main_window.fade_background_time.value()
+
         self.current_video_path = path
         self.video_enabled = True
+
+        # =====================================
+        # 🔥 FADE MODE (CROSSFADE)
+        # =====================================
+        if fade_on and self.cap is not None:
+
+            self.cap_next = cv2.VideoCapture(path)
+
+            if not self.cap_next.isOpened():
+                print(f"Cannot open video {path}")
+                return
+            self.video_label_next.show()
+
+
+            def update_next_frame():
+                if not self.cap_next:
+                    return
+
+                ret, frame = self.cap_next.read()
+                if not ret:
+                    self.cap_next.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                    return
+
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                h, w, ch = frame.shape
+                bytes_per_line = ch * w
+
+                qimg = QImage(frame.data, w, h, bytes_per_line, QImage.Format.Format_RGB888)
+                pix = QPixmap.fromImage(qimg).scaled(
+                    self.preview_frame.width(),
+                    self.preview_frame.height(),
+                    Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+                    Qt.TransformationMode.SmoothTransformation
+                )
+
+                self.video_label_next.setPixmap(pix)
+
+
+            try:
+                self.timer.timeout.disconnect()
+            except:
+                pass
+
+            self.timer.timeout.connect(self.next_frame)
+            self.timer.timeout.connect(update_next_frame)
+
+            self.video_anim = QPropertyAnimation(self.video_opacity, b"opacity")
+            self.video_anim.setDuration(int(duration * 1000))
+            self.video_anim.setStartValue(0.0)
+            self.video_anim.setEndValue(1.0)
+
+            def finish():
+                self.cap = self.cap_next
+                self.cap_next = None
+
+                self.video_label.setPixmap(self.video_label_next.pixmap())
+                self.video_label_next.hide()
+                self.video_opacity.setOpacity(0.0)
+
+                try:
+                    self.timer.timeout.disconnect(update_next_frame)
+                except:
+                    pass
+
+            self.video_anim.finished.connect(finish)
+            self.video_anim.start()
+
+            return
+
+        # =====================================
+        # 🔧 NORMAALI MODE (ei fade)
+        # =====================================
+
+        self.video_label.clear()
+        self.stop_video()
 
         self.cap = cv2.VideoCapture(path)
         if not self.cap.isOpened():
@@ -164,9 +258,21 @@ class ShowManager:
             self.slide_overlay.clear()
             self.slide_overlay.hide()
     def show_slide(self, slide):
+        fade_on = self.main_window.fade_slide.isChecked()
+        duration = self.main_window.fade_slide_time.value()
+
         self.current_slide = slide
         self.slide_enabled = True
-        self.update_layers()
+
+        pix = self.render_slide(slide)
+        self.slide_overlay.setPixmap(pix)
+        self.slide_overlay.show()
+
+        if fade_on:
+            self.slide_opacity.setOpacity(0.0)
+            self.fade_slide_in(duration)
+        else:
+            self.slide_opacity.setOpacity(1.0)
     def render_slide(self, slide):
         w = self.preview_frame.width()
         h = self.preview_frame.height()
@@ -248,15 +354,109 @@ class ShowManager:
         painter.end()
 
         return pix
+    
+
+    def update_fade_button(self, btn, enabled):
+        if enabled:
+            btn.setStyleSheet("""
+                QPushButton {
+                    background-color: rgb(100, 100, 255);
+                    border: 1px solid rgba(255, 255, 255, 80);
+                    border-radius: 6px;
+                    padding: 3px;
+                    margin-right: 10px;
+                }
+            """)
+            btn.setIcon(QIcon("asset/ui/fadeB.png"))
+
+        else:
+            btn.setStyleSheet("""
+                QPushButton {
+                    background-color: rgb(35, 37, 42);
+                    border: 1px solid rgba(255, 255, 255, 40);
+                    border-radius: 6px;
+                    padding: 3px;
+                    margin-right: 10px;
+                }
+            """)
+            btn.setIcon(QIcon("asset/ui/fade.png"))
     def handle_key(self, key):
         if key == Qt.Key.Key_1:
-            self.video_enabled = False
-            self.slide_enabled = False
+            fade_video = self.main_window.fade_background.isChecked()
+            fade_slide = self.main_window.fade_slide.isChecked()
+
+            # VIDEO FADE OUT
+            if fade_video:
+                self.video_anim = QPropertyAnimation(self.video_opacity, b"opacity")
+                self.video_anim.setDuration(int(self.main_window.fade_background_time.value() * 1000))
+                self.video_anim.setStartValue(1.0)
+                self.video_anim.setEndValue(0.0)
+
+                def video_finish():
+                    self.video_enabled = False
+                    self.video_label.clear()
+                    self.video_label.hide()
+
+                self.video_anim.finished.connect(video_finish)
+                self.video_anim.start()
+            else:
+                self.video_enabled = False
+                self.video_label.clear()
+                self.video_label.hide()
+
+            # SLIDE FADE OUT
+            if fade_slide:
+                self.fade_slide_out(self.main_window.fade_slide_time.value())
+            else:
+                self.slide_enabled = False
+                self.slide_overlay.clear()
+                self.slide_overlay.hide()
+
+            self.update_layers()
+            return
 
         elif key == Qt.Key.Key_2:
-            self.video_enabled = False
+            if self.main_window.fade_background.isChecked():
+                self.video_anim = QPropertyAnimation(self.video_opacity, b"opacity")
+                self.video_anim.setDuration(int(self.main_window.fade_background_time.value() * 1000))
+                self.video_anim.setStartValue(1.0)
+                self.video_anim.setEndValue(0.0)
+
+                def finish():
+                    self.video_enabled = False
+                    self.video_label.clear()
+                    self.video_label.hide()
+
+                self.video_anim.finished.connect(finish)
+                self.video_anim.start()
+            else:
+                self.video_enabled = False
+                self.update_layers()
 
         elif key == Qt.Key.Key_3:
-            self.slide_enabled = False
+            if self.main_window.fade_slide.isChecked():
+                self.fade_slide_out(self.main_window.fade_slide_time.value())
+            else:
+                self.slide_enabled = False
+                self.update_layers()
 
         self.update_layers()
+
+    def fade_slide_in(self, duration):
+        self.anim = QPropertyAnimation(self.slide_opacity, b"opacity")
+        self.anim.setDuration(int(duration * 1000))
+        self.anim.setStartValue(0.0)
+        self.anim.setEndValue(1.0)
+        self.anim.start()
+    def fade_slide_out(self, duration):
+        self.anim = QPropertyAnimation(self.slide_opacity, b"opacity")
+        self.anim.setDuration(int(duration * 1000))
+        self.anim.setStartValue(1.0)
+        self.anim.setEndValue(0.0)
+
+        def on_finish():
+            self.slide_overlay.clear()
+            self.slide_enabled = False
+
+        self.anim.finished.connect(on_finish)
+        self.anim.start()

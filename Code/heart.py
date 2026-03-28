@@ -73,6 +73,20 @@ class heart(QMainWindow):
 
         self.editor_page.preview_slide.setObjectName("preview_slide")
 
+        # SLIDE FADE
+        self.fade_slide.setCheckable(True)
+        self.fade_slide.toggled.connect(
+            lambda state: self.on_fade_slide_toggled(state)
+        )
+        self.fade_slide_time.setEnabled(False)
+
+        # VIDEO FADE
+        self.fade_background.setCheckable(True)
+        self.fade_background.toggled.connect(
+            lambda state: self.on_fade_bg_toggled(state)
+        )
+        self.fade_background_time.setEnabled(False)
+
        
     def initUI(self):
         
@@ -129,6 +143,14 @@ class heart(QMainWindow):
             self.show_manager.handle_key(event.key())
 
         super().keyPressEvent(event)
+    def on_fade_slide_toggled(self, state):
+        self.fade_slide_time.setEnabled(state)
+        self.show_manager.update_fade_button(self.fade_slide, state)
+
+
+    def on_fade_bg_toggled(self, state):
+        self.fade_background_time.setEnabled(state)
+        self.show_manager.update_fade_button(self.fade_background, state)
             
 def main():
     app = QApplication(sys.argv)

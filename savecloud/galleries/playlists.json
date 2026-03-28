@@ -57,7 +57,7 @@
                 },
                 {
                     "type": "lyricsshow",
-                    "name": "Lyricss",
+                    "name": "Anchor",
                     "slides": [
                         {
                             "thumbnail": "asset/ui/transparent.png",
