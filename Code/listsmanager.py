@@ -500,6 +500,14 @@ class PlayList:
 
             # ---------- UI ----------
             card = QWidget()
+            def make_click(s):
+                def handler(event):
+                    self.selected_slide = s
+                    if hasattr(self.parent, "show_manager"):
+                        self.parent.show_manager.show_slide(s)
+                return handler
+
+            card.mousePressEvent = make_click(slide)
             card_layout = QVBoxLayout(card)
             card_layout.setContentsMargins(0, 0, 0, 0)
             card_layout.setSpacing(0)

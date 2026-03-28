@@ -2,6 +2,7 @@ import cv2
 from PyQt6.QtWidgets import QLabel, QSlider
 from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtCore import QTimer, Qt
+from PyQt6.QtGui import QPainter, QFont, QFontMetrics, QColor, QPen, QPainterPath
 
 
 class ShowManager:
@@ -13,6 +14,15 @@ class ShowManager:
         self.video_label.setGeometry(0, 0, self.preview_frame.width(), self.preview_frame.height())
         self.video_label.setStyleSheet("background-color: black;")
         self.video_label.show()
+
+
+        # SLIDE OVERLAY
+        self.slide_overlay = QLabel(self.preview_frame)
+        self.slide_overlay.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.slide_overlay.setGeometry(0, 0, self.preview_frame.width(), self.preview_frame.height())
+        self.slide_overlay.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        self.slide_overlay.setStyleSheet("background: transparent;")
+        self.slide_overlay.show()
 
         # Slider ja videolength label main_window:sta
         self.slider: QSlider = main_window.videoslider
@@ -33,6 +43,7 @@ class ShowManager:
 
     def on_resize(self, event):
         self.video_label.setGeometry(0, 0, self.preview_frame.width(), self.preview_frame.height())
+        self.slide_overlay.setGeometry(0, 0, self.preview_frame.width(), self.preview_frame.height())
         return super(type(self.preview_frame), self.preview_frame).resizeEvent(event)
 
     def play_video(self, path):
@@ -125,3 +136,89 @@ class ShowManager:
         total_min, total_sec = divmod(total_seconds, 60)
         curr_min, curr_sec = divmod(current_seconds, 60)
         self.length_label.setText(f"{curr_min:02d}:{curr_sec:02d} / {total_min:02d}:{total_sec:02d}")
+
+
+    def show_slide(self, slide):
+        pix = self.render_slide(slide)
+        self.slide_overlay.setPixmap(pix)
+    def render_slide(self, slide):
+        w = self.preview_frame.width()
+        h = self.preview_frame.height()
+
+        BASE_W = 1450
+        BASE_H = 825
+
+        scale_x = w / BASE_W
+        scale_y = h / BASE_H
+
+        pix = QPixmap(w, h)
+        pix.fill(Qt.GlobalColor.transparent)
+
+        painter = QPainter(pix)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+
+        for el in slide.get("elements", []):
+
+            x = int(el["x"] * scale_x) - 10
+            y = int(el["y"] * scale_y) - 10
+            ww = int(el["w"] * scale_x)
+            hh = int(el["h"] * scale_y)
+
+            # IMAGE
+            if el["type"] == "image":
+                img = QPixmap(el["path"])
+                if not img.isNull():
+                    painter.drawPixmap(
+                        x, y,
+                        img.scaled(
+                            ww, hh,
+                            Qt.AspectRatioMode.IgnoreAspectRatio,
+                            Qt.TransformationMode.SmoothTransformation
+                        )
+                    )
+
+            # TEXT
+            elif el["type"] == "text":
+                text = el.get("text", "")
+
+                font_size = max(6, int(12 * scale_y))
+                font = QFont("Arial Black", font_size)
+                font.setBold(True)
+
+                painter.setFont(font)
+                metrics = QFontMetrics(font)
+
+                lines = text.split("\n")
+                line_height = metrics.height()
+                total_h = line_height * len(lines)
+
+                start_y = y + (hh - total_h) / 2 + metrics.ascent()
+
+                for i, line in enumerate(lines):
+                    if not line:
+                        continue
+
+                    tw = metrics.horizontalAdvance(line)
+                    tx = int(x + (ww - tw) / 2)
+                    ty = int(start_y + i * line_height) + 5
+
+                    path = QPainterPath()
+                    path.addText(tx, ty, font, line)
+
+                    # stroke
+                    pen = QPen(QColor(0, 0, 0))
+                    pen.setWidth(max(4, int(6 * scale_y)))
+                    painter.setPen(pen)
+                    painter.setBrush(QColor(0, 0, 0))
+                    painter.drawPath(path)
+
+                    # fill
+                    painter.setPen(Qt.PenStyle.NoPen)
+                    painter.setBrush(QColor(255, 255, 255))
+                    painter.drawPath(path)
+
+        painter.end()
+
+        return pix

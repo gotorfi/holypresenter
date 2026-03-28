@@ -1,0 +1,13 @@
+1. Add thumbnails to preview
+2. Add fade for slides
+3. Add fade for videos
+4. Images libary
+5. Backgrounds import
+6. Songs libary
+7. Program window
+8. One Third window
+9. Preferences
+10. notification
+11. Guide
+12. Update
+13. Download Wizard
