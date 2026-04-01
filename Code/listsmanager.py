@@ -85,7 +85,6 @@ class PlayList:
     # ---------- ADD ----------
     def add_slideshow(self, name="New Slideshow"):
         if not self.selected_playlist:
-            print("No playlist selected")
             return
 
         item = {
@@ -203,8 +202,6 @@ class PlayList:
 
             self.json_manager.save(self.playlists, [], self.songs, self.images)
 
-            print("RENAMED + SAVED:", target)
-
         line_edit.returnPressed.connect(finish)
 
         def on_focus_out(event):
@@ -243,7 +240,6 @@ class PlayList:
             return
 
         slides = self.selected_playlist.get("slides", [])
-        print("REFRESHING SLIDES:", slides)
 
         for i, slide in enumerate(slides):
             item = QListWidgetItem(slide['name'])
@@ -325,8 +321,6 @@ class PlayList:
 
         item.setBackground(QColor(100, 100, 255, 100))
 
-        print("NOW SHOWING:", playlist["name"])
-        print("SLIDES:", playlist.get("slides", []))
 
         self.refresh_slides_frame()
 

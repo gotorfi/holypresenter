@@ -5,19 +5,21 @@ from PyQt6.QtCore import QTimer, Qt
 from PyQt6.QtGui import QPainter, QFont, QFontMetrics, QColor, QPen, QPainterPath
 from PyQt6.QtWidgets import QGraphicsOpacityEffect
 from PyQt6.QtCore import QPropertyAnimation
-
+from program_output import ProgramOutput
 
 class ShowManager:
     def __init__(self, main_window):
         self.main_window = main_window
         self.preview_frame = main_window.preview  # QWidget, johon video näytetään
+
+        self.program_output = ProgramOutput(self)
         self.video_label = QLabel(self.preview_frame)
         self.video_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.video_label.setGeometry(0, 0, self.preview_frame.width(), self.preview_frame.height())
         self.video_label.setStyleSheet("background-color: black;")
         self.video_label.show()
 
-
+        
 
         self.video_label_next = QLabel(self.preview_frame)
         self.video_label_next.setGeometry(0, 0, self.preview_frame.width(), self.preview_frame.height())
@@ -28,6 +30,7 @@ class ShowManager:
         self.video_label_next.setGraphicsEffect(self.video_opacity)
         self.video_opacity.setOpacity(0.0)
         self.cap_next = None
+        self.last_next_frame = None
 
         # SLIDE OVERLAY
         self.slide_overlay = QLabel(self.preview_frame)
@@ -37,10 +40,13 @@ class ShowManager:
         self.slide_overlay.setStyleSheet("background: transparent;")
         self.slide_overlay.show()
 
-        
         self.slide_opacity = QGraphicsOpacityEffect()
         self.slide_overlay.setGraphicsEffect(self.slide_opacity)
         self.slide_opacity.setOpacity(1.0)
+        
+        self.video_current_opacity = QGraphicsOpacityEffect()
+        self.video_label.setGraphicsEffect(self.video_current_opacity)
+        self.video_current_opacity.setOpacity(1.0)
 
         # Slider ja videolength label main_window:sta
         self.slider: QSlider = main_window.videoslider
@@ -49,6 +55,10 @@ class ShowManager:
         self.slider_pressed = False
         self.slider.sliderPressed.connect(self.on_slider_pressed)
         self.slider.sliderReleased.connect(self.on_slider_released)
+
+        self.video_current_opacity = QGraphicsOpacityEffect()
+        self.video_label.setGraphicsEffect(self.video_current_opacity)
+        self.video_current_opacity.setOpacity(1.0)
 
         self.cap = None
         self.timer = QTimer()
@@ -69,6 +79,11 @@ class ShowManager:
         return super(type(self.preview_frame), self.preview_frame).resizeEvent(event)
 
     def play_video(self, path):
+        if not self.video_enabled:
+            self.stop_video()
+            self.cap = None
+            self.cap_next = None
+            self.last_next_frame = None
         fade_on = self.main_window.fade_background.isChecked()
         duration = self.main_window.fade_background_time.value()
 
@@ -78,20 +93,79 @@ class ShowManager:
         # =====================================
         # 🔥 FADE MODE (CROSSFADE)
         # =====================================
-        if fade_on and self.cap is not None:
+        if fade_on:
+            # =====================================
+            # 🔥 ENSIMMÄINEN VIDEO (fade from black)
+            # =====================================
+            if self.cap is None:
+                self.cap = cv2.VideoCapture(path)
+
+                if not self.cap.isOpened():
+                    return
+
+                ret, frame = self.cap.read()
+                if not ret:
+                    return
+
+                self.current_frame_index = 0
+
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                h, w, ch = frame.shape
+                bytes_per_line = ch * w
+
+                qimg = QImage(frame.data, w, h, bytes_per_line, QImage.Format.Format_RGB888)
+                qpix = QPixmap.fromImage(qimg)
+
+                self.last_frame = qpix
+
+                scaled = qpix.scaled(
+                    self.preview_frame.width(),
+                    self.preview_frame.height(),
+                    Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+                    Qt.TransformationMode.SmoothTransformation
+                )
+
+                self.video_label.setPixmap(scaled)
+                self.video_label.show()
+                self.video_enabled = True
+
+                # 🔥 TÄRKEÄ
+                self.program_output.sync()
+
+                self.video_current_opacity.setOpacity(0.0)
+
+                self.frame_count = int(self.cap.get(cv2.CAP_PROP_FRAME_COUNT))
+                self.fps = self.cap.get(cv2.CAP_PROP_FPS) or 30
+
+                self.slider.setMaximum(self.frame_count - 1)
+                self.slider.setValue(0)
+
+                self.timer.start(int(1000 / self.fps))
+
+                self.video_anim = QPropertyAnimation(self.video_current_opacity, b"opacity")
+                self.video_anim.setDuration(int(duration * 1000))
+                self.video_anim.setStartValue(0.0)
+                self.video_anim.setEndValue(1.0)
+                self.video_anim.start()
+
+                return
+
+            # =====================================
+            # 🔥 CROSSFADE VIDEO → VIDEO
+            # =====================================
+            if self.timer.isActive():
+                self.timer.stop()
 
             self.cap_next = cv2.VideoCapture(path)
 
             if not self.cap_next.isOpened():
                 print(f"Cannot open video {path}")
                 return
-            self.video_label_next.show()
 
+            self.video_label_next.show()
+            self.video_opacity.setOpacity(0.0)
 
             def update_next_frame():
-                if not self.cap_next:
-                    return
-
                 ret, frame = self.cap_next.read()
                 if not ret:
                     self.cap_next.set(cv2.CAP_PROP_POS_FRAMES, 0)
@@ -102,23 +176,29 @@ class ShowManager:
                 bytes_per_line = ch * w
 
                 qimg = QImage(frame.data, w, h, bytes_per_line, QImage.Format.Format_RGB888)
-                pix = QPixmap.fromImage(qimg).scaled(
+                pix = QPixmap.fromImage(qimg)
+
+                scaled = pix.scaled(
                     self.preview_frame.width(),
                     self.preview_frame.height(),
                     Qt.AspectRatioMode.KeepAspectRatioByExpanding,
                     Qt.TransformationMode.SmoothTransformation
                 )
 
-                self.video_label_next.setPixmap(pix)
+                self.video_label_next.setPixmap(scaled)
 
+                # 🔥 TÄRKEIN FIX
+                self.last_next_frame = pix
+                self.program_output.sync()
 
-            try:
-                self.timer.timeout.disconnect()
-            except:
-                pass
+                # 🔥 STARTAA FADE VASTA KUN FRAME ON OLEMASSA
+                if self.last_next_frame and not hasattr(self, "_program_fade_started"):
+                    self._program_fade_started = True
+                    self.program_output.fade_video(duration)
 
-            self.timer.timeout.connect(self.next_frame)
-            self.timer.timeout.connect(update_next_frame)
+            self.crossfade_timer = QTimer()
+            self.crossfade_timer.timeout.connect(update_next_frame)
+            self.crossfade_timer.start(int(1000 / self.fps))
 
             self.video_anim = QPropertyAnimation(self.video_opacity, b"opacity")
             self.video_anim.setDuration(int(duration * 1000))
@@ -126,17 +206,40 @@ class ShowManager:
             self.video_anim.setEndValue(1.0)
 
             def finish():
+                print("SM FINISH",
+                    "last_frame exists =", self.last_frame is not None,
+                    "last_next_frame exists =", self.last_next_frame is not None)
                 self.cap = self.cap_next
                 self.cap_next = None
+
+                if self.last_next_frame:
+                    self.last_frame = self.last_next_frame
 
                 self.video_label.setPixmap(self.video_label_next.pixmap())
                 self.video_label_next.hide()
                 self.video_opacity.setOpacity(0.0)
 
-                try:
-                    self.timer.timeout.disconnect(update_next_frame)
-                except:
-                    pass
+                if self.crossfade_timer:
+                    self.crossfade_timer.stop()
+                    self.crossfade_timer = None
+
+                self.current_frame_index = 0
+
+                self.frame_count = int(self.cap.get(cv2.CAP_PROP_FRAME_COUNT))
+                self.fps = self.cap.get(cv2.CAP_PROP_FPS) or 30
+
+                self.timer.start(int(1000 / self.fps))
+
+                self.video_enabled = True
+                self.video_label.show()
+                self.video_current_opacity.setOpacity(1.0)
+
+                # 🔥 TÄRKEIN: sync ennen kuin nollataan
+                self.program_output.sync()
+
+
+                if hasattr(self, "_program_fade_started"):
+                    del self._program_fade_started
 
             self.video_anim.finished.connect(finish)
             self.video_anim.start()
@@ -198,14 +301,22 @@ class ShowManager:
         h, w, ch = frame.shape
         bytes_per_line = ch * w
         qimg = QImage(frame.data, w, h, bytes_per_line, QImage.Format.Format_RGB888)
-        qpix = QPixmap.fromImage(qimg).scaled(
+        qpix = QPixmap.fromImage(qimg)
+
+        self.last_frame = qpix
+
+        scaled = qpix.scaled(
             self.preview_frame.width(),
             self.preview_frame.height(),
             Qt.AspectRatioMode.KeepAspectRatioByExpanding,
             Qt.TransformationMode.SmoothTransformation
         )
-        self.video_label.setPixmap(qpix)
+
+        self.video_label.setPixmap(scaled)
+        self.program_output.sync()
+        
         self.update_length_label()
+        print("FRAME UPDATE", self.last_frame is not None)
 
     # 🎛 Slider-logiikka
     def slider_changed(self, value):
@@ -257,6 +368,7 @@ class ShowManager:
         else:
             self.slide_overlay.clear()
             self.slide_overlay.hide()
+        self.program_output.sync()
     def show_slide(self, slide):
         fade_on = self.main_window.fade_slide.isChecked()
         duration = self.main_window.fade_slide_time.value()
@@ -271,8 +383,15 @@ class ShowManager:
         if fade_on:
             self.slide_opacity.setOpacity(0.0)
             self.fade_slide_in(duration)
+            self.program_output.fade_slide(pix, duration)
         else:
             self.slide_opacity.setOpacity(1.0)
+        self.program_output.sync()
+        
+
+
+
+
     def render_slide(self, slide):
         w = self.preview_frame.width()
         h = self.preview_frame.height()
@@ -356,6 +475,88 @@ class ShowManager:
         return pix
     
 
+
+
+    def render_slide_for_size(self, slide, w, h):
+        if slide is None:
+            return QPixmap()
+        BASE_W = 1450
+        BASE_H = 825
+
+        scale_x = w / BASE_W
+        scale_y = h / BASE_H
+
+        pix = QPixmap(w, h)
+        pix.fill(Qt.GlobalColor.transparent)
+
+        painter = QPainter(pix)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
+        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+
+        for el in slide.get("elements", []):
+
+            x = int(el["x"] * scale_x) - 10
+            y = int(el["y"] * scale_y) - 10
+            ww = int(el["w"] * scale_x)
+            hh = int(el["h"] * scale_y)
+
+            if el["type"] == "image":
+                img = QPixmap(el["path"])
+                if not img.isNull():
+                    painter.drawPixmap(
+                        x, y,
+                        img.scaled(
+                            ww, hh,
+                            Qt.AspectRatioMode.IgnoreAspectRatio,
+                            Qt.TransformationMode.SmoothTransformation
+                        )
+                    )
+
+            elif el["type"] == "text":
+                text = el.get("text", "")
+
+                font_size = int(h * 0.04)
+                font = QFont("Arial Black", font_size)
+                font.setBold(True)
+
+                painter.setFont(font)
+                metrics = QFontMetrics(font)
+
+                lines = text.split("\n")
+                line_height = metrics.height()
+                total_h = line_height * len(lines)
+
+                start_y = y + (hh - total_h) / 2 + metrics.ascent()
+
+                for i, line in enumerate(lines):
+                    if not line:
+                        continue
+
+                    tw = metrics.horizontalAdvance(line)
+                    tx = int(x + (ww - tw) / 2) + int(w/110)
+                    ty = int(start_y + i * line_height)
+
+                    path = QPainterPath()
+                    path.addText(tx, ty, font, line)
+
+                    pen = QPen(QColor(0, 0, 0))
+                    pen.setWidth(max(2, int(font_size * 0.45)))
+                    pen.setCapStyle(Qt.PenCapStyle.RoundCap)
+                    pen.setJoinStyle(Qt.PenJoinStyle.RoundJoin)
+                    painter.setPen(pen)
+                    painter.setBrush(QColor(0, 0, 0))
+                    painter.drawPath(path)
+
+                    painter.setPen(Qt.PenStyle.NoPen)
+                    painter.setBrush(QColor(255, 255, 255))
+                    painter.drawPath(path)
+
+        painter.end()
+        return pix
+
+
+
     def update_fade_button(self, btn, enabled):
         if enabled:
             btn.setStyleSheet("""
@@ -381,65 +582,124 @@ class ShowManager:
             """)
             btn.setIcon(QIcon("asset/ui/fade.png"))
     def handle_key(self, key):
+
+        # =========================
+        # KEY 1 — CLEAR ALL
+        # =========================
         if key == Qt.Key.Key_1:
+
             fade_video = self.main_window.fade_background.isChecked()
             fade_slide = self.main_window.fade_slide.isChecked()
 
-            # VIDEO FADE OUT
+            # ========= VIDEO =========
             if fade_video:
-                self.video_anim = QPropertyAnimation(self.video_opacity, b"opacity")
-                self.video_anim.setDuration(int(self.main_window.fade_background_time.value() * 1000))
-                self.video_anim.setStartValue(1.0)
-                self.video_anim.setEndValue(0.0)
-
-                def video_finish():
-                    self.video_enabled = False
-                    self.video_label.clear()
-                    self.video_label.hide()
-
-                self.video_anim.finished.connect(video_finish)
-                self.video_anim.start()
-            else:
-                self.video_enabled = False
-                self.video_label.clear()
-                self.video_label.hide()
-
-            # SLIDE FADE OUT
-            if fade_slide:
-                self.fade_slide_out(self.main_window.fade_slide_time.value())
-            else:
-                self.slide_enabled = False
-                self.slide_overlay.clear()
-                self.slide_overlay.hide()
-
-            self.update_layers()
-            return
-
-        elif key == Qt.Key.Key_2:
-            if self.main_window.fade_background.isChecked():
-                self.video_anim = QPropertyAnimation(self.video_opacity, b"opacity")
+                self.video_anim = QPropertyAnimation(self.video_current_opacity, b"opacity")
                 self.video_anim.setDuration(int(self.main_window.fade_background_time.value() * 1000))
                 self.video_anim.setStartValue(1.0)
                 self.video_anim.setEndValue(0.0)
 
                 def finish():
-                    self.video_enabled = False
+                    self.stop_video()
+                    self.cap = None
+                    self.cap_next = None
+
                     self.video_label.clear()
                     self.video_label.hide()
 
+                    self.video_enabled = False
+                    self.current_video_path = None
+
+                    # reset vasta lopussa
+                    self.video_current_opacity.setOpacity(1.0)
+                    self.video_opacity.setOpacity(0.0)
+
+                    self.program_output.sync()
+
                 self.video_anim.finished.connect(finish)
+
+                self.program_output.fade_video_out(self.main_window.fade_background_time.value())
                 self.video_anim.start()
+
             else:
+                self.stop_video()
+                self.video_label.clear()
+                self.video_label.hide()
                 self.video_enabled = False
-                self.update_layers()
+                self.program_output.sync()
 
-        elif key == Qt.Key.Key_3:
-            if self.main_window.fade_slide.isChecked():
+            # ========= SLIDE =========
+            if fade_slide:
                 self.fade_slide_out(self.main_window.fade_slide_time.value())
+                self.program_output.fade_slide_out(self.main_window.fade_slide_time.value())
             else:
+                self.slide_overlay.clear()
+                self.slide_overlay.hide()
                 self.slide_enabled = False
-                self.update_layers()
 
+            self.current_slide = None
+            return
+
+        # =========================
+        # KEY 2 — VIDEO OFF
+        # =========================
+        elif key == Qt.Key.Key_2:
+            fade_video = self.main_window.fade_background.isChecked()
+
+            if fade_video:
+                self.video_anim = QPropertyAnimation(self.video_current_opacity, b"opacity")
+                self.video_anim.setDuration(int(self.main_window.fade_background_time.value() * 1000))
+                self.video_anim.setStartValue(1.0)
+                self.video_anim.setEndValue(0.0)
+
+                def finish():
+                    self.stop_video()
+                    self.cap = None
+                    self.cap_next = None
+
+                    self.video_label.clear()
+                    self.video_label.hide()
+
+                    self.video_enabled = False
+                    self.current_video_path = None
+
+                    self.video_current_opacity.setOpacity(1.0)
+                    self.video_opacity.setOpacity(0.0)
+
+                    self.program_output.sync()
+
+                self.video_anim.finished.connect(finish)
+
+                self.program_output.fade_video_out(self.main_window.fade_background_time.value())
+                self.video_anim.start()
+
+            else:
+                self.stop_video()
+                self.video_label.clear()
+                self.video_label.hide()
+                self.video_enabled = False
+                self.program_output.sync()
+
+            return
+
+        # =========================
+        # KEY 3 — SLIDE OFF
+        # =========================
+        elif key == Qt.Key.Key_3:
+            fade_slide = self.main_window.fade_slide.isChecked()
+
+            if fade_slide:
+                self.fade_slide_out(self.main_window.fade_slide_time.value())
+                self.program_output.fade_slide_out(self.main_window.fade_slide_time.value())
+            else:
+                self.slide_overlay.clear()
+                self.slide_overlay.hide()
+                self.slide_enabled = False
+
+            self.current_slide = None
+            return
+
+
+        # fallback
         self.update_layers()
 
     def fade_slide_in(self, duration):

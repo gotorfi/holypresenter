@@ -86,6 +86,7 @@ class heart(QMainWindow):
             lambda state: self.on_fade_bg_toggled(state)
         )
         self.fade_background_time.setEnabled(False)
+        self.show_manager.program_output.add_output(self.program)
 
        
     def initUI(self):

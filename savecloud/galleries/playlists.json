@@ -270,6 +270,166 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "type": "lyricsshow",
+                    "name": "Alusta asti",
+                    "slides": [
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Verse1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Niin kuin alusta asti ollut on,\nyhä voimasi on niin suunnaton.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Verse1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Yksi sana vain riitti luomiseen,\nSinun kätesi kantaa huomiseen.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Verse2",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Niin kuin alusta asti ollut on,\nyhä risti on päällä kallion.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Verse2",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Siltä ristiltä kerran heitettiin\nmeidän syntimme merten syvyyksiin.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Chorus1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Niin kuin alusta asti ollut on,\nloistaa kasvosi lailla auringon.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Chorus1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Niistä armosi, Jeesus,\nheijastuu niin kuin tuikkivat tähdet,\nhohtaa kuu.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Chorus1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Niin kuin alusta ollut on,\nnyt on ja aina, aina",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Verse3",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Niin kuin alusta asti ollut on,\nyhä armosi peittää tuomion.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Verse3",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Vaikka aika on ohikiitävää,\nSinun sanasi, Jeesus, aina jää.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Bridge",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Halleluja, halleluja, \nSinä yksin olet pyhä.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Bridge",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Halleluja, halleluja,\nSinä yksin olet korkein.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         }

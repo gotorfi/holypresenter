@@ -16,6 +16,7 @@ class Buttons:
         parent.actionPreferences.triggered.connect(self.open_preferences)
         parent.editor.clicked.connect(self.open_selected_show)
         parent.actionClose_Editor.triggered.connect(lambda: self.show_editor(False))
+        parent.play.clicked.connect(self.start_program)
 
 
         parent.actionNew_Playlist.triggered.connect(lambda: parent.lists_manager.add_playlist())
@@ -58,7 +59,6 @@ class Buttons:
     def show_editor(self, state):
         if state == True:
             if not hasattr(self.parent.editor, "current_show"):
-                print("No show loaded")
                 return
             if not self.editor_connected:
                 self.connect_editor_buttons()
@@ -94,8 +94,16 @@ class Buttons:
         show = self.parent.lists_manager.selected_show
 
         if not show:
-            print("No show selected")
             return
 
         self.parent.editor.load_show(show)
         self.show_editor(True)
+    def start_program(self):
+        from programshow import ProgramShow
+
+        self.parent.program_window = ProgramShow()
+        self.parent.program_window.show()
+
+        self.parent.show_manager.program_output.add_output(
+            self.parent.program_window
+        )
