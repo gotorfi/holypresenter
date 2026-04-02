@@ -11,7 +11,7 @@ class ProgramOutput:
         # Current-labelit
         video_current = QLabel(frame)
         video_current.setGeometry(0, 0, frame.width(), frame.height())
-        video_current.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        video_current.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
         video_current.setStyleSheet("background:black;")
         video_current.show()
 
@@ -24,7 +24,7 @@ class ProgramOutput:
         # Next-labelit fadeä varten (vain yksi per output!)
         video_next = QLabel(frame)
         video_next.setGeometry(0, 0, frame.width(), frame.height())
-        video_next.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        video_next.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
         video_next.setStyleSheet("background:black;")
         video_next.hide()
 
@@ -43,6 +43,7 @@ class ProgramOutput:
         slide_next.setGraphicsEffect(slide_next_opacity)
         slide_next_opacity.setOpacity(0.0)
 
+        
         output = {
             "frame": frame,
             "video_current": video_current,
@@ -65,22 +66,52 @@ class ProgramOutput:
         frame.resizeEvent = resize_event
 
     def sync(self):
-        
         if not hasattr(self.sm, "last_frame"):
             return
-        
+
         for out in self.outputs:
+
+            # ================= PROGRAM CONTROL =================
+            # 🟥 UI pikkukuva (self.program)
+            if hasattr(self.sm.main_window, "program"):
+                if out["frame"] in [self.sm.main_window.program, self.sm.main_window.preview]:
+                    if not self.sm.program_running:
+                        out["video_current"].clear()
+                        out["video_next"].clear()
+                        out["slide_current"].clear()
+                        out["slide_next"].clear()
+                        continue
+
+            # 🟥 Popup window
+            if hasattr(self.sm.main_window, "program_window"):
+                if out["frame"] == self.sm.main_window.program_window:
+                    if not self.sm.program_running:
+                        out["video_current"].clear()
+                        out["video_next"].clear()
+                        out["slide_current"].clear()
+                        out["slide_next"].clear()
+                        continue
+
             print("SYNC START",
                 "video_enabled=", self.sm.video_enabled,
                 "video_fading=", [out["video_fading"] for out in self.outputs],
-                "has_last_frame=", hasattr(self.sm, "last_frame") and self.sm.last_frame is not None)
+                "has_last_frame=", self.sm.last_frame is not None
+            )
+
             # ================= VIDEO =================
             if not self.sm.video_enabled and not out["video_fading"]:
                 if not self.sm.last_frame:
-                    print("CLEAR TRIGGERED ❌")
                     out["video_current"].clear()
                     out["video_next"].clear()
             else:
+                if self.sm.last_frame:
+                    scaled_current = self.sm.last_frame.scaled(
+                        out["frame"].width(),
+                        out["frame"].height(),
+                        Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+                        Qt.TransformationMode.SmoothTransformation
+                    )
+                    out["video_current"].setPixmap(scaled_current)
                 if not out["video_fading"] and self.sm.last_frame:
                     scaled_current = self.sm.last_frame.scaled(
                         out["frame"].width(),
@@ -90,7 +121,7 @@ class ProgramOutput:
                     )
                     out["video_current"].setPixmap(scaled_current)
 
-                # 🔥 UPDATE NEXT JOS FADE
+                # 🔥 NEXT frame fade
                 if out["video_fading"] and self.sm.last_next_frame:
                     scaled_next = self.sm.last_next_frame.scaled(
                         out["frame"].width(),
@@ -107,10 +138,17 @@ class ProgramOutput:
                     out["slide_next"].clear()
             else:
                 if self.sm.current_slide:
+
+                    if out["frame"] in [self.sm.main_window.preview, self.sm.main_window.program]:
+                        is_preview = True
+                    else:
+                        is_preview = False
+
                     pix = self.sm.render_slide_for_size(
                         self.sm.current_slide,
                         out["frame"].width(),
-                        out["frame"].height()
+                        out["frame"].height(),
+                        is_preview
                     )
 
                     if out["slide_fading"]:
@@ -118,12 +156,11 @@ class ProgramOutput:
                     else:
                         out["slide_current"].setPixmap(pix)
 
-            # ================= LAYER ORDER =================
+            # ================= LAYERS =================
             out["video_current"].lower()
             out["video_next"].lower()
             out["slide_current"].raise_()
             out["slide_next"].raise_()
-
     def fade_video(self, duration):
 
         for out in self.outputs:

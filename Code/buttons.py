@@ -101,8 +101,19 @@ class Buttons:
     def start_program(self):
         from programshow import ProgramShow
 
+        # 🔁 TOGGLE OFF
+        if hasattr(self.parent, "program_window") and self.parent.program_window:
+            self.parent.show_manager.program_running = False
+
+            self.parent.program_window.close()
+            self.parent.program_window = None
+            return
+
+        # 🟢 TOGGLE ON
         self.parent.program_window = ProgramShow()
         self.parent.program_window.show()
+
+        self.parent.show_manager.program_running = True
 
         self.parent.show_manager.program_output.add_output(
             self.parent.program_window

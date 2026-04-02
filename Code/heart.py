@@ -152,6 +152,9 @@ class heart(QMainWindow):
     def on_fade_bg_toggled(self, state):
         self.fade_background_time.setEnabled(state)
         self.show_manager.update_fade_button(self.fade_background, state)
+
+    def resizeEvent(self, event):
+        return super().resizeEvent(event)
             
 def main():
     app = QApplication(sys.argv)
