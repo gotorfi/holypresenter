@@ -2,6 +2,7 @@
 
 
 from preferences import PreferencesWindow
+from PyQt6.QtGui import QGuiApplication
 
 
 class Buttons:
@@ -30,8 +31,6 @@ class Buttons:
         self.pref_window.display_button.clicked.connect(lambda: self.pref_window.display_preferences_page(1))
         self.pref_window.customize_button.clicked.connect(lambda: self.pref_window.display_preferences_page(2))
         self.pref_window.system_button.clicked.connect(lambda: self.pref_window.display_preferences_page(3))
-        self.pref_window.diplay_options.currentIndexChanged.connect(lambda: self.pref_window.manage_window(self.pref_window.diplay_options.currentText().lower()))
-        self.pref_window.restore_button.clicked.connect(lambda: self.pref_window.RESTORE())
 
 
     def connect_editor_buttons(self):
@@ -52,6 +51,7 @@ class Buttons:
     def open_preferences(self):
         if self.pref_window is None or not self.pref_window.isVisible():
             self.pref_window = PreferencesWindow(self.parent)
+            self.pref_window.manage_window(self.pref_window.settings["display_mode"])
             self.connect_pref_buttons()
         self.pref_window.show()
         self.pref_window.raise_()
@@ -98,6 +98,25 @@ class Buttons:
 
         self.parent.editor.load_show(show)
         self.show_editor(True)
+
+
+
+    def get_selected_screen(self):
+        settings = self.pref_window.settings if self.pref_window else None
+
+        if not settings:
+            return None
+
+        monitor_name = settings.get("program_monitor", "None")
+
+        if monitor_name == "None":
+            return None
+
+        for screen in QGuiApplication.screens():
+            if screen.name() == monitor_name:
+                return screen
+
+        return None
     def start_program(self):
         from programshow import ProgramShow
 
@@ -109,9 +128,23 @@ class Buttons:
             self.parent.program_window = None
             return
 
-        # 🟢 TOGGLE ON
+        # 🟢 CREATE WINDOW
         self.parent.program_window = ProgramShow()
-        self.parent.program_window.show()
+
+        screen = self.get_selected_screen()
+
+        if screen:
+            # 👉 siirrä oikealle näytölle
+            geometry = screen.geometry()
+            self.parent.program_window.setGeometry(geometry)
+
+            # 👉 fullscreen siihen näyttöön
+            self.parent.program_window.show()
+            self.parent.program_window.windowHandle().setScreen(screen)
+            self.parent.program_window.showFullScreen()
+        else:
+            # 👉 normaali ikkuna
+            self.parent.program_window.show()
 
         self.parent.show_manager.program_running = True
 

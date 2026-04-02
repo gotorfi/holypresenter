@@ -2,6 +2,9 @@
 #  const.py
 ################################
 
+import os
+
+
 VERSION = "v.1.3.2"
 
 # This file contains constants used throughout the codebase.
@@ -16,3 +19,14 @@ THEME_DARK4 = (90, 97, 115)
 COLOR_WHITE = (255, 255, 255)
 COLOR_BLACK = (0, 0, 0)
 
+DEFAULT_SETTINGS = {
+    "display_mode": "windowed",
+    "program_monitor": "None",
+    "lyrics_monitor": "None",
+    "enable_lyrics": False,
+    "lyrics_position": "Down",
+    "background_color": "Green"
+}
+
+SETTINGS_DIR = "savecloud"
+SETTINGS_FILE = os.path.join(SETTINGS_DIR, "settings.json")

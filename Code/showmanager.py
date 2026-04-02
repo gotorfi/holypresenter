@@ -703,6 +703,9 @@ class ShowManager(QObject):
                 self.video_label.clear()
                 self.video_label.hide()
                 self.video_enabled = False
+                self.current_video_path = None
+                self.last_frame = None
+                self.last_next_frame = None
                 self.program_output.sync()
 
             # ========= SLIDE =========
@@ -713,6 +716,9 @@ class ShowManager(QObject):
                 self.slide_overlay.clear()
                 self.slide_overlay.hide()
                 self.slide_enabled = False
+                self.current_slide = None
+
+                self.program_output.sync()
 
             self.current_slide = None
             return
@@ -755,6 +761,9 @@ class ShowManager(QObject):
                 self.video_label.clear()
                 self.video_label.hide()
                 self.video_enabled = False
+                self.current_video_path = None
+                self.last_frame = None
+                self.last_next_frame = None
                 self.program_output.sync()
 
             return
@@ -772,6 +781,7 @@ class ShowManager(QObject):
                 self.slide_overlay.clear()
                 self.slide_overlay.hide()
                 self.slide_enabled = False
+                self.current_slide = None
 
             self.current_slide = None
             return

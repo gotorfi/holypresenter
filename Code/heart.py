@@ -88,7 +88,7 @@ class heart(QMainWindow):
         self.fade_background_time.setEnabled(False)
         self.show_manager.program_output.add_output(self.program)
 
-       
+        
     def initUI(self):
         
         self.new_list = self.findChild(QToolButton, "new_list")
@@ -155,6 +155,17 @@ class heart(QMainWindow):
 
     def resizeEvent(self, event):
         return super().resizeEvent(event)
+    
+    def closeEvent(self, event):
+        if hasattr(self, "program_window") and self.program_window:
+            try:
+                self.show_manager.program_running = False
+                self.program_window.close()
+                self.program_window = None
+            except Exception as e:
+                print("Error closing program window:", e)
+
+        event.accept()
             
 def main():
     app = QApplication(sys.argv)

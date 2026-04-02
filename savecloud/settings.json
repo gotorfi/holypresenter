@@ -1,0 +1,8 @@
+{
+    "display_mode": "windowed",
+    "program_monitor": "None",
+    "lyrics_monitor": "\\\\.\\DISPLAY1",
+    "enable_lyrics": false,
+    "lyrics_position": "Down",
+    "background_color": "Green"
+}
