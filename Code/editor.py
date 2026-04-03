@@ -195,7 +195,6 @@ class Editor:
 
     def select_slide(self, index):
         self.selected_slide = self.slides_data[index]
-        print(f"Pressed slide: {index + 1}")
         self.slidelabel.setText(f"Editing Slide: {index + 1}")
         self.RenderSlides()
         self.RenderElements()

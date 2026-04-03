@@ -76,9 +76,19 @@ class ShowManager(QObject):
         self.last_frame = None
 
 
+        self.lyrics_enabled = False
+        self.lyrics_position = "Down"
+        self.lyrics_bg_color = "Green"
+
         self.program_running = False
 
+    def update_lyrics_settings(self):
+        pref = self.main_window.settings
 
+        self.lyrics_enabled = pref.get("enable_lyrics", False)
+        self.lyrics_position = pref.get("lyrics_position", "Down")
+        self.lyrics_bg_color = pref.get("background_color", "Green")
+        self.program_output.sync()
     def eventFilter(self, obj, event):
         if obj == self.preview_frame and event.type() == event.Type.Resize:
             self.handle_resize()
@@ -124,6 +134,7 @@ class ShowManager(QObject):
 
         # 🔹 SYNKRO PROGRAMOUTPUT
         self.program_output.sync()
+        
     def on_resize(self, event):
         w = self.preview_frame.width()
         h = self.preview_frame.height()
@@ -265,9 +276,6 @@ class ShowManager(QObject):
             self.video_anim.setEndValue(1.0)
 
             def finish():
-                print("SM FINISH",
-                    "last_frame exists =", self.last_frame is not None,
-                    "last_next_frame exists =", self.last_next_frame is not None)
                 self.cap = self.cap_next
                 self.cap_next = None
 
@@ -375,7 +383,6 @@ class ShowManager(QObject):
         self.program_output.sync()
         
         self.update_length_label()
-        print("FRAME UPDATE", self.last_frame is not None)
 
     # 🎛 Slider-logiikka
     def slider_changed(self, value):
@@ -772,6 +779,8 @@ class ShowManager(QObject):
         # KEY 3 — SLIDE OFF
         # =========================
         elif key == Qt.Key.Key_3:
+            if not self.current_slide:
+                return
             fade_slide = self.main_window.fade_slide.isChecked()
 
             if fade_slide:

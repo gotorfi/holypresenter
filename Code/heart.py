@@ -1,3 +1,5 @@
+import json
+
 from PyQt6.QtWidgets import (
     QApplication,
     QSplashScreen,
@@ -17,6 +19,7 @@ from PyQt6.QtCore import QTimer, Qt
 from PyQt6 import QtWidgets, uic
 
 import sys
+from programshow import LyricsWindow
 from const import *
 from buttons import Buttons
 from videos import Video
@@ -28,6 +31,10 @@ from jsonmanager import JsonManager
 import assets_rc
 
 
+from preferences import save_settings
+
+
+
 class heart(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -36,9 +43,9 @@ class heart(QMainWindow):
         self.SelectedVideo = None
         self.SelectedPlaylist = None
         self.SelectedSlideshow = None
-
-
-    
+        self.pref_window = None
+        from preferences import load_settings, PreferencesWindow
+        self.settings = load_settings()
         uic.loadUi("mainpage.ui", self)
         self.main_page = self.centralWidget()
         self.editor_page = uic.loadUi("editor.ui")
@@ -65,9 +72,12 @@ class heart(QMainWindow):
         self.action_lyricshow = QAction("New Lyricsshow", self)
         self.initUI()
         self.lists_manager = PlayList(self, self.items_frame, self.playlists_frame)
+
+        self.show_manager = ShowManager(self)
+        self.pref_window = PreferencesWindow(self)
         self.buttons = Buttons(self)
         self.videos = Video(self)
-        self.show_manager = ShowManager(self)
+        
         self.editor = Editor(self)
         self.message_service = MessagingService()
 
@@ -87,6 +97,15 @@ class heart(QMainWindow):
         )
         self.fade_background_time.setEnabled(False)
         self.show_manager.program_output.add_output(self.program)
+
+        self.fade_slide_time.valueChanged.connect(self.save_fade_times)
+        self.fade_background_time.valueChanged.connect(self.save_fade_times)
+
+        self.fade_background.setChecked(self.settings.get("fade_background", False))
+        self.fade_background_time.setValue(self.settings.get("fade_background_time", 1))
+
+        self.fade_slide.setChecked(self.settings.get("fade_slide", False))
+        self.fade_slide_time.setValue(self.settings.get("fade_slide_time", 1))
 
         
     def initUI(self):
@@ -147,24 +166,38 @@ class heart(QMainWindow):
     def on_fade_slide_toggled(self, state):
         self.fade_slide_time.setEnabled(state)
         self.show_manager.update_fade_button(self.fade_slide, state)
+        self.settings["fade_slide"] = state
+        self.save_settings()
 
 
     def on_fade_bg_toggled(self, state):
         self.fade_background_time.setEnabled(state)
         self.show_manager.update_fade_button(self.fade_background, state)
 
+        self.settings["fade_background"] = state
+        self.save_settings()
     def resizeEvent(self, event):
         return super().resizeEvent(event)
-    
+    def save_fade_times(self):
+        self.settings["fade_slide_time"] = self.fade_slide_time.value()
+        self.settings["fade_background_time"] = self.fade_background_time.value()
+        self.save_settings()
+
+
+    def save_settings(self):
+        save_settings(self.settings)
     def closeEvent(self, event):
         if hasattr(self, "program_window") and self.program_window:
             try:
                 self.show_manager.program_running = False
                 self.program_window.close()
                 self.program_window = None
+                
             except Exception as e:
                 print("Error closing program window:", e)
-
+        if hasattr(self, "lyrics_window") and self.lyrics_window:
+            self.lyrics_window.close()
+            self.lyrics_window = None
         event.accept()
             
 def main():

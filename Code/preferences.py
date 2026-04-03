@@ -24,7 +24,18 @@ from PyQt6.QtGui import QGuiApplication
 from messageservice import MessagingService
 
 
+def load_settings():
+    if os.path.exists(SETTINGS_FILE):
+        try:
+            with open(SETTINGS_FILE, "r") as f:
+                return json.load(f)
+        except:
+            return DEFAULT_SETTINGS.copy()
+    return DEFAULT_SETTINGS.copy()
 
+def save_settings(settings):
+    with open(SETTINGS_FILE, "w") as f:
+        json.dump(settings, f, indent=4)
 
 class PreferencesWindow(QMainWindow):
     def __init__(self, main_window):
@@ -32,24 +43,16 @@ class PreferencesWindow(QMainWindow):
         uic.loadUi("Preferences.ui", self)
         self.setWindowIcon(QIcon(":/icon/icon.png"))
         self.main_window = main_window
+        self.settings = main_window.settings
         self.setWindowFlags(
             self.windowFlags() & ~Qt.WindowType.WindowMaximizeButtonHint
         )
         self.message_service = MessagingService()
-
-        self.settings = {}
-        self.load_settings()
         self.populate_monitors()
         self.apply_settings_to_ui()
         self.connect_signals()
 
-    def load_settings(self):
-        if os.path.exists(SETTINGS_FILE):
-            with open(SETTINGS_FILE, "r") as f:
-                self.settings = json.load(f)
-        else:
-            self.settings = DEFAULT_SETTINGS.copy()
-            self.save_settings()
+    
 
 
     def save_settings(self):
@@ -119,9 +122,6 @@ class PreferencesWindow(QMainWindow):
             self.main_window.showNormal()
         elif status == "fullscreen":
             self.main_window.showFullScreen()
-        self.show()
-        self.activateWindow()
-        self.raise_()
     def RESTORE(self):
         if self.message_service.show_message(
             "Restore Defaults",
@@ -137,24 +137,19 @@ class PreferencesWindow(QMainWindow):
             self.apply_settings_to_ui()
             
     def apply_settings_to_ui(self):
+        self.blockSignals(True)
+
         s = self.settings
 
-        # Display mode
         index = self.diplay_options.findText(s["display_mode"].capitalize())
         if index >= 0:
             self.diplay_options.setCurrentIndex(index)
 
-        # Monitors
         self.set_combobox_safe(self.ProgramOutputMonitor, s["program_monitor"])
         self.set_combobox_safe(self.LyricsOutputMonitor, s["lyrics_monitor"])
 
-        # Lyrics enable
         self.enable_lyrics.setChecked(s["enable_lyrics"])
-
-        # Position
         self.set_combobox_safe(self.lyrics_one_third, s["lyrics_position"])
-
-        # Color
         self.set_combobox_safe(self.background_color, s["background_color"])
 
         self.update_lyrics_enabled_state()
@@ -169,7 +164,9 @@ class PreferencesWindow(QMainWindow):
         if self.settings["lyrics_monitor"] not in available:
             self.settings["lyrics_monitor"] = "None"
 
-        self.save_settings()
+        self.main_window.show_manager.update_lyrics_settings()
+
+        self.blockSignals(False)
 
     def update_lyrics_enabled_state(self):
         enabled = self.enable_lyrics.isChecked()
@@ -214,11 +211,14 @@ class PreferencesWindow(QMainWindow):
         self.settings["enable_lyrics"] = state
         self.save_settings()
         self.update_lyrics_enabled_state()
+        self.main_window.show_manager.update_lyrics_settings()
     def on_position_changed(self, value):
         self.settings["lyrics_position"] = value
         self.save_settings()
         self.update_position_preview()
+        self.main_window.show_manager.update_lyrics_settings()
     def on_color_changed(self, value):
         self.settings["background_color"] = value
         self.save_settings()
         self.update_color_preview()
+        self.main_window.show_manager.update_lyrics_settings()

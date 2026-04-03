@@ -8,7 +8,7 @@ from PyQt6.QtGui import QGuiApplication
 class Buttons:
     def __init__(self, parent):
         self.parent = parent
-        self.pref_window = None
+        self.pref_window = parent.pref_window
         self.connect_buttons(parent)
         self.editor_connected = False
 
@@ -27,10 +27,10 @@ class Buttons:
         parent.action_lyricshow.triggered.connect(lambda: parent.lists_manager.add_lyricsshow())
         
     def connect_pref_buttons(self):
-        self.pref_window.close_button.clicked.connect(self.pref_window.close)
-        self.pref_window.display_button.clicked.connect(lambda: self.pref_window.display_preferences_page(1))
-        self.pref_window.customize_button.clicked.connect(lambda: self.pref_window.display_preferences_page(2))
-        self.pref_window.system_button.clicked.connect(lambda: self.pref_window.display_preferences_page(3))
+        self.parent.pref_window.close_button.clicked.connect(self.parent.pref_window.close)
+        self.parent.pref_window.display_button.clicked.connect(lambda: self.parent.pref_window.display_preferences_page(1))
+        self.parent.pref_window.customize_button.clicked.connect(lambda: self.parent.pref_window.display_preferences_page(2))
+        self.parent.pref_window.system_button.clicked.connect(lambda: self.parent.pref_window.display_preferences_page(3))
 
 
     def connect_editor_buttons(self):
@@ -49,13 +49,13 @@ class Buttons:
 
 
     def open_preferences(self):
-        if self.pref_window is None or not self.pref_window.isVisible():
-            self.pref_window = PreferencesWindow(self.parent)
-            self.pref_window.manage_window(self.pref_window.settings["display_mode"])
+        if self.parent.pref_window is None or not self.parent.pref_window.isVisible():
+            self.parent.pref_window = PreferencesWindow(self.parent)
+            self.parent.pref_window.manage_window(self.parent.pref_window.settings["display_mode"])
             self.connect_pref_buttons()
-        self.pref_window.show()
-        self.pref_window.raise_()
-        self.pref_window.activateWindow()
+        self.parent.pref_window.show()
+        self.parent.pref_window.raise_()
+        self.parent.pref_window.activateWindow()
     def show_editor(self, state):
         if state == True:
             if not hasattr(self.parent.editor, "current_show"):
@@ -102,10 +102,7 @@ class Buttons:
 
 
     def get_selected_screen(self):
-        settings = self.pref_window.settings if self.pref_window else None
-
-        if not settings:
-            return None
+        settings = self.parent.settings
 
         monitor_name = settings.get("program_monitor", "None")
 
@@ -115,6 +112,20 @@ class Buttons:
         for screen in QGuiApplication.screens():
             if screen.name() == monitor_name:
                 return screen
+
+        return None
+
+    def get_selected_screen_lyrics(self):
+        settings = self.parent.settings
+
+        name = settings.get("lyrics_monitor", "None")
+
+        if name == "None":
+            return None
+
+        for s in QGuiApplication.screens():
+            if s.name() == name:
+                return s
 
         return None
     def start_program(self):
@@ -151,3 +162,29 @@ class Buttons:
         self.parent.show_manager.program_output.add_output(
             self.parent.program_window
         )
+
+        # 🔥 LYRICS WINDOW
+        self.parent.show_manager.update_lyrics_settings()
+
+        if self.parent.show_manager.lyrics_enabled:
+            from programshow import LyricsWindow
+
+            self.parent.lyrics_window = LyricsWindow()
+
+            screen = self.get_selected_screen_lyrics()
+
+            if screen:
+                geo = screen.geometry()
+
+                self.parent.lyrics_window.setGeometry(geo)
+                self.parent.lyrics_window.show()
+                self.parent.lyrics_window.windowHandle().setScreen(screen)
+                self.parent.lyrics_window.showFullScreen()
+            else:
+                self.parent.lyrics_window.show()
+
+            # 🔥 LISÄÄ OUTPUT
+            self.parent.show_manager.program_output.add_output(
+                self.parent.lyrics_window,
+                is_lyrics=True
+            )

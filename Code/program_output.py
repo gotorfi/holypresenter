@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QLabel, QWidget, QGraphicsOpacityEffect
 from PyQt6.QtCore import Qt, QPropertyAnimation
+from PyQt6.QtGui import QPainter, QColor, QFont, QFontMetrics, QPainterPath, QPen, QPixmap
 
 class ProgramOutput:
     def __init__(self, show_manager):
@@ -7,7 +8,8 @@ class ProgramOutput:
         self.outputs = []
         self.animations = []
 
-    def add_output(self, frame: QWidget):
+    def add_output(self, frame: QWidget, is_lyrics=False):
+        
         # Current-labelit
         video_current = QLabel(frame)
         video_current.setGeometry(0, 0, frame.width(), frame.height())
@@ -46,6 +48,7 @@ class ProgramOutput:
         
         output = {
             "frame": frame,
+            "is_lyrics": is_lyrics,
             "video_current": video_current,
             "slide_current": slide_current,
             "video_next": video_next,
@@ -71,6 +74,32 @@ class ProgramOutput:
 
         for out in self.outputs:
 
+            is_lyrics = out.get("is_lyrics", False)
+            if is_lyrics:
+                color_map = {
+                    "Green": "rgb(0,255,0)",
+                    "Blue": "rgb(0,0,255)",
+                    "Red": "rgb(255,0,0)",
+                    "Yellow": "rgb(255,255,0)",
+                }
+
+                bg = color_map.get(self.sm.lyrics_bg_color, "rgb(0,255,0)")
+                out["frame"].setStyleSheet(f"background-color: {bg};")
+                out["video_current"].hide()
+                out["video_next"].hide()
+
+                pix = self.render_lyrics_frame(
+                    self.sm.current_slide if self.sm.current_slide else {"elements": []},
+                    out["frame"].width(),
+                    out["frame"].height()
+                )
+
+                if out["slide_fading"]:
+                    out["slide_next"].setPixmap(pix)
+                else:
+                    out["slide_current"].setPixmap(pix)
+
+                continue
             # ================= PROGRAM CONTROL =================
             # 🟥 UI pikkukuva (self.program)
             if hasattr(self.sm.main_window, "program"):
@@ -91,12 +120,6 @@ class ProgramOutput:
                         out["slide_current"].clear()
                         out["slide_next"].clear()
                         continue
-
-            print("SYNC START",
-                "video_enabled=", self.sm.video_enabled,
-                "video_fading=", [out["video_fading"] for out in self.outputs],
-                "has_last_frame=", self.sm.last_frame is not None
-            )
 
             # ================= VIDEO =================
             if not self.sm.video_enabled and not out["video_fading"]:
@@ -132,29 +155,37 @@ class ProgramOutput:
                     out["video_next"].setPixmap(scaled_next)
 
             # ================= SLIDE =================
-            if not self.sm.slide_enabled:
+            if not self.sm.slide_enabled and not is_lyrics:
                 if not out["slide_fading"]:
                     out["slide_current"].clear()
                     out["slide_next"].clear()
             else:
                 if self.sm.current_slide:
 
-                    if out["frame"] in [self.sm.main_window.preview, self.sm.main_window.program]:
-                        is_preview = True
-                    else:
-                        is_preview = False
-
-                    pix = self.sm.render_slide_for_size(
-                        self.sm.current_slide,
-                        out["frame"].width(),
-                        out["frame"].height(),
-                        is_preview
-                    )
-
-                    if out["slide_fading"]:
-                        out["slide_next"].setPixmap(pix)
-                    else:
+                    if is_lyrics:
+                        pix = self.render_lyrics_frame(
+                            self.sm.current_slide,
+                            out["frame"].width(),
+                            out["frame"].height()
+                        )
                         out["slide_current"].setPixmap(pix)
+                    else:
+                        if out["frame"] in [self.sm.main_window.preview, self.sm.main_window.program]:
+                            is_preview = True
+                        else:
+                            is_preview = False
+
+                        pix = self.sm.render_slide_for_size(
+                            self.sm.current_slide,
+                            out["frame"].width(),
+                            out["frame"].height(),
+                            is_preview
+                        )
+
+                        if out["slide_fading"]:
+                            out["slide_next"].setPixmap(pix)
+                        else:
+                            out["slide_current"].setPixmap(pix)
 
             # ================= LAYERS =================
             out["video_current"].lower()
@@ -282,6 +313,35 @@ class ProgramOutput:
             anim.start()
     def fade_slide_out(self, duration):
         for out in self.outputs:
+            if out["slide_fading"]:
+                continue
+
+            if out["slide_current"].pixmap() is None:
+                continue
+            if out["is_lyrics"]:
+                effect = out["slide_current"].graphicsEffect()
+
+                if not effect:
+                    effect = QGraphicsOpacityEffect()
+                    out["slide_current"].setGraphicsEffect(effect)
+                    effect.setOpacity(1.0)
+
+                anim = QPropertyAnimation(effect, b"opacity")
+                anim.setDuration(int(duration * 1000))
+                anim.setStartValue(1.0)
+                anim.setEndValue(0.0)
+
+                out["slide_fading"] = True
+
+                def finish(o=out, e=effect):
+                    o["slide_current"].clear()
+                    o["slide_current"].setGraphicsEffect(None)
+                    o["slide_fading"] = False
+
+                anim.finished.connect(finish)
+                self.animations.append(anim)
+                anim.start()
+                continue
 
             effect = out["slide_current"].graphicsEffect()
 
@@ -304,3 +364,76 @@ class ProgramOutput:
             anim.finished.connect(finish)
             self.animations.append(anim)
             anim.start()
+
+
+    def render_lyrics_frame(self, slide, w, h):
+        BASE_W = 1450
+        BASE_H = 825
+
+        scale = max(w / BASE_W, h / BASE_H)
+
+        # 🔥 EI TAUSTAA ENÄÄ
+        text_pix = QPixmap(w, h)
+        text_pix.fill(Qt.GlobalColor.transparent)
+
+        painter = QPainter(text_pix)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
+
+        text_el = None
+        for el in slide.get("elements", []):
+            if el["type"] == "text":
+                text_el = el
+                break
+
+        if not text_el:
+            painter.end()
+            return text_pix
+
+        text = text_el.get("text", "")
+
+        scale_factor = min(w/1450, h/825)
+        font_size = max(12, int(20 * scale_factor))
+        font = QFont("Arial Black", font_size)
+        font.setBold(True)
+
+        painter.setFont(font)
+        metrics = QFontMetrics(font)
+
+        lines = text.split("\n")
+        line_height = metrics.height()
+        total_h = line_height * len(lines)
+
+        center_x = w // 2
+
+        if self.sm.lyrics_position == "Up":
+            start_y = metrics.ascent() + 5
+        elif self.sm.lyrics_position == "Center":
+            start_y = int((h - total_h) / 2 + metrics.ascent())
+        else:
+            start_y = h - total_h - 5 + metrics.ascent()
+
+        for i, line in enumerate(lines):
+            if not line:
+                continue
+
+            tw = metrics.horizontalAdvance(line)
+
+            tx = int(center_x - tw / 2)
+            ty = int(start_y + i * line_height)
+
+            path = QPainterPath()
+            path.addText(tx, ty, font, line)
+
+            pen = QPen(QColor(0, 0, 0))
+            pen.setWidth(max(4, int(6 * scale)))
+            painter.setPen(pen)
+            painter.setBrush(QColor(0, 0, 0))
+            painter.drawPath(path)
+
+            painter.setPen(Qt.PenStyle.NoPen)
+            painter.setBrush(QColor(255, 255, 255))
+            painter.drawPath(path)
+
+        painter.end()
+        return text_pix
