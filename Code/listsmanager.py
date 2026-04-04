@@ -1,8 +1,8 @@
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QLabel, QPushButton, QListWidget, QListWidgetItem, QApplication, QHBoxLayout, QGridLayout
+    QAbstractItemView, QWidget, QVBoxLayout, QLabel, QPushButton, QListWidget, QListWidgetItem, QApplication, QHBoxLayout, QGridLayout
 )
-from PyQt6.QtGui import QFont, QFontMetrics, QIcon, QColor, QPainter, QPainterPath, QPen, QPixmap
-from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QDrag, QFont, QFontMetrics, QIcon, QColor, QPainter, QPainterPath, QPen, QPixmap
+from PyQt6.QtCore import QMimeData, QObject, Qt
 from PyQt6.QtWidgets import QLineEdit
 
 from jsonmanager import JsonManager
@@ -21,15 +21,120 @@ TAG_COLORS = {
     "Bridge": (255, 183, 89),
     None: (150, 150, 150)
 }
+class DropIndicator(QWidget):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.setFixedHeight(3)
+        self.hide()
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.setBrush(QColor(100, 100, 255))
+        painter.drawRect(self.rect())
 
 
-class PlayList:
+class PlaylistListWidget(QListWidget):
+    def __init__(self, manager):
+        super().__init__()
+        self.manager = manager
+
+    def dragEnterEvent(self, event):
+        event.accept()
+
+    def dragMoveEvent(self, event):
+        event.accept()
+
+    def dropEvent(self, event):
+        source = event.source()
+
+        # internal reorder
+        if source == self:
+            super().dropEvent(event)
+            return
+
+        item = source.currentItem()
+        if not item:
+            return
+
+        slide_id = item.data(Qt.ItemDataRole.UserRole)
+
+        old_playlist = self.manager.selected_playlist
+        new_playlist = self.manager.hover_playlist
+
+        if not old_playlist or not new_playlist:
+            return
+
+        slide = None
+        for s in old_playlist["slides"]:
+            if s["id"] == slide_id:
+                slide = s
+                break
+
+        if not slide:
+            return
+
+        old_playlist["slides"].remove(slide)
+        new_playlist["slides"].append(slide)
+
+        self.manager.refresh_slides_frame()
+
+class SlideListWidget(QListWidget):
+    def __init__(self, manager):
+        super().__init__()
+        self.manager = manager
+        self.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)
+
+    def dropEvent(self, event):
+        source = event.source()
+
+        if source == self:
+            super().dropEvent(event)
+            return
+
+        item = source.currentItem()
+        if not item:
+            return
+
+        slide_id = item.data(Qt.ItemDataRole.UserRole)
+
+        old_playlist = None
+        for pl in self.manager.playlists:
+            if any(s.get("id") == slide_id for s in pl.get("slides", [])):
+                old_playlist = pl
+                break
+
+        new_playlist = self.manager.hover_playlist
+
+        if not old_playlist or not new_playlist:
+            return
+
+        slides = old_playlist["slides"]
+
+        slide = None
+        for s in slides:
+            if s["id"] == slide_id:
+                slide = s
+                break
+
+        if not slide:
+            return
+
+        slides.remove(slide)
+        new_playlist["slides"].append(slide)
+
+        self.manager.refresh_slides_frame()
+
+class PlayList(QObject):
     def __init__(self, parent, main_slides_frame: QWidget, playlists_frame: QWidget):
+        super().__init__()
         self.main_slides_frame = main_slides_frame
         self.playlists_frame = playlists_frame
 
         self.slides_items_list = parent.slides_frame
         self.parent = parent
+
+
 
         # Data
         self.playlists = []
@@ -46,9 +151,11 @@ class PlayList:
         self.selected_image = None
         self.selected_item = None
 
+        self.hover_playlist = None
+
         # ListWidgets
-        self.slides_list = QListWidget()
-        self.playlists_list = QListWidget()
+        self.slides_list = SlideListWidget(self)
+        self.playlists_list = PlaylistListWidget(self)
 
         # Layout
         slides_layout = QVBoxLayout()
@@ -62,8 +169,33 @@ class PlayList:
         # Connect signals
         self.slides_list.itemClicked.connect(self.on_slide_clicked)
         self.playlists_list.itemClicked.connect(self.on_playlist_clicked)
+        self.playlists_list.model().rowsMoved.connect(self.on_playlist_moved)
+        self.slides_list.model().rowsMoved.connect(self.on_slide_moved)
 
+
+        # PLAYLISTS
+        self.playlists_list.setDragEnabled(True)
+        self.playlists_list.setAcceptDrops(True)
+        self.playlists_list.setDropIndicatorShown(False)  # 🔥 custom viiva
+        self.playlists_list.setDefaultDropAction(Qt.DropAction.MoveAction)
+        self.playlists_list.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)
+
+        # SLIDES
+        self.slides_list.setDragEnabled(True)
+        self.slides_list.setAcceptDrops(True)
+        self.slides_list.setDropIndicatorShown(False)
+        self.slides_list.setDefaultDropAction(Qt.DropAction.MoveAction)
+        self.slides_list.setDragDropMode(QAbstractItemView.DragDropMode.InternalMove)
+
+        self.playlist_indicator = DropIndicator(self.playlists_list.viewport())
+        self.slide_indicator = DropIndicator(self.slides_list.viewport())
         
+        self.playlists_list.setMouseTracking(True)
+        self.slides_list.setMouseTracking(True)
+
+        self.playlists_list.viewport().installEventFilter(self)
+        self.slides_list.viewport().installEventFilter(self)
+
         self.json_manager = JsonManager()
         saved_data = self.json_manager.load()
         self.playlists = saved_data["playlists"]
@@ -82,12 +214,75 @@ class PlayList:
         self.refresh_playlists_frame()
         self.refresh_slides_frame()
 
+    def eventFilter(self, obj, event):
+        if event.type() == event.Type.DragMove:
+            pos = event.position().toPoint()
+
+            if obj == self.playlists_list.viewport():
+                item = self.playlists_list.itemAt(pos)
+
+                for i in range(self.playlists_list.count()):
+                    self.playlists_list.item(i).setBackground(QColor(0,0,0,0))
+
+                if item:
+                    item.setBackground(QColor(166, 200, 255))
+
+                    data = item.data(Qt.ItemDataRole.UserRole)
+                    if data and data[0] == "playlist":
+                        self.hover_playlist = self.get_playlist_by_id(data[1])
+                    else:
+                        self.hover_playlist = None
+                    rect = self.playlists_list.visualItemRect(item)
+                    self.playlist_indicator.setGeometry(
+                        rect.left(),
+                        rect.bottom() - 1,
+                        rect.width(),
+                        3
+                    )
+                    self.playlist_indicator.show()
+                else:
+                    self.playlist_indicator.hide()
+                    self.hover_playlist = None
+
+            elif obj == self.slides_list.viewport():
+                item = self.slides_list.itemAt(pos)
+
+                if item:
+                    rect = self.slides_list.visualItemRect(item)
+                    self.slide_indicator.setGeometry(
+                        rect.left(),
+                        rect.bottom() - 1,
+                        rect.width(),
+                        3
+                    )
+                    self.slide_indicator.show()
+                else:
+                    self.slide_indicator.hide()
+
+        elif event.type() == event.Type.DragLeave:
+            self.playlist_indicator.hide()
+            self.slide_indicator.hide()
+
+            for i in range(self.playlists_list.count()):
+                self.playlists_list.item(i).setBackground(QColor(0,0,0,0))
+
+        elif event.type() == event.Type.Drop:
+            self.playlist_indicator.hide()
+            self.slide_indicator.hide()
+
+            for i in range(self.playlists_list.count()):
+                self.playlists_list.item(i).setBackground(QColor(0,0,0,0))
+
+        return super().eventFilter(obj, event)
+
+
     # ---------- ADD ----------
     def add_slideshow(self, name="New Slideshow"):
         if not self.selected_playlist:
             return
 
         item = {
+            "id": str(uuid.uuid4()),
             "type": "slideshow",
             "name": name,
             "slides": []
@@ -102,6 +297,7 @@ class PlayList:
             return
 
         item = {
+            "id": str(uuid.uuid4()),
             "type": "lyricsshow",
             "name": name,
             "slides": []
@@ -156,18 +352,23 @@ class PlayList:
 
         if self.slides_list.currentItem():
             item = self.slides_list.currentItem()
-            index = item.data(Qt.ItemDataRole.UserRole)
             list_widget = self.slides_list
+
+            slide_id = item.data(Qt.ItemDataRole.UserRole)
 
             if not self.selected_playlist:
                 return
 
             slides = self.selected_playlist.get("slides", [])
 
-            if index is None or index >= len(slides):
-                return
+            target = None
+            for s in slides:
+                if s["id"] == slide_id:
+                    target = s
+                    break
 
-            target = slides[index]
+            if not target:
+                return
         elif self.playlists_list.currentItem():
             item = self.playlists_list.currentItem()
             data = item.data(Qt.ItemDataRole.UserRole)
@@ -183,7 +384,7 @@ class PlayList:
             else:
                 return
 
-        if not item or not target:
+        if not item or not target or not list_widget:
             return
 
         line_edit = QLineEdit(item.text())
@@ -211,6 +412,45 @@ class PlayList:
         line_edit.focusOutEvent = on_focus_out
 
     # ---------- MOVE ----------
+
+    def move_selected_up(self):
+        # SLIDE / SHOW
+        if self.selected_show and self.selected_playlist:
+            slides = self.selected_playlist["slides"]
+            idx = slides.index(self.selected_show)
+
+            if idx > 0:
+                slides[idx], slides[idx - 1] = slides[idx - 1], slides[idx]
+                self.refresh_slides_frame()
+            return
+
+        # PLAYLIST
+        if self.selected_playlist:
+            idx = self.playlists.index(self.selected_playlist)
+
+            if idx > 0:
+                self.playlists[idx], self.playlists[idx - 1] = self.playlists[idx - 1], self.playlists[idx]
+                self.refresh_playlists_frame()
+
+
+    def move_selected_down(self):
+        # SLIDE / SHOW
+        if self.selected_show and self.selected_playlist:
+            slides = self.selected_playlist["slides"]
+            idx = slides.index(self.selected_show)
+
+            if idx < len(slides) - 1:
+                slides[idx], slides[idx + 1] = slides[idx + 1], slides[idx]
+                self.refresh_slides_frame()
+            return
+
+        # PLAYLIST
+        if self.selected_playlist:
+            idx = self.playlists.index(self.selected_playlist)
+
+            if idx < len(self.playlists) - 1:
+                self.playlists[idx], self.playlists[idx + 1] = self.playlists[idx + 1], self.playlists[idx]
+                self.refresh_playlists_frame()
     def move_slide(self, direction):
         if self.selected_slide and self.selected_playlist:
             slides = self.selected_playlist["slides"]
@@ -220,7 +460,24 @@ class PlayList:
             if 0 <= new_idx < len(slides):
                 slides[idx], slides[new_idx] = slides[new_idx], slides[idx]
                 self.refresh_slides_frame()
+    def on_playlist_moved(self, parent, start, end, dest, row):
+        item = self.playlists.pop(start)
 
+        if row > start:
+            row -= 1
+
+        self.playlists.insert(row, item)
+    def on_slide_moved(self, parent, start, end, dest, row):
+        if not self.selected_playlist:
+            return
+
+        slides = self.selected_playlist["slides"]
+        item = slides.pop(start)
+
+        if row > start:
+            row -= 1
+
+        slides.insert(row, item)
     def move_playlist(self, direction):
         if self.selected_playlist:
             idx = self.playlists.index(self.selected_playlist)
@@ -243,7 +500,7 @@ class PlayList:
 
         for i, slide in enumerate(slides):
             item = QListWidgetItem(slide['name'])
-            item.setData(Qt.ItemDataRole.UserRole, i)
+            item.setData(Qt.ItemDataRole.UserRole, slide["id"])
 
             if slide['type'] == "slideshow":
                 item.setIcon(QIcon("asset/ui/slide.png"))
@@ -278,23 +535,34 @@ class PlayList:
 
     # ---------- CLICK HANDLERS ----------
     def on_slide_clicked(self, item):
-        index = item.data(Qt.ItemDataRole.UserRole)
+        slide_id = item.data(Qt.ItemDataRole.UserRole)
+
+        if not self.selected_playlist:
+            return
 
         slides = self.selected_playlist.get("slides", [])
-        if index >= len(slides):
+
+        slide = None
+        for s in slides:
+            if s["id"] == slide_id:
+                slide = s
+                break
+
+        if not slide:
             return
-        slide = slides[index]
+
         self.selected_item = None
 
         if self.selected_show == slide:
-            self.selected_slide = None
-            item.setBackground(QColor(0,0,0,0))
+            self.selected_show = None
+            item.setBackground(QColor(0, 0, 0, 0))
         else:
             for i in range(self.slides_list.count()):
-                self.slides_list.item(i).setBackground(QColor(0,0,0,0))
+                self.slides_list.item(i).setBackground(QColor(0, 0, 0, 0))
 
             self.selected_show = slide
             item.setBackground(QColor(100, 100, 255, 100))
+
         self.show_selected_show_thumbnails()
         self.thumbnail_cache = {}
 

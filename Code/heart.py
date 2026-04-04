@@ -199,6 +199,7 @@ class heart(QMainWindow):
             self.lyrics_window.close()
             self.lyrics_window = None
         event.accept()
+        
             
 def main():
     app = QApplication(sys.argv)

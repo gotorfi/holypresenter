@@ -1,12 +1,61 @@
 {
     "playlists": [
         {
-            "id": "1c1ce134-f6c5-4fe8-adc1-a10cf7f55866",
+            "id": "1cfded84-97dc-4843-ada9-14ec1ab64e67",
             "type": "playlist",
-            "name": "Tutorial",
+            "name": "Test",
             "slides": [
                 {
-                    "id": "642e27dd-f75c-4fc2-9b5a-69004a84e0c9",
+                    "type": "slideshow",
+                    "name": "Slidess",
+                    "slides": [
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": null,
+                            "elements": [
+                                {
+                                    "type": "image",
+                                    "path": "C:\\holypresenter-1\\savecould\\slideimages\\pixil-frame-0 (9).png",
+                                    "x": 0,
+                                    "y": 0,
+                                    "w": 1515,
+                                    "h": 847
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "New Text",
+                                    "x": 579,
+                                    "y": 355,
+                                    "w": 357,
+                                    "h": 136
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Verse2",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "New Text",
+                                    "x": 67,
+                                    "y": 78,
+                                    "w": 352,
+                                    "h": 125
+                                },
+                                {
+                                    "type": "image",
+                                    "path": "C:\\holypresenter-1\\savecould\\slideimages\\Drawing-13.sketchpad.png",
+                                    "x": 912,
+                                    "y": 248,
+                                    "w": 603,
+                                    "h": 599
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
                     "type": "lyricsshow",
                     "name": "Anchor",
                     "slides": [
@@ -221,27 +270,174 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "type": "lyricsshow",
+                    "name": "Alusta asti",
+                    "slides": [
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Verse1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Niin kuin alusta asti ollut on,\nyhä voimasi on niin suunnaton.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Verse1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Yksi sana vain riitti luomiseen,\nSinun kätesi kantaa huomiseen.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Verse2",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Niin kuin alusta asti ollut on,\nyhä risti on päällä kallion.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Verse2",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Siltä ristiltä kerran heitettiin\nmeidän syntimme merten syvyyksiin.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Chorus1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Niin kuin alusta asti ollut on,\nloistaa kasvosi lailla auringon.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Chorus1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Niistä armosi, Jeesus,\nheijastuu niin kuin tuikkivat tähdet,\nhohtaa kuu.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Chorus1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Niin kuin alusta ollut on,\nnyt on ja aina, aina",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Verse3",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Niin kuin alusta asti ollut on,\nyhä armosi peittää tuomion.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Verse3",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Vaikka aika on ohikiitävää,\nSinun sanasi, Jeesus, aina jää.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Bridge",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Halleluja, halleluja, \nSinä yksin olet pyhä.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Bridge",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Halleluja, halleluja,\nSinä yksin olet korkein.",
+                                    "x": 151,
+                                    "y": 254,
+                                    "w": 1212,
+                                    "h": 338
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         },
         {
-            "id": "f33ab66e-2ffc-4578-8023-8e843fd3b3fb",
+            "id": "80ba2c20-c28f-4a04-ba01-acef541cae4a",
             "type": "playlist",
-            "name": "test",
-            "slides": [
-                {
-                    "id": "5d4506a0-748d-430f-b5e3-43728b385db1",
-                    "type": "lyricsshow",
-                    "name": "Testi",
-                    "slides": []
-                },
-                {
-                    "id": "c1e2468e-32f1-424b-87d4-20e1f4fbe30a",
-                    "type": "lyricsshow",
-                    "name": "New LyricsShow",
-                    "slides": []
-                }
-            ]
+            "name": "Test2",
+            "slides": []
         }
     ],
     "slides": [],

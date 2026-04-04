@@ -25,6 +25,9 @@ class Buttons:
         parent.action_playlist.triggered.connect(lambda: parent.lists_manager.add_playlist())
         parent.action_slideshow.triggered.connect(lambda: parent.lists_manager.add_slideshow())
         parent.action_lyricshow.triggered.connect(lambda: parent.lists_manager.add_lyricsshow())
+
+        parent.sort_up.clicked.connect(lambda: parent.lists_manager.move_selected_up())
+        parent.sort_down.clicked.connect(lambda: parent.lists_manager.move_selected_down())
         
     def connect_pref_buttons(self):
         self.parent.pref_window.close_button.clicked.connect(self.parent.pref_window.close)
