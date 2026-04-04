@@ -55,15 +55,30 @@ class ProgramOutput:
             "slide_next": slide_next,
             "video_next_opacity": video_next_opacity,
             "slide_next_opacity": slide_next_opacity,
+            "notification": QLabel(frame),
             "video_fading": False,   # 🔹 Track if a fade is in progress
             "slide_fading": False
         }
+        output["notification"].setGeometry(0, 0, frame.width(), frame.height())
+        output["notification"].setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        output["notification"].setStyleSheet("background: transparent;")
+        output["notification"].hide()
 
         self.outputs.append(output)
 
         def resize_event(e):
-            for lbl in [video_current, video_next, slide_current, slide_next]:
-                lbl.setGeometry(0, 0, frame.width(), frame.height())
+
+            w = frame.width()
+            h = frame.height()
+
+            for lbl in [video_current, video_next, slide_current, slide_next, output["notification"]]:
+                lbl.setGeometry(0, 0, w, h)
+            if self.sm.notification_visible:
+                pix = self.sm.render_notification(w, h)
+                output["notification"].setPixmap(pix)
+                output["notification"].show()
+                output["notification"].raise_()
+
             return QWidget.resizeEvent(frame, e)
 
         frame.resizeEvent = resize_event
@@ -192,6 +207,19 @@ class ProgramOutput:
             out["video_next"].lower()
             out["slide_current"].raise_()
             out["slide_next"].raise_()
+
+            # 🔔 NOTIFICATION (ALWAYS TOP)
+            if self.sm.notification_visible:
+                pix = self.sm.render_notification(
+                    out["frame"].width(),
+                    out["frame"].height()
+                )
+                out["notification"].setPixmap(pix)
+                out["notification"].resize(out["frame"].size())
+                out["notification"].show()
+                out["notification"].raise_()
+            else:
+                out["notification"].hide()
     def fade_video(self, duration):
 
         for out in self.outputs:

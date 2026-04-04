@@ -41,6 +41,15 @@ class ShowManager(QObject):
         self.slide_overlay.setStyleSheet("background: transparent;")
         self.slide_overlay.show()
 
+
+        # 🔔 NOTIFICATION OVERLAY (TOP LAYER)
+        self.notification_overlay = QLabel(self.preview_frame)
+        self.notification_overlay.setGeometry(0, 0, self.preview_frame.width(), self.preview_frame.height())
+        self.notification_overlay.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        self.notification_overlay.setStyleSheet("background: transparent;")
+        self.notification_overlay.hide()
+
+
         self.slide_opacity = QGraphicsOpacityEffect()
         self.slide_overlay.setGraphicsEffect(self.slide_opacity)
         self.slide_opacity.setOpacity(1.0)
@@ -82,6 +91,10 @@ class ShowManager(QObject):
 
         self.program_running = False
 
+        # 🔔 NOTIFICATION STATE
+        self.notification_text = ""
+        self.notification_visible = False
+        self.notification_style_index = 0
     def update_lyrics_settings(self):
         pref = self.main_window.settings
 
@@ -102,6 +115,7 @@ class ShowManager(QObject):
         self.video_label.setGeometry(0, 0, w, h)
         self.video_label_next.setGeometry(0, 0, w, h)
         self.slide_overlay.setGeometry(0, 0, w, h)
+        self.notification_overlay.setGeometry(0, 0, w, h)
 
         # 🔹 PAKOTA VIDEO-PIXMAPI SKAALAUTUMAAN IKKUNAKOKOON
         if self.last_frame and self.video_enabled:
@@ -131,7 +145,6 @@ class ShowManager(QObject):
             fh = out["frame"].height()
             for lbl in [out["video_current"], out["video_next"], out["slide_current"], out["slide_next"]]:
                 lbl.setGeometry(0, 0, fw, fh)
-
         # 🔹 SYNKRO PROGRAMOUTPUT
         self.program_output.sync()
         
@@ -434,7 +447,22 @@ class ShowManager(QObject):
         else:
             self.slide_overlay.clear()
             self.slide_overlay.hide()
+
+
+        # 🔔 NOTIFICATION
+        if self.notification_visible:
+            pix = self.render_notification(
+                self.preview_frame.width(),
+                self.preview_frame.height()
+            )
+            self.notification_overlay.setPixmap(pix)
+            self.notification_overlay.show()
+            self.notification_overlay.raise_()
+        else:
+            self.notification_overlay.hide()
         self.program_output.sync()
+
+        
     def show_slide(self, slide):
         fade_on = self.main_window.fade_slide.isChecked()
         duration = self.main_window.fade_slide_time.value()
@@ -456,7 +484,89 @@ class ShowManager(QObject):
         
 
 
+    def render_notification(self, w, h):
+        if not self.notification_text:
+            return QPixmap()
 
+        pix = QPixmap(w, h)
+        pix.fill(Qt.GlobalColor.transparent)
+
+        painter = QPainter(pix)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
+
+        text = self.notification_text
+        is_preview = w < 400
+
+        if w < 300:
+            BASE_W = 300
+            BASE_H = 170
+        else:
+            BASE_W = 1450
+            BASE_H = 825
+
+        scale = min(w / BASE_W, h / BASE_H)
+
+
+        if is_preview:
+            styles = [
+                ("top", 5),
+                ("bottom", 5),
+                ("center", 10),
+                ("center", 20),
+            ]
+        else:
+            styles = [
+                ("top", 25),
+                ("bottom", 25),
+                ("center", 50),
+                ("center", 100),
+            ]
+        
+
+        pos, base_size = styles[self.notification_style_index]
+
+        font_size = max(4, int(base_size))
+        font = QFont("Arial Black", font_size)
+        font.setBold(True)
+        painter.setFont(font)
+
+        metrics = QFontMetrics(font)
+
+        rect = metrics.boundingRect(text)
+
+        tw = rect.width()
+        th = rect.height()
+
+        margin = int(20 * scale)
+
+        if pos == "top":
+            x = int((w - tw) / 2)
+            y = margin + th
+
+        elif pos == "bottom":
+            x = int((w - tw) / 2)
+            y = h - margin
+
+        else:  # center
+            x = int((w - tw) / 2)
+            y = int((h / 2) + (th / 2))
+
+        path = QPainterPath()
+        path.addText(x, y, font, text)
+
+        pen = QPen(QColor(0, 0, 0))
+        pen.setWidth(max(2, int(6 * scale)))
+        painter.setPen(pen)
+        painter.setBrush(QColor(0, 0, 0))
+        painter.drawPath(path)
+
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.setBrush(QColor(255, 255, 255))
+        painter.drawPath(path)
+
+        painter.end()
+        return pix
 
     def render_slide(self, slide):
         w = self.preview_frame.width()

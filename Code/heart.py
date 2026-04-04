@@ -107,6 +107,11 @@ class heart(QMainWindow):
         self.fade_slide.setChecked(self.settings.get("fade_slide", False))
         self.fade_slide_time.setValue(self.settings.get("fade_slide_time", 1))
 
+        self.notification_input.textChanged.connect(self.update_notification_text)
+        self.notification_button.clicked.connect(self.cycle_notification_style)
+        self.push_notification.clicked.connect(self.push_notification_live)
+        self.clear_notification.clicked.connect(self.clear_notification_live)
+
         
     def initUI(self):
 
@@ -202,6 +207,31 @@ class heart(QMainWindow):
             self.lyrics_window.close()
             self.lyrics_window = None
         event.accept()
+    def update_notification_text(self):
+        text = self.notification_input.text()
+
+        if len(text) > 50:
+            text = text[:50]
+            self.notification_input.setText(text)
+
+        self.show_manager.notification_text = text
+        self.show_manager.update_layers()
+
+
+    def cycle_notification_style(self):
+        sm = self.show_manager
+        sm.notification_style_index = (sm.notification_style_index + 1) % 4
+        sm.update_layers()
+
+
+    def push_notification_live(self):
+        self.show_manager.notification_visible = True
+        self.show_manager.update_layers()
+
+
+    def clear_notification_live(self):
+        self.show_manager.notification_visible = False
+        self.show_manager.update_layers()
         
             
 def main():
