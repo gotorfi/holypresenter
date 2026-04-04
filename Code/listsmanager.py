@@ -247,6 +247,20 @@ class PlayList(QObject):
                 if "slides" not in show:
                     show["slides"] = []
 
+
+        self.backgrounds_playlist = {
+            "id": "backgrounds_builtin",
+            "type": "backgrounds",
+            "name": "Backgrounds"
+        }
+
+        self.media_playlist = {
+            "id": "media_builtin",
+            "type": "media",
+            "name": "Media"
+        }
+
+        self.selected_special = None
         # Initialize playlists frame items
         self.refresh_playlists_frame()
         self.refresh_slides_frame()
@@ -602,6 +616,18 @@ class PlayList(QObject):
         item.setIcon(QIcon("asset/ui/songs.png"))
         self.playlists_list.addItem(item)
 
+        # Backgrounds
+        item = QListWidgetItem("Backgrounds")
+        item.setData(Qt.ItemDataRole.UserRole, ("backgrounds", "backgrounds_builtin"))
+        item.setIcon(QIcon("asset/ui/backgrounds.png"))
+        self.playlists_list.addItem(item)
+
+        # Media
+        item = QListWidgetItem("Media")
+        item.setData(Qt.ItemDataRole.UserRole, ("media", "media_builtin"))
+        item.setIcon(QIcon("asset/ui/Image.png"))
+        self.playlists_list.addItem(item)
+
         # Images
         for img in self.images:
             item = QListWidgetItem(img['name'])
@@ -658,7 +684,32 @@ class PlayList(QObject):
             return
         
         dtype, value = data
+        # SPECIAL LISTS
+        if dtype == "backgrounds":
+            if self.selected_special == "backgrounds":
+                self.selected_special = None
+                self.parent.backgrounds_frame.hide()
+                self.parent.upload_background.setEnabled(False)
+                return
+            else:
+                self.selected_special = "backgrounds"
+                self.parent.backgrounds_frame.show()
+                self.parent.videos.LoadBackgroundVideos()
+                self.parent.upload_background.setEnabled(True)
+                return
 
+        elif dtype == "media":
+            if self.selected_special == "media":
+                self.selected_special = None
+                self.parent.backgrounds_frame.hide()
+                self.parent.upload_background.setEnabled(False)
+                return
+            else:
+                self.selected_special = "media"
+                self.parent.backgrounds_frame.show()
+                self.parent.videos.load_media()
+                self.parent.upload_background.setEnabled(False)
+                return
         if dtype == "songs":
             self.selected_playlist = self.songs_playlist
 
@@ -674,8 +725,11 @@ class PlayList(QObject):
         self.selected_slide = None
 
         # UI highlight
-        for i in range(self.playlists_list.count()):
-            self.playlists_list.item(i).setBackground(QColor(0,0,0,0))
+        if dtype not in ["backgrounds", "media"]:
+            for i in range(self.playlists_list.count()):
+                data_i = self.playlists_list.item(i).data(Qt.ItemDataRole.UserRole)
+                if data_i and data_i[0] not in ["backgrounds", "media"]:
+                    self.playlists_list.item(i).setBackground(QColor(0,0,0,0))
 
         item.setBackground(QColor(100, 100, 255, 100))
 

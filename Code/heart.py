@@ -109,6 +109,9 @@ class heart(QMainWindow):
 
         
     def initUI(self):
+
+        self.backgrounds_frame.hide()
+        self.upload_background.setEnabled(False)
         
         self.new_list = self.findChild(QToolButton, "new_list")
         New_menu = QMenu(self)

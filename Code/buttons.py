@@ -1,6 +1,7 @@
 
 
 
+from messageservice import MessagingService
 from preferences import PreferencesWindow
 from PyQt6.QtGui import QGuiApplication
 
@@ -29,6 +30,9 @@ class Buttons:
 
         parent.sort_up.clicked.connect(lambda: parent.lists_manager.move_selected_up())
         parent.sort_down.clicked.connect(lambda: parent.lists_manager.move_selected_down())
+
+        parent.upload.clicked.connect(self.upload_media)
+        parent.upload_background.clicked.connect(self.upload_background)
         
     def connect_pref_buttons(self):
         self.parent.pref_window.close_button.clicked.connect(self.parent.pref_window.close)
@@ -192,3 +196,76 @@ class Buttons:
                 self.parent.lyrics_window,
                 is_lyrics=True
             )
+
+
+    def upload_media(self):
+        from PyQt6.QtWidgets import QFileDialog
+
+        files, _ = QFileDialog.getOpenFileNames(
+            self.parent,
+            "Upload Media",
+            "",
+            "Media Files (*.mp4 *.mov *.avi *.png *.jpg *.jpeg)"
+        )
+
+        if not files:
+            return
+
+        import shutil, os
+
+        dest = "savecloud/media"
+        os.makedirs(dest, exist_ok=True)
+
+        for f in files:
+            name = os.path.basename(f)
+            shutil.copy(f, os.path.join(dest, name))
+
+        self.parent.videos.load_media()
+    def upload_background(self):
+        from PyQt6.QtWidgets import QFileDialog
+        import shutil
+        import cv2
+        import os
+
+        files, _ = QFileDialog.getOpenFileNames(
+            self.parent,
+            "Upload Background Videos",
+            "",
+            "Video Files (*.mp4 *.mov *.avi)"
+        )
+
+        if not files:
+            return
+
+        allowed_resolutions = [
+            (3840, 2160),
+            (1920, 1080),
+            (1280, 720),
+            (960, 540),
+            (640, 360)
+        ]
+
+        dest = "savecloud/backgrounds"
+        os.makedirs(dest, exist_ok=True)
+
+        for file in files:
+            cap = cv2.VideoCapture(file)
+            width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            cap.release()
+
+            if (width, height) not in allowed_resolutions:
+                MessagingService().show_message(
+                    "Invalid resolution",
+                    "Video resolution must be one of:\n\n"
+                    "3840x2160\n"
+                    "1920x1080\n"
+                    "1280x720\n"
+                    "960x540\n"
+                    "640x360"
+                )
+                continue
+
+            name = os.path.basename(file)
+            shutil.copy(file, os.path.join(dest, name))
+        self.parent.videos.LoadBackgroundVideos()
