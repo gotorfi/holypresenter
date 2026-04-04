@@ -223,28 +223,227 @@
                     ]
                 }
             ]
-        },
+        }
+    ],
+    "slides": [],
+    "songs": [
         {
-            "id": "f33ab66e-2ffc-4578-8023-8e843fd3b3fb",
-            "type": "playlist",
-            "name": "test",
+            "id": "a02e1cf6-b7e4-43fe-b199-2989be04198c",
+            "type": "lyricsshow",
+            "name": "Anchor",
             "slides": [
                 {
-                    "id": "5d4506a0-748d-430f-b5e3-43728b385db1",
-                    "type": "lyricsshow",
-                    "name": "Testi",
-                    "slides": []
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Verse1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "Drifting beneath the horizon\nBody is weak but I'm trying",
+                            "x": 75,
+                            "y": 174,
+                            "w": 1364,
+                            "h": 498
+                        }
+                    ]
                 },
                 {
-                    "id": "c1e2468e-32f1-424b-87d4-20e1f4fbe30a",
-                    "type": "lyricsshow",
-                    "name": "New LyricsShow",
-                    "slides": []
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Verse1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "To make it to shore, but I'm falling short\nI need You more",
+                            "x": 151,
+                            "y": 254,
+                            "w": 1212,
+                            "h": 338
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Verse1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "Wave after wave, I've been sinking\nSo unto Your promise I'm clinging",
+                            "x": 151,
+                            "y": 254,
+                            "w": 1212,
+                            "h": 338
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Verse1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "You say that I'm strong, to You I belong\nKeep holding on",
+                            "x": 151,
+                            "y": 254,
+                            "w": 1212,
+                            "h": 338
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Chorus1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "You are my anchor\nSo steady me, steady me now",
+                            "x": 151,
+                            "y": 254,
+                            "w": 1212,
+                            "h": 338
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Chorus1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "You are my anchor\nYou're keeping my feet on the ground",
+                            "x": 151,
+                            "y": 254,
+                            "w": 1212,
+                            "h": 338
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Chorus1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "In angry oceans, You've never broken through\nThrough wave of the storm",
+                            "x": 151,
+                            "y": 254,
+                            "w": 1212,
+                            "h": 338
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Chorus1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "You are my anchor\nSo steady me, steady me now",
+                            "x": 151,
+                            "y": 254,
+                            "w": 1212,
+                            "h": 338
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Chorus1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "Come steady me, steady me now",
+                            "x": 151,
+                            "y": 254,
+                            "w": 1212,
+                            "h": 338
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Verse2",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "When I get tired of fightin'\nAll of the fears I've been hiding",
+                            "x": 151,
+                            "y": 254,
+                            "w": 1212,
+                            "h": 338
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Verse2",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "You gave me a breath, and tell me to rest\nYou never left",
+                            "x": 151,
+                            "y": 254,
+                            "w": 1212,
+                            "h": 338
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Verse2",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "I can, I can, I can hear You, calling me by name\nPulling me up from under my shame",
+                            "x": 151,
+                            "y": 254,
+                            "w": 1212,
+                            "h": 338
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Verse2",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "I'll never be the same\nI can face anything, so let it rain",
+                            "x": 151,
+                            "y": 254,
+                            "w": 1212,
+                            "h": 338
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Bridge",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "Don't let go\nI don't want to do this alone",
+                            "x": 151,
+                            "y": 254,
+                            "w": 1212,
+                            "h": 338
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Bridge",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "Don't let go\nI know that I'll drown on my own",
+                            "x": 151,
+                            "y": 254,
+                            "w": 1212,
+                            "h": 338
+                        }
+                    ]
                 }
             ]
         }
     ],
-    "slides": [],
-    "songs": [],
     "images": []
 }

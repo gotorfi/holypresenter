@@ -21,4 +21,6 @@
 12. Update
 13. Download Wizard
 
+!! DISABLE UNWANTED BUTTONS !!
+
 !! FILE LOCATIONS !!

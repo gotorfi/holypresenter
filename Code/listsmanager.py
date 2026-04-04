@@ -5,8 +5,11 @@ from PyQt6.QtGui import QDrag, QFont, QFontMetrics, QIcon, QColor, QPainter, QPa
 from PyQt6.QtCore import QMimeData, QObject, Qt
 from PyQt6.QtWidgets import QLineEdit
 
+
+from messageservice import MessagingService
 from jsonmanager import JsonManager
 import uuid
+import copy
 
 
 TAG_COLORS = {
@@ -70,14 +73,28 @@ class PlaylistListWidget(QListWidget):
             if s["id"] == slide_id:
                 slide = s
                 break
-
+        if new_playlist == self.manager.songs_playlist:
+            if slide["type"] != "lyricsshow":
+                return
         if not slide:
             return
 
-        old_playlist["slides"].remove(slide)
-        new_playlist["slides"].append(slide)
+        
+        if old_playlist == self.manager.songs_playlist or new_playlist == self.manager.songs_playlist:
+            new_slide = copy.deepcopy(slide)
+            new_slide["id"] = str(uuid.uuid4())
+            new_playlist["slides"].append(new_slide)
+        else:
+            old_playlist["slides"].remove(slide)
+            new_playlist["slides"].append(slide)
 
         self.manager.refresh_slides_frame()
+        self.manager.json_manager.save(
+            self.manager.playlists,
+            self.manager.slides,
+            self.manager.songs,
+            self.manager.images
+        )
 
 class SlideListWidget(QListWidget):
     def __init__(self, manager):
@@ -120,10 +137,22 @@ class SlideListWidget(QListWidget):
         if not slide:
             return
 
-        slides.remove(slide)
-        new_playlist["slides"].append(slide)
+        if old_playlist == self.manager.songs_playlist or new_playlist == self.manager.songs_playlist:
+            new_slide = copy.deepcopy(slide)
+            new_slide["id"] = str(uuid.uuid4())
+            new_playlist["slides"].append(new_slide)
+        else:
+            slides.remove(slide)
+            new_playlist["slides"].append(slide)
+        
 
         self.manager.refresh_slides_frame()
+        self.manager.json_manager.save(
+            self.manager.playlists,
+            self.manager.slides,
+            self.manager.songs,
+            self.manager.images
+        )
 
 class PlayList(QObject):
     def __init__(self, parent, main_slides_frame: QWidget, playlists_frame: QWidget):
@@ -133,6 +162,7 @@ class PlayList(QObject):
 
         self.slides_items_list = parent.slides_frame
         self.parent = parent
+        self.messaging = MessagingService()
 
 
 
@@ -150,6 +180,7 @@ class PlayList(QObject):
         self.selected_song = None
         self.selected_image = None
         self.selected_item = None
+        self.last_selected_type = None
 
         self.hover_playlist = None
 
@@ -200,7 +231,13 @@ class PlayList(QObject):
         saved_data = self.json_manager.load()
         self.playlists = saved_data["playlists"]
         self.slides = saved_data["slides"]
-        self.songs = saved_data["songs"]
+        self.songs = saved_data.get("songs", [])
+        self.songs_playlist = {
+            "id": "songs_builtin",
+            "type": "playlist",
+            "name": "Songs",
+            "slides": self.songs
+        }
         self.images = saved_data["images"]
         for pl in self.playlists:
             if "slides" not in pl:
@@ -228,10 +265,13 @@ class PlayList(QObject):
                     item.setBackground(QColor(166, 200, 255))
 
                     data = item.data(Qt.ItemDataRole.UserRole)
-                    if data and data[0] == "playlist":
-                        self.hover_playlist = self.get_playlist_by_id(data[1])
-                    else:
-                        self.hover_playlist = None
+                    if data:
+                        if data[0] == "playlist":
+                            self.hover_playlist = self.get_playlist_by_id(data[1])
+                        elif data[0] == "songs":
+                            self.hover_playlist = self.songs_playlist
+                        else:
+                            self.hover_playlist = None
                     rect = self.playlists_list.visualItemRect(item)
                     self.playlist_indicator.setGeometry(
                         rect.left(),
@@ -278,6 +318,8 @@ class PlayList(QObject):
 
     # ---------- ADD ----------
     def add_slideshow(self, name="New Slideshow"):
+        if self.selected_playlist == self.songs_playlist:
+            return
         if not self.selected_playlist:
             return
 
@@ -293,6 +335,8 @@ class PlayList(QObject):
         self.refresh_slides_frame()
 
     def add_lyricsshow(self, name="New LyricsShow"):
+        if self.selected_playlist == self.songs_playlist:
+            return
         if not self.selected_playlist:
             return
 
@@ -332,18 +376,57 @@ class PlayList(QObject):
         # Enable here
 
     # ---------- REMOVE ----------
-    def delete_playlist(self):
-        if self.selected_playlist:
-            self.playlists.remove(self.selected_playlist)
-            self.selected_playlist = None
-            self.refresh_playlists_frame()
+    def delete_selected(self):
+        # ---------- DELETE SHOW ----------
+        if self.last_selected_type == "show":
+                if self.selected_show and self.selected_playlist:
 
-    def delete_slide(self):
-        if self.selected_slide and self.selected_playlist:
-            self.selected_playlist["slides"].remove(self.selected_slide)
-            self.selected_slide = None
-            self.refresh_slides_frame()
-            self.json_manager.save(self.playlists, [], self.songs, self.images)
+                    if self.selected_playlist == self.songs_playlist:
+                        result = self.messaging.show_message(
+                            "Confirm Delete",
+                            "Are you sure you want to delete this lyrics show from Songs? " \
+                            "This action cannot be undone and will remove " \
+                            "the lyrics show from the Songs playlist permanently.",
+                            options=2
+                        )
+
+                        if result != 16384:
+                            return
+
+                    try:
+                        self.selected_playlist["slides"].remove(self.selected_show)
+                    except ValueError:
+                        return
+
+                    self.selected_show = None
+                    self.refresh_slides_frame()
+
+                    self.json_manager.save(
+                        self.playlists,
+                        self.slides,
+                        self.songs,
+                        self.images
+                    )
+                return
+
+        # ---------- DELETE PLAYLIST ----------
+        if self.last_selected_type == "playlist":
+            if self.selected_playlist and self.selected_playlist != self.songs_playlist:
+                try:
+                    self.playlists.remove(self.selected_playlist)
+                except ValueError:
+                    return
+
+                self.selected_playlist = None
+                self.refresh_playlists_frame()
+                self.refresh_slides_frame()
+
+                self.json_manager.save(
+                    self.playlists,
+                    self.slides,
+                    self.songs,
+                    self.images
+                )
     # ---------- RENAME ----------
     def rename(self):
         item = None
@@ -377,6 +460,9 @@ class PlayList(QObject):
                 return
 
             dtype, value = data
+
+            if dtype == "songs":
+                return
 
             if dtype == "playlist":
                 target = self.get_playlist_by_id(value)
@@ -414,43 +500,41 @@ class PlayList(QObject):
     # ---------- MOVE ----------
 
     def move_selected_up(self):
-        # SLIDE / SHOW
-        if self.selected_show and self.selected_playlist:
-            slides = self.selected_playlist["slides"]
-            idx = slides.index(self.selected_show)
 
-            if idx > 0:
-                slides[idx], slides[idx - 1] = slides[idx - 1], slides[idx]
-                self.refresh_slides_frame()
+        if self.last_selected_type == "show":
+            if self.selected_show and self.selected_playlist:
+                slides = self.selected_playlist["slides"]
+                idx = slides.index(self.selected_show)
+
+                if idx > 0:
+                    slides[idx], slides[idx - 1] = slides[idx - 1], slides[idx]
+                    self.refresh_slides_frame()
             return
+        if self.last_selected_type == "playlist":
+            if self.selected_playlist and self.selected_playlist != self.songs_playlist:
+                idx = self.playlists.index(self.selected_playlist)
 
-        # PLAYLIST
-        if self.selected_playlist:
-            idx = self.playlists.index(self.selected_playlist)
-
-            if idx > 0:
-                self.playlists[idx], self.playlists[idx - 1] = self.playlists[idx - 1], self.playlists[idx]
-                self.refresh_playlists_frame()
-
-
+                if idx > 0:
+                    self.playlists[idx], self.playlists[idx - 1] = self.playlists[idx - 1], self.playlists[idx]
+                    self.refresh_playlists_frame()
     def move_selected_down(self):
-        # SLIDE / SHOW
-        if self.selected_show and self.selected_playlist:
-            slides = self.selected_playlist["slides"]
-            idx = slides.index(self.selected_show)
+        if self.last_selected_type == "show":
+            if self.selected_show and self.selected_playlist:
+                slides = self.selected_playlist["slides"]
+                idx = slides.index(self.selected_show)
 
-            if idx < len(slides) - 1:
-                slides[idx], slides[idx + 1] = slides[idx + 1], slides[idx]
-                self.refresh_slides_frame()
+                if idx < len(slides) - 1:
+                    slides[idx], slides[idx + 1] = slides[idx + 1], slides[idx]
+                    self.refresh_slides_frame()
             return
 
-        # PLAYLIST
-        if self.selected_playlist:
-            idx = self.playlists.index(self.selected_playlist)
+        if self.last_selected_type == "playlist":
+            if self.selected_playlist and self.selected_playlist != self.songs_playlist:
+                idx = self.playlists.index(self.selected_playlist)
 
-            if idx < len(self.playlists) - 1:
-                self.playlists[idx], self.playlists[idx + 1] = self.playlists[idx + 1], self.playlists[idx]
-                self.refresh_playlists_frame()
+                if idx < len(self.playlists) - 1:
+                    self.playlists[idx], self.playlists[idx + 1] = self.playlists[idx + 1], self.playlists[idx]
+                    self.refresh_playlists_frame()
     def move_slide(self, direction):
         if self.selected_slide and self.selected_playlist:
             slides = self.selected_playlist["slides"]
@@ -513,11 +597,10 @@ class PlayList(QObject):
         self.playlists_list.clear()
 
         # Songs
-        for song in self.songs:
-            item = QListWidgetItem(song['name'])
-            item.setData(Qt.ItemDataRole.UserRole, ("song", song))
-            item.setIcon(QIcon("asset/ui/songs.png"))
-            self.playlists_list.addItem(item)
+        item = QListWidgetItem("Songs")
+        item.setData(Qt.ItemDataRole.UserRole, ("songs", "songs_builtin"))
+        item.setIcon(QIcon("asset/ui/songs.png"))
+        self.playlists_list.addItem(item)
 
         # Images
         for img in self.images:
@@ -547,11 +630,12 @@ class PlayList(QObject):
             if s["id"] == slide_id:
                 slide = s
                 break
-
+        
         if not slide:
             return
 
         self.selected_item = None
+        
 
         if self.selected_show == slide:
             self.selected_show = None
@@ -561,6 +645,7 @@ class PlayList(QObject):
                 self.slides_list.item(i).setBackground(QColor(0, 0, 0, 0))
 
             self.selected_show = slide
+            self.last_selected_type = "show"
             item.setBackground(QColor(100, 100, 255, 100))
 
         self.show_selected_show_thumbnails()
@@ -571,24 +656,28 @@ class PlayList(QObject):
 
         if not data:
             return
-
+        
         dtype, value = data
 
-        if dtype != "playlist":
-            return
+        if dtype == "songs":
+            self.selected_playlist = self.songs_playlist
 
-        playlist = self.get_playlist_by_id(value)
-        if not playlist:
-            return
+        elif dtype == "playlist":
+            playlist = self.get_playlist_by_id(value)
+            if not playlist:
+                return
+            self.selected_playlist = playlist
 
+        else:
+            return
+        self.last_selected_type = "playlist"
         self.selected_slide = None
-        self.selected_playlist = playlist
 
+        # UI highlight
         for i in range(self.playlists_list.count()):
             self.playlists_list.item(i).setBackground(QColor(0,0,0,0))
 
         item.setBackground(QColor(100, 100, 255, 100))
-
 
         self.refresh_slides_frame()
 

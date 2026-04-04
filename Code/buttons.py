@@ -18,6 +18,7 @@ class Buttons:
         parent.editor.clicked.connect(self.open_selected_show)
         parent.actionClose_Editor.triggered.connect(lambda: self.show_editor(False))
         parent.play.clicked.connect(self.start_program)
+        parent.deletion.clicked.connect(lambda: parent.lists_manager.delete_selected())
 
 
         parent.actionNew_Playlist.triggered.connect(lambda: parent.lists_manager.add_playlist())
