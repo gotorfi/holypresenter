@@ -13,9 +13,6 @@
 13. Download Wizard
 
 
-0. mainpage buttons (down, up etc.)
-4. media libary
-5. Backgrounds import
 11. Guide
 12. Update
 13. Download Wizard

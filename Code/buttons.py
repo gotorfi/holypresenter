@@ -12,10 +12,12 @@ class Buttons:
         self.pref_window = parent.pref_window
         self.connect_buttons(parent)
         self.editor_connected = False
+        self.manual_window = None
 
     def connect_buttons(self, parent):
         parent.actionQuit.triggered.connect(parent.close)
         parent.actionPreferences.triggered.connect(self.open_preferences)
+        parent.actionUser_Manual.triggered.connect(self.open_manual)
         parent.editor.clicked.connect(self.open_selected_show)
         parent.actionClose_Editor.triggered.connect(lambda: self.show_editor(False))
         parent.play.clicked.connect(self.start_program)
@@ -33,6 +35,8 @@ class Buttons:
 
         parent.upload.clicked.connect(self.upload_media)
         parent.upload_background.clicked.connect(self.upload_background)
+
+
         
     def connect_pref_buttons(self):
         self.parent.pref_window.close_button.clicked.connect(self.parent.pref_window.close)
@@ -64,6 +68,15 @@ class Buttons:
         self.parent.pref_window.show()
         self.parent.pref_window.raise_()
         self.parent.pref_window.activateWindow()
+
+    def open_manual(self):
+        if self.manual_window is None or not self.manual_window.isVisible():
+            from manualwindow import UserManualWindow
+            self.manual_window = UserManualWindow()
+
+        self.manual_window.show()
+        self.manual_window.raise_()
+        self.manual_window.activateWindow()
     def show_editor(self, state):
         if state == True:
             if not hasattr(self.parent.editor, "current_show"):

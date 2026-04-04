@@ -661,11 +661,11 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true"></string>
+    <string notr="true"/>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="styleSheet">
-     <string notr="true"></string>
+     <string notr="true"/>
     </property>
     <property name="title">
      <string>File</string>
@@ -678,7 +678,7 @@
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="styleSheet">
-     <string notr="true"></string>
+     <string notr="true"/>
     </property>
     <property name="title">
      <string>Edit</string>
@@ -688,11 +688,12 @@
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="styleSheet">
-     <string notr="true"></string>
+     <string notr="true"/>
     </property>
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="actionUser_Manual"/>
    </widget>
    <widget class="QMenu" name="menuUpdate">
     <property name="title">
@@ -760,6 +761,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+U</string>
+   </property>
+  </action>
+  <action name="actionUser_Manual">
+   <property name="text">
+    <string>User Manual</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift++</string>
    </property>
   </action>
  </widget>

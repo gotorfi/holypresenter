@@ -7,5 +7,5 @@
     "background_color": "Green",
     "fade_slide_time": 0.4,
     "fade_background_time": 0.0,
-    "fade_slide": true
+    "fade_slide": false
 }
