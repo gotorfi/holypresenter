@@ -1,8 +1,9 @@
 import os
-from zipfile import Path
+from pathlib import Path
 from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout, QGridLayout
 from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.QtCore import Qt
+from paths import data_path
 import cv2
 import math
 
@@ -44,9 +45,8 @@ class Video:
         scroll = self.parent.backgrounds_frame
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
-        base = Path(__file__).resolve().parent
-        folder = base / "savecloud" / "backgrounds"
-        if not os.path.exists(folder):
+        folder = Path(data_path("backgrounds"))
+        if not folder.exists():
             return
 
         # 🔥 ERILLINEN LISTA
@@ -160,10 +160,9 @@ class Video:
         scroll = self.parent.backgrounds_frame
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
-        base = Path(__file__).resolve().parent
-        folder = base / "savecloud" / "media"
-        if not os.path.exists(folder):
-            os.makedirs(folder)
+        folder = Path(data_path("media"))
+        if not folder.exists():
+            folder.mkdir(parents=True, exist_ok=True)
 
         # 🔥 ERILLINEN LISTA
         self.media_thumbnails = []

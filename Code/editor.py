@@ -8,6 +8,7 @@ from PyQt6.QtGui import QColor, QFontMetrics, QPixmap
 from PyQt6.QtCore import Qt
 
 from elements import DraggableText, Elements, DraggableImage
+from paths import resource_path
 from PyQt6.QtGui import QPainterPath, QPen, QBrush
 from PyQt6.QtGui import QPixmap, QPainter
 from PyQt6.QtGui import QFont
@@ -87,7 +88,7 @@ class Editor:
         self.preview.mousePressEvent = preview_mouse_press
 
         self.center_icon = QLabel(self.preview)
-        self.center_icon.setPixmap(QPixmap(self.resource_path("asset/ui/centerslide.png")))
+        self.center_icon.setPixmap(QPixmap(resource_path("asset/ui/centerslide.png")))
         self.center_icon.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
         self.center_icon.setStyleSheet("background: transparent;")
         self.center_icon.hide()
@@ -208,7 +209,7 @@ class Editor:
 
     def add_slide(self):
         slide = {
-            "thumbnail": self.resource_path("asset/ui/transparent.png"),
+            "thumbnail": resource_path("asset/ui/transparent.png"),
             "tag": None,
             "elements": []
         }
@@ -284,7 +285,7 @@ class Editor:
         painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
         painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
 
-        bg_pix = QPixmap(self.resource_path("asset/ui/transparent.png"))
+        bg_pix = QPixmap(resource_path("asset/ui/transparent.png"))
         painter.drawPixmap(0, 0, render_w, render_h, bg_pix)
 
         if self.preview.width() > 0:
@@ -367,10 +368,6 @@ class Editor:
             Qt.AspectRatioMode.IgnoreAspectRatio, 
             Qt.TransformationMode.SmoothTransformation
         )
-    
-    def resource_path(rel):
-        return str(Path(__file__).resolve().parent / rel)
-
 
 
     def update_slide_thumbnail(self, slide_index):
@@ -593,7 +590,7 @@ class Editor:
         if not hasattr(self, "bg"):
             return
 
-        pix = QPixmap(self.resource_path("asset/ui/transparent.png"))
+        pix = QPixmap(resource_path("asset/ui/transparent.png"))
 
         self.bg.setPixmap(pix)
         self.bg.setGeometry(
