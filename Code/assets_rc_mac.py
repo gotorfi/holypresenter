@@ -27053,20 +27053,26 @@ qt_resource_struct = b"\
 \x00\x00\x01\x9b\xf6E\xd9H\
 "
 
-def qInitResources():
+def _register_resource_data():
     if hasattr(QtCore, "qRegisterResourceData"):
         QtCore.qRegisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
     elif hasattr(QtCore, "QResource") and hasattr(QtCore.QResource, "registerResourceData"):
-        QtCore.QResource.registerResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
+        QtCore.QResource.registerResourceData(qt_resource_data)
     else:
         raise RuntimeError("Resource registration is not supported by this Qt binding")
 
-def qCleanupResources():
+
+def _unregister_resource_data():
     if hasattr(QtCore, "qUnregisterResourceData"):
         QtCore.qUnregisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
     elif hasattr(QtCore, "QResource") and hasattr(QtCore.QResource, "unregisterResourceData"):
-        QtCore.QResource.unregisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
-    else:
-        raise RuntimeError("Resource cleanup is not supported by this Qt binding")
+        QtCore.QResource.unregisterResourceData(qt_resource_data)
+
+
+def qInitResources():
+    _register_resource_data()
+
+def qCleanupResources():
+    _unregister_resource_data()
 
 qInitResources()

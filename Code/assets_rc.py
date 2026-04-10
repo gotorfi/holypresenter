@@ -3,7 +3,10 @@
 # Created by: The Resource Compiler for Qt version 6.10.2
 # WARNING! All changes made in this file will be lost!
 
-from PyQt6 import QtCore
+try:
+    from PyQt6 import QtCore
+except ImportError:
+    from PySide6 import QtCore
 
 qt_resource_data = b"\
 \x00\x01\x0a\x1e\
@@ -27050,10 +27053,26 @@ qt_resource_struct = b"\
 \x00\x00\x01\x9b\xf6E\xd9H\
 "
 
+def _register_resource_data():
+    if hasattr(QtCore, "qRegisterResourceData"):
+        QtCore.qRegisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
+    elif hasattr(QtCore, "QResource") and hasattr(QtCore.QResource, "registerResourceData"):
+        QtCore.QResource.registerResourceData(qt_resource_data)
+    else:
+        raise RuntimeError("Qt resource registration is not supported by this Qt binding")
+
+
+def _unregister_resource_data():
+    if hasattr(QtCore, "qUnregisterResourceData"):
+        QtCore.qUnregisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
+    elif hasattr(QtCore, "QResource") and hasattr(QtCore.QResource, "unregisterResourceData"):
+        QtCore.QResource.unregisterResourceData(qt_resource_data)
+
+
 def qInitResources():
-    QtCore.qRegisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
+    _register_resource_data()
 
 def qCleanupResources():
-    QtCore.qUnregisterResourceData(0x03, qt_resource_struct, qt_resource_name, qt_resource_data)
+    _unregister_resource_data()
 
 qInitResources()
