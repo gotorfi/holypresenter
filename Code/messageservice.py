@@ -12,7 +12,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QAction, QIcon, QFont, QPixmap
 from PyQt6.QtCore import Qt
 from PyQt6 import QtWidgets, uic
-from paths import resource_path, data_path
+from paths import resource_path, data_path, load_icon
 
 import sys
 from const import *
@@ -32,7 +32,7 @@ class MessagingService:
         msg.setWindowTitle(title)
         msg.setText(message)
         msg.setIcon(icon)
-        msg.setWindowIcon(QIcon(resource_path("asset/ui/icon.png")))
+        msg.setWindowIcon(load_icon("asset/ui/icon.png"))
 
         if options == 1:
             msg.setStandardButtons(QMessageBox.StandardButton.Ok)

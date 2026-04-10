@@ -29,7 +29,7 @@ from PyQt6.QtGui import QGuiApplication
 
 from messageservice import MessagingService
 
-from paths import resource_path, data_path
+from paths import resource_path, data_path, load_icon
 
 
 def load_settings():
@@ -49,7 +49,7 @@ class PreferencesWindow(QMainWindow):
     def __init__(self, main_window):
         super().__init__()
         uic.loadUi(resource_path("Preferences.ui"), self)
-        self.setWindowIcon(QIcon(resource_path("asset/ui/icon.png")))
+        self.setWindowIcon(load_icon("asset/ui/icon.png"))
         self.main_window = main_window
         self.settings = main_window.settings
         self.setWindowFlags(

@@ -37,8 +37,7 @@ except Exception:
     import assets_rc
 
 from preferences import save_settings
-from paths import resource_path
-
+from paths import resource_path, load_icon
 
 
 class heart(QMainWindow):
@@ -57,7 +56,7 @@ class heart(QMainWindow):
         uic.loadUi(resource_path("mainpage.ui"), self)
         self.main_page = self.centralWidget()
         self.editor_page = uic.loadUi(resource_path("editor.ui"))
-        self.setWindowIcon(QIcon(resource_path("asset/ui/icon.png")))
+        self.setWindowIcon(load_icon("asset/ui/icon.png"))
         screen = QApplication.primaryScreen()
         size = screen.size()
 
@@ -149,28 +148,48 @@ class heart(QMainWindow):
             background-color: transparent;
             color: rgb{COLOR_WHITE};
         }}
-        QMenu {{
-                background-color: rgb{THEME_DARK};
-                color: rgb{COLOR_WHITE};
-                border: 1px solid gray;
-            }}
         QMenuBar::item:selected {{
+            background-color: rgb(80, 80, 80);
+            color: rgb{COLOR_WHITE};
+        }}
+        QMenu {{
+            background-color: rgb{THEME_DARK};
+            color: rgb{COLOR_WHITE};
+            border: 1px solid gray;
+        }}
+        QMenu::item {{
+            color: rgb{COLOR_WHITE};
+        }}
+        QMenu::item:selected {{
             background-color: rgb(80, 80, 80);
             color: rgb{COLOR_WHITE};
         }}
     """)
         self.actionClose_Editor.setEnabled(False)
-        self.menuEdit.setStyleSheet("""
-            QMenu::item:disabled {
+        self.menuEdit.setStyleSheet(f"""
+            QMenu::item:disabled {{
                 color: gray;
-            }
-            QMenu::item:enabled {
-                color: white;
-            }
-            QMenu::item:selected {
+            }}
+            QMenu::item:enabled {{
+                color: rgb{COLOR_WHITE};
+            }}
+            QMenu::item:selected {{
                 background-color: rgb(80, 80, 80);
-                                    
-            """)
+                color: rgb{COLOR_WHITE};
+            }}
+        """)
+        
+        app = QApplication.instance()
+        if app:
+            global_style = f"""
+                QLabel {{
+                    color: rgb{COLOR_WHITE};
+                }}
+                QPushButton {{
+                    color: rgb{COLOR_WHITE};
+                }}
+            """
+            app.setStyle("Fusion")
     def keyPressEvent(self, event):
         if event.isAutoRepeat():
             return
