@@ -14,7 +14,7 @@
    <string>Holy Presenter Editor</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="asset/ui/assets.qrc">
+   <iconset resource="ui/assets.qrc">
     <normaloff>:/icon/icon.png</normaloff>:/icon/icon.png</iconset>
   </property>
   <property name="styleSheet">
@@ -36,7 +36,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="asset/ui/assets.qrc">
+            <iconset resource="ui/assets.qrc">
              <normaloff>:/buttons/new.png</normaloff>:/buttons/new.png</iconset>
            </property>
           </widget>
@@ -50,7 +50,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="asset/ui/assets.qrc">
+            <iconset resource="ui/assets.qrc">
              <normaloff>:/buttons/delete.png</normaloff>:/buttons/delete.png</iconset>
            </property>
           </widget>
@@ -64,7 +64,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="asset/ui/assets.qrc">
+            <iconset resource="ui/assets.qrc">
              <normaloff>:/buttons/up.png</normaloff>:/buttons/up.png</iconset>
            </property>
           </widget>
@@ -78,7 +78,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="asset/ui/assets.qrc">
+            <iconset resource="ui/assets.qrc">
              <normaloff>:/buttons/down.png</normaloff>:/buttons/down.png</iconset>
            </property>
           </widget>
@@ -147,7 +147,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="asset/ui/assets.qrc">
+            <iconset resource="ui/assets.qrc">
              <normaloff>:/buttons/up.png</normaloff>:/buttons/up.png</iconset>
            </property>
           </widget>
@@ -161,7 +161,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="asset/ui/assets.qrc">
+            <iconset resource="ui/assets.qrc">
              <normaloff>:/buttons/down.png</normaloff>:/buttons/down.png</iconset>
            </property>
           </widget>
@@ -188,7 +188,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="asset/ui/assets.qrc">
+            <iconset resource="ui/assets.qrc">
              <normaloff>:/buttons/delete.png</normaloff>:/buttons/delete.png</iconset>
            </property>
           </widget>
@@ -217,7 +217,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="asset/ui/assets.qrc">
+            <iconset resource="ui/assets.qrc">
              <normaloff>:/buttons/newtext.png</normaloff>:/buttons/newtext.png</iconset>
            </property>
            <property name="iconSize">
@@ -240,7 +240,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="asset/ui/assets.qrc">
+            <iconset resource="ui/assets.qrc">
              <normaloff>:/buttons/renametext.png</normaloff>:/buttons/renametext.png</iconset>
            </property>
            <property name="iconSize">
@@ -263,7 +263,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="asset/ui/assets.qrc">
+            <iconset resource="ui/assets.qrc">
              <normaloff>:/buttons/center.png</normaloff>:/buttons/center.png</iconset>
            </property>
            <property name="iconSize">
@@ -286,7 +286,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="asset/ui/assets.qrc">
+            <iconset resource="ui/assets.qrc">
              <normaloff>:/buttons/music.png</normaloff>:/buttons/music.png</iconset>
            </property>
            <property name="iconSize">
@@ -309,7 +309,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="asset/ui/assets.qrc">
+            <iconset resource="ui/assets.qrc">
              <normaloff>:/buttons/upload.png</normaloff>:/buttons/upload.png</iconset>
            </property>
            <property name="iconSize">
@@ -336,7 +336,7 @@
          <item>
           <widget class="QLabel" name="editingslide">
            <property name="styleSheet">
-            <string notr="true">font-weight: bold; font-size: 15px</string>
+            <string notr="true">font-weight: bold; font-size: 15px; color: white;</string>
            </property>
            <property name="text">
             <string>Editing slide: None</string>
@@ -372,7 +372,7 @@ border: 5px solid white;</string>
   </layout>
  </widget>
  <resources>
-  <include location="asset/ui/assets.qrc"/>
+  <include location="ui/assets.qrc"/>
  </resources>
  <connections/>
 </ui>

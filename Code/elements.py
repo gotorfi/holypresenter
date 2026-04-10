@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from PyQt6.QtWidgets import QLabel, QLineEdit
 from PyQt6.QtCore import QPointF, Qt, QPoint, QRect
 from PyQt6.QtGui import QMouseEvent, QPen, QPixmap
@@ -12,6 +14,12 @@ from PyQt6.QtWidgets import QTextEdit
 import os
 import shutil
 from PyQt6.QtWidgets import QFileDialog
+
+
+BASE_DIR = Path(__file__).resolve().parent
+
+def resource_path(rel):
+    return str(BASE_DIR / rel)
 
 
 class MultiLineTextEdit(QTextEdit):
@@ -52,7 +60,7 @@ class DraggableImage(QLabel):
         self.handle = QLabel(self)
         self.handle.setFixedSize(self.handle_size, self.handle_size)
         self.handle.setPixmap(
-            QPixmap("asset/ui/drag.png").scaled(
+            QPixmap(resource_path("asset/ui/drag.png")).scaled(
                 self.handle_size, self.handle_size,
                 Qt.AspectRatioMode.KeepAspectRatio,
                 Qt.TransformationMode.SmoothTransformation
@@ -209,7 +217,7 @@ class DraggableText(QLabel):
         self.handle = QLabel(self)
         self.handle_size = 24
         self.handle.setPixmap(
-            QPixmap("asset/ui/drag.png").scaled(
+            QPixmap(resource_path("asset/ui/drag.png")).scaled(
                 self.handle_size, self.handle_size,
                 Qt.AspectRatioMode.KeepAspectRatio,
                 Qt.TransformationMode.SmoothTransformation
@@ -393,8 +401,8 @@ class Elements:
 
 
     def get_image_folder(self):
-        base = os.path.join(os.getcwd(), "savecould", "slideimages")
-        os.makedirs(base, exist_ok=True)
+        base = Path(__file__).resolve().parent / "savecloud" / "slideimages"
+        base.mkdir(parents=True, exist_ok=True)
         return base
     def add_image_element(self, slide):
         file_path, _ = QFileDialog.getOpenFileName(
@@ -407,11 +415,15 @@ class Elements:
         if not file_path:
             return
 
-        folder = self.get_image_folder()
-        filename = os.path.basename(file_path)
-        target_path = os.path.join(folder, filename)
+        folder = Path(self.get_image_folder())
+        filename = Path(file_path).name
+        target_path = folder / filename
 
-        shutil.copy(file_path, target_path)
+        project_root = Path(__file__).resolve().parent
+        relative_path = target_path.relative_to(project_root)
+
+        if not target_path.exists():
+            shutil.copy(file_path, target_path)
 
         preview = self.parent.preview
         center_x = preview.width() // 2 - 100
@@ -419,7 +431,7 @@ class Elements:
 
         element_data = {
             "type": "image",
-            "path": target_path,
+            "path": str(relative_path).replace("\\", "/"),
             "x": center_x,
             "y": center_y,
             "w": 200,

@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QDrag, QFont, QFontMetrics, QIcon, QColor, QPainter, QPainterPath, QPen, QPixmap
 from PyQt6.QtCore import QMimeData, QObject, Qt
 from PyQt6.QtWidgets import QLineEdit
+from paths import resource_path, data_path
 
 
 from messageservice import MessagingService
@@ -73,8 +74,11 @@ class PlaylistListWidget(QListWidget):
             if s["id"] == slide_id:
                 slide = s
                 break
+        if not slide:
+            return
+
         if new_playlist == self.manager.songs_playlist:
-            if slide["type"] != "lyricsshow":
+            if slide.get("type") != "lyricsshow":
                 return
         if not slide:
             return
@@ -374,6 +378,8 @@ class PlayList(QObject):
         }
 
         self.playlists.append(new_playlist)
+        self.json_manager.save(self.playlists, self.slides, self.songs, self.images)
+
         self.refresh_playlists_frame()
 
 
@@ -501,7 +507,7 @@ class PlayList(QObject):
 
             list_widget.removeItemWidget(item)
 
-            self.json_manager.save(self.playlists, [], self.songs, self.images)
+            self.json_manager.save(self.playlists, self.slides, self.songs, self.images)
 
         line_edit.returnPressed.connect(finish)
 
@@ -565,6 +571,12 @@ class PlayList(QObject):
             row -= 1
 
         self.playlists.insert(row, item)
+        self.json_manager.save(
+            self.playlists,
+            self.slides,
+            self.songs,
+            self.images
+        )
     def on_slide_moved(self, parent, start, end, dest, row):
         if not self.selected_playlist:
             return
@@ -576,6 +588,12 @@ class PlayList(QObject):
             row -= 1
 
         slides.insert(row, item)
+        self.json_manager.save(
+            self.playlists,
+            self.slides,
+            self.songs,
+            self.images
+        )
     def move_playlist(self, direction):
         if self.selected_playlist:
             idx = self.playlists.index(self.selected_playlist)

@@ -1,3 +1,6 @@
+from email.mime import base
+from pathlib import Path
+
 from PyQt6.QtWidgets import (
     QWidget, QLabel, QVBoxLayout, QHBoxLayout, QPushButton
 )
@@ -84,7 +87,7 @@ class Editor:
         self.preview.mousePressEvent = preview_mouse_press
 
         self.center_icon = QLabel(self.preview)
-        self.center_icon.setPixmap(QPixmap("asset/ui/centerslide.png"))
+        self.center_icon.setPixmap(QPixmap(self.resource_path("asset/ui/centerslide.png")))
         self.center_icon.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
         self.center_icon.setStyleSheet("background: transparent;")
         self.center_icon.hide()
@@ -205,7 +208,7 @@ class Editor:
 
     def add_slide(self):
         slide = {
-            "thumbnail": "asset/ui/transparent.png",
+            "thumbnail": self.resource_path("asset/ui/transparent.png"),
             "tag": None,
             "elements": []
         }
@@ -281,7 +284,7 @@ class Editor:
         painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
         painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
 
-        bg_pix = QPixmap("asset/ui/transparent.png")
+        bg_pix = QPixmap(self.resource_path("asset/ui/transparent.png"))
         painter.drawPixmap(0, 0, render_w, render_h, bg_pix)
 
         if self.preview.width() > 0:
@@ -347,7 +350,10 @@ class Editor:
                     painter.drawPath(path)
 
             elif el["type"] == "image":
-                img = QPixmap(el["path"])
+                base = Path(__file__).resolve().parent
+                img_path = base / el["path"]
+
+                img = QPixmap(str(img_path))
                 if not img.isNull():
                     painter.drawPixmap(x, y, img.scaled(w, h, 
                         Qt.AspectRatioMode.KeepAspectRatio, 
@@ -362,6 +368,10 @@ class Editor:
             Qt.TransformationMode.SmoothTransformation
         )
     
+    def resource_path(rel):
+        return str(Path(__file__).resolve().parent / rel)
+
+
 
     def update_slide_thumbnail(self, slide_index):
         if 0 <= slide_index < len(self.slide_thumbs):
@@ -462,7 +472,8 @@ class Editor:
                 element = DraggableImage(self.preview, self)
 
                 element.setGeometry(data["x"], data["y"], data["w"], data["h"])
-                pix = QPixmap(data["path"])
+                base = Path(__file__).resolve().parent
+                pix = QPixmap(str(base / data["path"]))
                 element.original_pixmap = pix
                 element.update_pixmap()
 
@@ -582,7 +593,7 @@ class Editor:
         if not hasattr(self, "bg"):
             return
 
-        pix = QPixmap("asset/ui/transparent.png")
+        pix = QPixmap(self.resource_path("asset/ui/transparent.png"))
 
         self.bg.setPixmap(pix)
         self.bg.setGeometry(

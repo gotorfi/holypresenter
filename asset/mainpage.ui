@@ -14,7 +14,7 @@
    <string>Holy Presenter</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="asset/ui/assets.qrc">
+   <iconset resource="ui/assets.qrc">
     <normaloff>:/icon/icon.png</normaloff>:/icon/icon.png</iconset>
   </property>
   <property name="autoFillBackground">
@@ -40,7 +40,7 @@
           <item>
            <widget class="QLabel" name="label">
             <property name="styleSheet">
-             <string notr="true">font-weight: bold;</string>
+             <string notr="true">font-weight: bold; color: white;</string>
             </property>
             <property name="text">
              <string>Playlist items</string>
@@ -62,7 +62,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="asset/ui/assets.qrc">
+             <iconset resource="ui/assets.qrc">
               <normaloff>:/buttons/down.png</normaloff>:/buttons/down.png</iconset>
             </property>
             <property name="flat">
@@ -85,7 +85,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="asset/ui/assets.qrc">
+             <iconset resource="ui/assets.qrc">
               <normaloff>:/buttons/up.png</normaloff>:/buttons/up.png</iconset>
             </property>
             <property name="flat">
@@ -108,7 +108,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="asset/ui/assets.qrc">
+             <iconset resource="ui/assets.qrc">
               <normaloff>:/buttons/upload.png</normaloff>:/buttons/upload.png</iconset>
             </property>
             <property name="flat">
@@ -131,7 +131,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="asset/ui/assets.qrc">
+             <iconset resource="ui/assets.qrc">
               <normaloff>:/buttons/rename.png</normaloff>:/buttons/rename.png</iconset>
             </property>
             <property name="flat">
@@ -154,7 +154,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="asset/ui/assets.qrc">
+             <iconset resource="ui/assets.qrc">
               <normaloff>:/buttons/delete.png</normaloff>:/buttons/delete.png</iconset>
             </property>
             <property name="flat">
@@ -171,7 +171,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="asset/ui/assets.qrc">
+             <iconset resource="ui/assets.qrc">
               <normaloff>:/buttons/new.png</normaloff>:/buttons/new.png</iconset>
             </property>
            </widget>
@@ -270,7 +270,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="asset/ui/assets.qrc">
+             <iconset resource="ui/assets.qrc">
               <normaloff>:/buttons/edit.png</normaloff>:/buttons/edit.png</iconset>
             </property>
             <property name="iconSize">
@@ -290,7 +290,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="asset/ui/assets.qrc">
+             <iconset resource="ui/assets.qrc">
               <normaloff>:/buttons/run.png</normaloff>:/buttons/run.png</iconset>
             </property>
             <property name="iconSize">
@@ -323,7 +323,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="asset/ui/assets.qrc">
+             <iconset resource="ui/assets.qrc">
               <normaloff>:/buttons/fade.png</normaloff>:/buttons/fade.png</iconset>
             </property>
             <property name="iconSize">
@@ -338,6 +338,9 @@
            <widget class="QDoubleSpinBox" name="fade_slide_time">
             <property name="toolTip">
              <string>slide fade time</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font-weight: bold; color: white;</string>
             </property>
            </widget>
           </item>
@@ -420,7 +423,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="asset/ui/assets.qrc">
+             <iconset resource="ui/assets.qrc">
               <normaloff>:/buttons/fade.png</normaloff>:/buttons/fade.png</iconset>
             </property>
            </widget>
@@ -429,6 +432,9 @@
            <widget class="QDoubleSpinBox" name="fade_background_time">
             <property name="toolTip">
              <string>video fade time</string>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">font-weight: bold; color: white;</string>
             </property>
            </widget>
           </item>
@@ -454,7 +460,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="asset/ui/assets.qrc">
+             <iconset resource="ui/assets.qrc">
               <normaloff>:/buttons/upload.png</normaloff>:/buttons/upload.png</iconset>
             </property>
            </widget>
@@ -468,7 +474,7 @@
              <string/>
             </property>
             <property name="icon">
-             <iconset resource="asset/ui/assets.qrc">
+             <iconset resource="ui/assets.qrc">
               <normaloff>:/buttons/delete.png</normaloff>:/buttons/delete.png</iconset>
             </property>
            </widget>
@@ -485,7 +491,7 @@
        <item>
         <widget class="QLabel" name="label_2">
          <property name="styleSheet">
-          <string notr="true">font-weight: bold;</string>
+          <string notr="true">font-weight: bold; color: white;</string>
          </property>
          <property name="text">
           <string>Program</string>
@@ -521,7 +527,7 @@
        <item>
         <widget class="QLabel" name="label_3">
          <property name="styleSheet">
-          <string notr="true">font-weight: bold;</string>
+          <string notr="true">font-weight: bold; color: white;</string>
          </property>
          <property name="text">
           <string>Preview Window</string>
@@ -563,7 +569,7 @@
        <item>
         <widget class="QLabel" name="videolength">
          <property name="styleSheet">
-          <string notr="true">font-size: 10px; font-weight: bold;</string>
+          <string notr="true">font-size: 10px; font-weight: bold; color: white;</string>
          </property>
          <property name="text">
           <string>00:00:00</string>
@@ -589,7 +595,7 @@
        <item>
         <widget class="QLabel" name="label_4">
          <property name="styleSheet">
-          <string notr="true">font-weight: bold;</string>
+          <string notr="true">font-weight: bold; color: white;</string>
          </property>
          <property name="text">
           <string>Notification preview</string>
@@ -621,6 +627,9 @@
          <property name="toolTip">
           <string>Select notification style</string>
          </property>
+         <property name="styleSheet">
+          <string notr="true">font-weight: bold; color: white;</string>
+         </property>
          <property name="text">
           <string>Style</string>
          </property>
@@ -631,6 +640,9 @@
          <property name="toolTip">
           <string>Publish the notification</string>
          </property>
+         <property name="styleSheet">
+          <string notr="true">font-weight: bold; color: white;</string>
+         </property>
          <property name="text">
           <string>Publish</string>
          </property>
@@ -640,6 +652,9 @@
         <widget class="QPushButton" name="clear_notification">
          <property name="toolTip">
           <string>Clear the notification</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font-weight: bold; color: white;</string>
          </property>
          <property name="text">
           <string>Clear</string>
@@ -665,7 +680,7 @@
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">font-weight: bold; color: white;</string>
     </property>
     <property name="title">
      <string>File</string>
@@ -678,7 +693,7 @@
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">font-weight: bold; color: white;</string>
     </property>
     <property name="title">
      <string>Edit</string>
@@ -688,7 +703,7 @@
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">font-weight: bold; color: white;</string>
     </property>
     <property name="title">
      <string>Help</string>
@@ -696,6 +711,9 @@
     <addaction name="actionUser_Manual"/>
    </widget>
    <widget class="QMenu" name="menuUpdate">
+    <property name="styleSheet">
+     <string notr="true">font-weight: bold; color: white;</string>
+    </property>
     <property name="title">
      <string>Update</string>
     </property>
@@ -773,7 +791,7 @@
   </action>
  </widget>
  <resources>
-  <include location="asset/ui/assets.qrc"/>
+  <include location="ui/assets.qrc"/>
  </resources>
  <connections/>
 </ui>

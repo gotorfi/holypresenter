@@ -26,7 +26,7 @@
    <string>Preferences</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="asset/ui/assets.qrc">
+   <iconset resource="ui/assets.qrc">
     <normaloff>:/icon/icon.png</normaloff>:/icon/icon.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -81,13 +81,13 @@
        <item>
         <widget class="QPushButton" name="system_button">
          <property name="styleSheet">
-          <string notr="true">font-weight: bold;</string>
+          <string notr="true">font-weight: bold; color: white;</string>
          </property>
          <property name="text">
           <string>System</string>
          </property>
          <property name="icon">
-          <iconset resource="asset/ui/assets.qrc">
+          <iconset resource="ui/assets.qrc">
            <normaloff>:/other/gear.png</normaloff>:/other/gear.png</iconset>
          </property>
          <property name="iconSize">
@@ -101,13 +101,13 @@
        <item>
         <widget class="QPushButton" name="display_button">
          <property name="styleSheet">
-          <string notr="true">font-weight: bold;</string>
+          <string notr="true">font-weight: bold; color: white;</string>
          </property>
          <property name="text">
           <string>Display</string>
          </property>
          <property name="icon">
-          <iconset resource="asset/ui/assets.qrc">
+          <iconset resource="ui/assets.qrc">
            <normaloff>:/other/pc.png</normaloff>:/other/pc.png</iconset>
          </property>
          <property name="iconSize">
@@ -130,13 +130,13 @@
        <item>
         <widget class="QPushButton" name="customize_button">
          <property name="styleSheet">
-          <string notr="true">font-weight: bold;</string>
+          <string notr="true">font-weight: bold; color: white;</string>
          </property>
          <property name="text">
           <string>Customize</string>
          </property>
          <property name="icon">
-          <iconset resource="asset/ui/assets.qrc">
+          <iconset resource="ui/assets.qrc">
            <normaloff>:/other/style.png</normaloff>:/other/style.png</iconset>
          </property>
          <property name="iconSize">
@@ -162,6 +162,9 @@
        </item>
        <item>
         <widget class="QPushButton" name="close_button">
+         <property name="styleSheet">
+          <string notr="true">color: white;</string>
+         </property>
          <property name="text">
           <string>Close</string>
          </property>
@@ -218,11 +221,14 @@
           <height>41</height>
          </rect>
         </property>
+        <property name="styleSheet">
+         <string notr="true"/>
+        </property>
         <property name="text">
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="asset/ui/assets.qrc">:/other/pc.png</pixmap>
+         <pixmap resource="ui/assets.qrc">:/other/pc.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -244,10 +250,7 @@
          <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">font-weight: bold;</string>
-        </property>
-        <property name="labelDrawingMode">
-         <enum>QComboBox::LabelDrawingMode::UseDelegate</enum>
+         <string notr="true">font-weight: bold; color: white;</string>
         </property>
         <item>
          <property name="text">
@@ -273,7 +276,7 @@
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">font-size: 20px; font-weight: bold;</string>
+         <string notr="true">font-size: 20px; font-weight: bold; color: white;</string>
         </property>
         <property name="text">
          <string>Display style:</string>
@@ -292,7 +295,7 @@
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">font-size: 20px; font-weight: bold;</string>
+         <string notr="true">font-size: 20px; font-weight: bold; color: white;</string>
         </property>
         <property name="text">
          <string>Program output monitor</string>
@@ -314,7 +317,7 @@
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">font-size: 20px; font-weight: bold;</string>
+         <string notr="true">font-size: 20px; font-weight: bold; color: white;</string>
         </property>
         <property name="text">
          <string>Lyrics output monitor</string>
@@ -333,7 +336,7 @@
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(34, 38, 41);</string>
+         <string notr="true">background-color: rgb(34, 38, 41); color: white;</string>
         </property>
         <property name="editable">
          <bool>false</bool>
@@ -357,7 +360,7 @@
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(34, 38, 41);</string>
+         <string notr="true">background-color: rgb(34, 38, 41); color: white;</string>
         </property>
         <property name="editable">
          <bool>false</bool>
@@ -384,7 +387,7 @@
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose the monitor where you want the lyrics to display. NONE = draggable window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(34, 38, 41);</string>
+         <string notr="true">background-color: rgb(34, 38, 41); color: white;</string>
         </property>
         <property name="text">
          <string>?</string>
@@ -403,7 +406,7 @@
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose the monitor where you want the program to display. NONE = draggable window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(34, 38, 41);</string>
+         <string notr="true">background-color: rgb(34, 38, 41); color: white;</string>
         </property>
         <property name="text">
          <string>?</string>
@@ -435,7 +438,7 @@
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">font-size: 20px; font-weight: bold;</string>
+         <string notr="true">font-size: 20px; font-weight: bold; color: white;</string>
         </property>
         <property name="text">
          <string>Customize</string>
@@ -457,7 +460,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="asset/ui/assets.qrc">:/other/style.png</pixmap>
+         <pixmap resource="ui/assets.qrc">:/other/style.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -479,13 +482,10 @@
          <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
         </property>
         <property name="styleSheet">
-         <string notr="true">font-weight: bold;</string>
+         <string notr="true">font-weight: bold; color: white;</string>
         </property>
         <property name="editable">
          <bool>false</bool>
-        </property>
-        <property name="labelDrawingMode">
-         <enum>QComboBox::LabelDrawingMode::UseDelegate</enum>
         </property>
         <item>
          <property name="text">
@@ -511,7 +511,7 @@
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">font-size: 20px; font-weight: bold;</string>
+         <string notr="true">font-size: 20px; font-weight: bold; color: white;</string>
         </property>
         <property name="text">
          <string>Theme</string>
@@ -559,7 +559,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="asset/ui/assets.qrc">:/other/gear.png</pixmap>
+         <pixmap resource="ui/assets.qrc">:/other/gear.png</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
@@ -575,7 +575,7 @@
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">font-size: 20px; font-weight: bold;</string>
+         <string notr="true">font-size: 20px; font-weight: bold; color: white;</string>
         </property>
         <property name="text">
          <string>Restore all settings to default</string>
@@ -595,9 +595,6 @@
         </property>
         <property name="styleSheet">
          <string notr="true">font-weight: bold;</string>
-        </property>
-        <property name="labelDrawingMode">
-         <enum>QComboBox::LabelDrawingMode::UseDelegate</enum>
         </property>
         <item>
          <property name="text">
@@ -625,7 +622,7 @@
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">font-size: 15px; font-weight: bold;</string>
+         <string notr="true">font-size: 15px; font-weight: bold; color: white;</string>
         </property>
         <property name="text">
          <string>Lyrics one third</string>
@@ -687,9 +684,6 @@
         <property name="styleSheet">
          <string notr="true">font-weight: bold;</string>
         </property>
-        <property name="labelDrawingMode">
-         <enum>QComboBox::LabelDrawingMode::UseDelegate</enum>
-        </property>
         <item>
          <property name="text">
           <string>Green</string>
@@ -721,7 +715,7 @@
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">font-size: 15px; font-weight: bold;</string>
+         <string notr="true">font-size: 15px; font-weight: bold; color: white;</string>
         </property>
         <property name="text">
          <string>Background</string>
@@ -737,7 +731,7 @@
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">font-size: 20px; font-weight: bold;</string>
+         <string notr="true">font-size: 20px; font-weight: bold; color: white;</string>
         </property>
         <property name="text">
          <string>Enable lyrics window</string>
@@ -753,7 +747,7 @@
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">font-size: 20px; font-weight: bold;</string>
+         <string notr="true">font-size: 20px; font-weight: bold; color: white;</string>
         </property>
         <property name="text">
          <string>System version</string>
@@ -841,6 +835,7 @@ border-radius: 4px;</string>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources>
+  <include location="ui/assets.qrc"/>
   <include location="asset/ui/assets.qrc"/>
  </resources>
  <connections/>

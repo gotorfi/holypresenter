@@ -20,3 +20,5 @@
 !! DISABLE UNWANTED BUTTONS !!
 
 !! FILE LOCATIONS !!
+
+stuck in manualwindow.py  with locations

@@ -5,6 +5,10 @@ from messageservice import MessagingService
 from preferences import PreferencesWindow
 from PyQt6.QtGui import QGuiApplication
 
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+
 
 class Buttons:
     def __init__(self, parent):
@@ -226,12 +230,13 @@ class Buttons:
 
         import shutil, os
 
-        dest = "savecloud/media"
+        dest = BASE_DIR / "savecloud" / "media"
+        dest.mkdir(parents=True, exist_ok=True)
         os.makedirs(dest, exist_ok=True)
 
         for f in files:
             name = os.path.basename(f)
-            shutil.copy(f, os.path.join(dest, name))
+            shutil.copy(f, dest / name)
 
         self.parent.videos.load_media()
     def upload_background(self):
@@ -258,8 +263,8 @@ class Buttons:
             (640, 360)
         ]
 
-        dest = "savecloud/backgrounds"
-        os.makedirs(dest, exist_ok=True)
+        dest = BASE_DIR / "savecloud" / "backgrounds"
+        dest.mkdir(parents=True, exist_ok=True)
 
         for file in files:
             cap = cv2.VideoCapture(file)
@@ -280,5 +285,5 @@ class Buttons:
                 continue
 
             name = os.path.basename(file)
-            shutil.copy(file, os.path.join(dest, name))
+            shutil.copy(file, dest / name)
         self.parent.videos.LoadBackgroundVideos()

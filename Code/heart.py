@@ -28,10 +28,16 @@ from editor import Editor
 from messageservice import MessagingService
 from listsmanager import PlayList
 from jsonmanager import JsonManager
-import assets_rc
-
+try:
+    if sys.platform == "darwin":
+        import assets_rc_mac as assets_rc
+    else:
+        import assets_rc
+except Exception:
+    import assets_rc
 
 from preferences import save_settings
+from paths import resource_path
 
 
 
@@ -46,10 +52,12 @@ class heart(QMainWindow):
         self.pref_window = None
         from preferences import load_settings, PreferencesWindow
         self.settings = load_settings()
-        uic.loadUi("mainpage.ui", self)
+
+
+        uic.loadUi(resource_path("mainpage.ui"), self)
         self.main_page = self.centralWidget()
-        self.editor_page = uic.loadUi("editor.ui")
-        self.setWindowIcon(QIcon("icon.png"))
+        self.editor_page = uic.loadUi(resource_path("editor.ui"))
+        self.setWindowIcon(QIcon(resource_path("asset/ui/icon.png")))
         screen = QApplication.primaryScreen()
         size = screen.size()
 
@@ -236,7 +244,7 @@ class heart(QMainWindow):
             
 def main():
     app = QApplication(sys.argv)
-    pixmap = QPixmap("asset/ui/PresentatorSplash.png")
+    pixmap = QPixmap(resource_path("asset/ui/PresentatorSplash.png"))
     splash = QSplashScreen(pixmap)
     splash.setWindowFlag(Qt.WindowType.FramelessWindowHint)
     splash.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint)

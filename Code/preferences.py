@@ -15,13 +15,21 @@ from PyQt6 import QtWidgets, uic
 
 import sys
 from const import *
-import assets_rc
+try:
+    if sys.platform == "darwin":
+        import assets_rc_mac as assets_rc
+    else:
+        import assets_rc
+except Exception:
+    import assets_rc
 
 import json
 import os
 from PyQt6.QtGui import QGuiApplication
 
 from messageservice import MessagingService
+
+from paths import resource_path, data_path
 
 
 def load_settings():
@@ -40,8 +48,8 @@ def save_settings(settings):
 class PreferencesWindow(QMainWindow):
     def __init__(self, main_window):
         super().__init__()
-        uic.loadUi("Preferences.ui", self)
-        self.setWindowIcon(QIcon(":/icon/icon.png"))
+        uic.loadUi(resource_path("Preferences.ui"), self)
+        self.setWindowIcon(QIcon(resource_path("asset/ui/icon.png")))
         self.main_window = main_window
         self.settings = main_window.settings
         self.setWindowFlags(

@@ -28,5 +28,10 @@ DEFAULT_SETTINGS = {
     "background_color": "Green"
 }
 
-SETTINGS_DIR = "savecloud"
-SETTINGS_FILE = os.path.join(SETTINGS_DIR, "settings.json")
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+
+SETTINGS_DIR = BASE_DIR / "savecloud"
+SETTINGS_DIR.mkdir(parents=True, exist_ok=True)
+SETTINGS_FILE = SETTINGS_DIR / "settings.json"
