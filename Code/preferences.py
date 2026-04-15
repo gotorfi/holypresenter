@@ -48,7 +48,7 @@ def save_settings(settings):
 class PreferencesWindow(QMainWindow):
     def __init__(self, main_window):
         super().__init__()
-        uic.loadUi(resource_path("Preferences.ui"), self)
+        uic.loadUi(resource_path("asset/Preferences.ui"), self)
         self.setWindowIcon(load_icon("asset/ui/icon.png"))
         self.main_window = main_window
         self.settings = main_window.settings

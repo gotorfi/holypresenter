@@ -85,7 +85,14 @@ class PlaylistListWidget(QListWidget):
 
         
         if old_playlist == self.manager.songs_playlist or new_playlist == self.manager.songs_playlist:
-            new_slide = copy.deepcopy(slide)
+            # Clean widget references before deepcopy
+            slide_copy = {k: v for k, v in slide.items() if k != "ref"}
+            if "elements" in slide_copy and isinstance(slide_copy["elements"], list):
+                slide_copy["elements"] = [
+                    {ek: ev for ek, ev in e.items() if ek != "ref"} 
+                    for e in slide_copy["elements"]
+                ]
+            new_slide = copy.deepcopy(slide_copy)
             new_slide["id"] = str(uuid.uuid4())
             new_playlist["slides"].append(new_slide)
         else:
@@ -187,6 +194,9 @@ class PlayList(QObject):
         self.last_selected_type = None
 
         self.hover_playlist = None
+        
+        # Search
+        self.search_query = ""
 
         # ListWidgets
         self.slides_list = SlideListWidget(self)
@@ -613,17 +623,34 @@ class PlayList(QObject):
             return
 
         slides = self.selected_playlist.get("slides", [])
+        
+        # Apply search filter
+        if self.search_query.strip():
+            search_text = self.search_query.strip().lower()
+            filtered_slides = [s for s in slides if search_text in s['name'].lower()]
+            
+            # Only show results if there are less than 25 matches
+            if len(filtered_slides) >= 25:
+                # Show nothing when there are 25 or more results
+                return
+            
+            slides = filtered_slides
 
         for i, slide in enumerate(slides):
             item = QListWidgetItem(slide['name'])
             item.setData(Qt.ItemDataRole.UserRole, slide["id"])
 
             if slide['type'] == "slideshow":
-                item.setIcon(QIcon("asset/ui/slide.png"))
+                item.setIcon(QIcon(resource_path("asset/ui/slide.png")))
             elif slide['type'] == "lyricsshow":
-                item.setIcon(QIcon("asset/ui/lyrics.png"))
+                item.setIcon(QIcon(resource_path("asset/ui/lyrics.png")))
 
             self.slides_list.addItem(item)
+    
+    def perform_search(self, search_text):
+        """Update search query and refresh the slides display"""
+        self.search_query = search_text
+        self.refresh_slides_frame()
 
     def refresh_playlists_frame(self):
         self.playlists_list.clear()
@@ -631,33 +658,33 @@ class PlayList(QObject):
         # Songs
         item = QListWidgetItem("Songs")
         item.setData(Qt.ItemDataRole.UserRole, ("songs", "songs_builtin"))
-        item.setIcon(QIcon("asset/ui/songs.png"))
+        item.setIcon(QIcon(resource_path("asset/ui/songs.png")))
         self.playlists_list.addItem(item)
 
         # Backgrounds
         item = QListWidgetItem("Backgrounds")
         item.setData(Qt.ItemDataRole.UserRole, ("backgrounds", "backgrounds_builtin"))
-        item.setIcon(QIcon("asset/ui/backgrounds.png"))
+        item.setIcon(QIcon(resource_path("asset/ui/backgrounds.png")))
         self.playlists_list.addItem(item)
 
         # Media
         item = QListWidgetItem("Media")
         item.setData(Qt.ItemDataRole.UserRole, ("media", "media_builtin"))
-        item.setIcon(QIcon("asset/ui/Image.png"))
+        item.setIcon(QIcon(resource_path("asset/ui/Image.png")))
         self.playlists_list.addItem(item)
 
         # Images
         for img in self.images:
             item = QListWidgetItem(img['name'])
             item.setData(Qt.ItemDataRole.UserRole, ("image", img))
-            item.setIcon(QIcon("asset/ui/upload.png"))
+            item.setIcon(QIcon(resource_path("asset/ui/upload.png")))
             self.playlists_list.addItem(item)
 
         # Playlists
         for pl in self.playlists:
             item = QListWidgetItem(pl['name'])
             item.setData(Qt.ItemDataRole.UserRole, ("playlist", pl["id"]))
-            item.setIcon(QIcon("asset/ui/playlist.png"))
+            item.setIcon(QIcon(resource_path("asset/ui/playlist.png")))
             self.playlists_list.addItem(item)
 
     # ---------- CLICK HANDLERS ----------
@@ -837,7 +864,7 @@ class PlayList(QObject):
             painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
 
             # ---------- BACKGROUND ----------
-            bg = QPixmap("asset/ui/transparent.png")
+            bg = QPixmap(resource_path("asset/ui/transparent.png"))
             painter.drawPixmap(0, 0, render_w, render_h, bg)
 
             for el in slide.get("elements", []):

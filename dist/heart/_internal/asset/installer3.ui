@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>700</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Holy Presenter Installer</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="ui/assets.qrc">
+    <normaloff>:/icon/InstallerIcon.png</normaloff>:/icon/InstallerIcon.png</iconset>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,7">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap resource="ui/assets.qrc">:/Installer/InstallerThumb2.png</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget" native="true">
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(21, 24, 28);</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="5,2,10,1,1,1">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="styleSheet">
+         <string notr="true">font-size: 35px; font-weight: bold; color: white;</string>
+        </property>
+        <property name="text">
+         <string>Welcome to the Holy Presenter Installer</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_6">
+        <property name="styleSheet">
+         <string notr="true">font-size: 16px; color: white;</string>
+        </property>
+        <property name="text">
+         <string>Please read and accept the license terms.</string>
+        </property>
+        <property name="margin">
+         <number>15</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QScrollArea" name="scrollArea">
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(16, 16, 18);</string>
+        </property>
+        <property name="widgetResizable">
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="scrollAreaWidgetContents">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>468</width>
+           <height>512</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_2">
+          <item>
+           <widget class="QLabel" name="label_5">
+            <property name="styleSheet">
+             <string notr="true">font-size: 10px; color: white; background-color: rgb(16, 16, 18);</string>
+            </property>
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;Copyright © 2026 Nikke. All rights reserved. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;Holy Presenter is a proprietary software application developed and owned by Nikke. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;All intellectual property rights, including but not limited to copyright, design, &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;structure, and implementation, are the exclusive property of the creator. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;Unauthorized copying, reproduction, distribution, modification, or use of &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;this software, in whole or in part, is strictly prohibited without prior written permission from the owner. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;Holy Presenter is intended solely for a restricted and specifically authorized &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;group of users. Access to and use of the application is granted only upon explicit approval by the owner. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;Any use of the software without such permission constitutes a violation of &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;these terms and may result in legal consequences. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;This software is not designed or intended for public distribution. Users are not permitted to share, &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;publish, sublicense, reverse engineer, or otherwise make the software available to &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;third parties without prior authorization. Any attempt to alter, adapt, or &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;create derivative works based on Holy Presenter without permission is also prohibited. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;Holy Presenter was created in 2026 by Nikke. Upon its creation, the work is &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;automatically protected under applicable copyright laws. The owner retains &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;full and exclusive authority to define the terms under which the software may be &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;used, distributed, or modified. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;If you intend to use, access, modify, or distribute Holy Presenter in any way not &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;explicitly permitted, you must first obtain written consent from the creator and &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;owner. Failure to comply with these requirements is considered a breach of intellectual &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Aptos','Aptos_EmbeddedFont','Aptos_MSFontService','sans-serif'; font-size:7pt; color:#ffffff;&quot;&gt;property rights. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="LicenseBox">
+        <property name="styleSheet">
+         <string notr="true">color: white; font-weight: bold;</string>
+        </property>
+        <property name="text">
+         <string>I accept the license terms.</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="styleSheet">
+         <string notr="true">font-size: 16px; color: white;</string>
+        </property>
+        <property name="text">
+         <string>If you do not accept the terms, you will not be able to install Holy Presenter.</string>
+        </property>
+        <property name="scaledContents">
+         <bool>false</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+        <property name="margin">
+         <number>50</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget_2" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="5,3,3">
+         <item>
+          <widget class="QLabel" name="label_4">
+           <property name="maximumSize">
+            <size>
+             <width>250</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="ui/assets.qrc">:/Installer/InstallerBar3.png</pixmap>
+           </property>
+           <property name="scaledContents">
+            <bool>true</bool>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignBottom|Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft</set>
+           </property>
+           <property name="wordWrap">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="back">
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(46, 54, 61); color: white;</string>
+           </property>
+           <property name="text">
+            <string>Back</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="next">
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(46, 54, 61); color: white;</string>
+           </property>
+           <property name="text">
+            <string>Next</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="ui/assets.qrc"/>
+  <include location="../../Users/nikla/miniconda3/Library/bin/ui/assets.qrc"/>
+ </resources>
+ <connections/>
+</ui>

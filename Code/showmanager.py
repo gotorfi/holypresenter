@@ -635,7 +635,7 @@ class ShowManager(QObject):
                         continue
 
                     tw = metrics.horizontalAdvance(line)
-                    tx = int(x + (ww - tw) / 2)
+                    tx = int((x - (w / 60)) + (ww - tw) / 2)
                     ty = int(start_y + i * line_height)
 
                     path = QPainterPath()
@@ -727,7 +727,7 @@ class ShowManager(QObject):
                         continue
 
                     tw = metrics.horizontalAdvance(line)
-                    tx = int(x + (ww - tw) / 2)
+                    tx = int((x - (w / 60)) + (ww - tw) / 2)
                     ty = int(start_y + i * line_height)
 
                     path = QPainterPath()

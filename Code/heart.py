@@ -1,4 +1,8 @@
 import json
+import sys
+import os
+
+sys.path.append(os.path.dirname(__file__))
 
 from PyQt6.QtWidgets import (
     QApplication,
@@ -28,13 +32,17 @@ from editor import Editor
 from messageservice import MessagingService
 from listsmanager import PlayList
 from jsonmanager import JsonManager
+
+
+
+import assets_rc
+
+# Force resource registration
 try:
-    if sys.platform == "darwin":
-        import assets_rc_mac as assets_rc
-    else:
-        import assets_rc
+    if hasattr(assets_rc, 'qInitResources'):
+        assets_rc.qInitResources()
 except Exception:
-    import assets_rc
+    pass
 
 from preferences import save_settings
 from paths import resource_path, load_icon
@@ -53,9 +61,9 @@ class heart(QMainWindow):
         self.settings = load_settings()
 
 
-        uic.loadUi(resource_path("mainpage.ui"), self)
+        uic.loadUi(resource_path("asset/mainpage.ui"), self)
         self.main_page = self.centralWidget()
-        self.editor_page = uic.loadUi(resource_path("editor.ui"))
+        self.editor_page = uic.loadUi(resource_path("asset/editor.ui"))
         self.setWindowIcon(load_icon("asset/ui/icon.png"))
         screen = QApplication.primaryScreen()
         size = screen.size()
@@ -137,7 +145,12 @@ class heart(QMainWindow):
         self.new_list.setMenu(New_menu)
         self.new_list.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
 
-
+        New_menu.setStyleSheet("""
+            QMenu::item:selected {
+                background-color: rgb(200, 200, 200);
+                color: rgb(255, 255, 255);
+            }
+        """)
 
         self.menubar.setStyleSheet(f"""
         QMenuBar {{

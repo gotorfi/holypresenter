@@ -1,0 +1,49 @@
+{
+    "playlists": [
+        {
+            "id": "d2e4ed4a-cbba-42ce-b30a-91461f87dfbe",
+            "type": "playlist",
+            "name": "tutorial",
+            "slides": [
+                {
+                    "id": "bb75de47-be81-4550-b095-0431eab0b5ba",
+                    "type": "lyricsshow",
+                    "name": "Test",
+                    "slides": [
+                        {
+                            "thumbnail": "C:\\holypresenter-1\\dist\\heart\\_internal\\asset\\ui\\transparent.png",
+                            "tag": null,
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "TESTEETESTSTS",
+                                    "x": 151,
+                                    "y": 257,
+                                    "w": 1212,
+                                    "h": 342
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "C:\\holypresenter-1\\dist\\heart\\_internal\\asset\\ui\\transparent.png",
+                            "tag": null,
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "♪ Lyrics ♪",
+                                    "x": 151,
+                                    "y": 257,
+                                    "w": 1212,
+                                    "h": 342
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "slides": [],
+    "songs": [],
+    "images": []
+}

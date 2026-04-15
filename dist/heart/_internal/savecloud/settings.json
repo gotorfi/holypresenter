@@ -1,0 +1,10 @@
+{
+    "display_mode": "windowed",
+    "program_monitor": "None",
+    "lyrics_monitor": "None",
+    "enable_lyrics": false,
+    "lyrics_position": "Down",
+    "background_color": "Green",
+    "fade_slide_time": 0.0,
+    "fade_background_time": 1.0
+}

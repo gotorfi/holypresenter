@@ -4,10 +4,13 @@
 from messageservice import MessagingService
 from preferences import PreferencesWindow
 from PyQt6.QtGui import QGuiApplication
+from PyQt6.QtWidgets import QMenu, QToolButton
+from PyQt6.QtGui import QAction
 
 from pathlib import Path
+from paths import data_path, get_app_path
 
-BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
 class Buttons:
@@ -39,6 +42,9 @@ class Buttons:
 
         parent.upload.clicked.connect(self.upload_media)
         parent.upload_background.clicked.connect(self.upload_background)
+        
+        # Search functionality
+        parent.searchbox.textChanged.connect(lambda text: parent.lists_manager.perform_search(text))
 
 
         
@@ -47,6 +53,21 @@ class Buttons:
         self.parent.pref_window.display_button.clicked.connect(lambda: self.parent.pref_window.display_preferences_page(1))
         self.parent.pref_window.customize_button.clicked.connect(lambda: self.parent.pref_window.display_preferences_page(2))
         self.parent.pref_window.system_button.clicked.connect(lambda: self.parent.pref_window.display_preferences_page(3))
+
+    def setup_music_menu(self):
+        """Setup dropdown menu for Music button with all available tags"""
+        from editor import TAG_LIST
+        
+        music_button = self.parent.editor_page.Music
+        music_menu = QMenu()
+        music_button.setMenu(music_menu)
+        music_button.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
+        
+        for tag in TAG_LIST:
+            tag_name = tag if tag else "None"
+            action = QAction(tag_name, music_menu)
+            action.triggered.connect(lambda checked=False, t=tag: self.parent.editor.set_tag(t))
+            music_menu.addAction(action)
 
 
     def connect_editor_buttons(self):
@@ -61,7 +82,9 @@ class Buttons:
         self.parent.editor_page.ElementUp.clicked.connect(self.parent.editor.move_selected_up)
         self.parent.editor_page.ElementDown.clicked.connect(self.parent.editor.move_selected_down)
         self.parent.editor_page.Center.clicked.connect(self.parent.editor.CenterEvent)
-        self.parent.editor_page.Music.clicked.connect(self.parent.editor.cycle_tag)
+        
+        # Setup Music button with dropdown menu
+        self.setup_music_menu()
 
 
     def open_preferences(self):
@@ -230,7 +253,7 @@ class Buttons:
 
         import shutil, os
 
-        dest = BASE_DIR / "savecloud" / "media"
+        dest = Path(data_path("media"))
         dest.mkdir(parents=True, exist_ok=True)
         os.makedirs(dest, exist_ok=True)
 
@@ -263,7 +286,7 @@ class Buttons:
             (640, 360)
         ]
 
-        dest = BASE_DIR / "savecloud" / "backgrounds"
+        dest = Path(data_path("backgrounds"))
         dest.mkdir(parents=True, exist_ok=True)
 
         for file in files:

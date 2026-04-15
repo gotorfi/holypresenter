@@ -47,11 +47,13 @@ class Editor:
         # DATA
         self.slides_data = []
         self.slide_thumbs = []
+        self.slide_labels = []
         self.elements_manager = Elements(self)
         self.tag_index = 0
 
         # UI
         self.slidelabel = parent.editor_page.editingslide
+        self.taglabel = parent.editor_page.taglabel
         self.preview = parent.editor_page.preview_slide
         self.slides = parent.editor_page.SlidesList
         self.elements = parent.editor_page.ElementsList
@@ -200,6 +202,7 @@ class Editor:
     def select_slide(self, index):
         self.selected_slide = self.slides_data[index]
         self.slidelabel.setText(f"Editing Slide: {index + 1}")
+        self.update_tag_label()
         self.RenderSlides()
         self.RenderElements()
         self.RenderElementsList()
@@ -390,6 +393,7 @@ class Editor:
                 widget.deleteLater()
 
         self.slide_thumbs = []
+        self.slide_labels = []  # Store label references
 
         for i, slide in enumerate(self.slides_data):
             row = QWidget()
@@ -424,6 +428,7 @@ class Editor:
             label.setStyleSheet("color: white; font-size: 16px;")
             row_layout.addWidget(label)
             row_layout.addStretch()
+            self.slide_labels.append(label)  # Store label reference
 
             def make_click(idx):
                 def handler(event):
@@ -433,8 +438,10 @@ class Editor:
 
             if slide is self.selected_slide:
                 row.setProperty("selected", True)
+                label.setStyleSheet("color: white; font-size: 16px; background-color: rgb(100, 150, 255); border-radius: 4px; padding: 4px;")
             else:
                 row.setProperty("selected", False)
+                label.setStyleSheet("color: white; font-size: 16px;")
 
             row.style().unpolish(row)
             row.style().polish(row)
@@ -619,24 +626,26 @@ class Editor:
         self.update_preview_background()
     def get_tag_color(self, tag):
         return TAG_COLORS.get(tag, (150, 150, 150))
-    def cycle_tag(self):
+    
+    
+    def set_tag(self, tag):
+        """Set the tag for the selected slide"""
         if not self.selected_slide:
             return
 
-        tags = TAG_LIST
-
-        current = self.selected_slide.get("tag")
-        if current not in tags:
-            self.tag_index = 0
-        else:
-            self.tag_index = tags.index(current)
-
-        self.tag_index = (self.tag_index + 1) % len(tags)
-        new_tag = tags[self.tag_index]
-
-        self.selected_slide["tag"] = new_tag
-
+        self.selected_slide["tag"] = tag
+        self.update_tag_label()
         self.RenderSlides()
         self.apply_preview_style()
         self.save()
+    
+    def update_tag_label(self):
+        """Update the tag label to show the current slide's tag"""
+        if not self.selected_slide:
+            self.taglabel.setText("Tag: None")
+            return
+        
+        tag = self.selected_slide.get("tag")
+        tag_name = tag if tag else "None"
+        self.taglabel.setText(f"Tag: {tag_name}")
         

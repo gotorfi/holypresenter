@@ -4,6 +4,8 @@ from PyQt6.QtWidgets import QLabel, QLineEdit
 from PyQt6.QtCore import QPointF, Qt, QPoint, QRect
 from PyQt6.QtGui import QMouseEvent, QPen, QPixmap
 
+from paths import resource_path, data_path
+
 
 
 from PyQt6.QtWidgets import QLabel, QLineEdit
@@ -88,12 +90,17 @@ class DraggableImage(QLabel):
     def select(self):
         self.selected = True
         self.handle.show()
+        self.handle.raise_()
         self.update()
 
     def deselect(self):
         self.selected = False
         self.handle.hide()
         self.update()
+
+    def resizeEvent(self, event):
+        self.update_handle_position()
+        self.update_pixmap()
 
 
     def snap_to_center(self):
@@ -145,6 +152,8 @@ class DraggableImage(QLabel):
             new_h = min(new_h, parent_rect.height() - self.y())
 
             self.resize(new_w, new_h)
+            if self.selected:
+                self.handle.raise_()
 
         elif self.dragging:
             new_pos = self.mapToParent(event.pos() - self.offset)
@@ -213,6 +222,15 @@ class DraggableText(QLabel):
         self.offset = QPoint()
         self.start_mouse_pos = None
         self.start_size = None
+        
+        # Cache the drag handle pixmap - use absolute path this time
+        base_dir = Path(__file__).resolve().parent.parent
+        drag_icon_path = base_dir / "asset" / "ui" / "drag.png"
+        self.drag_pixmap = QPixmap(str(drag_icon_path)).scaled(
+            24, 24,
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation
+        )
 
         self.handle = QLabel(self)
         self.handle_size = 24
@@ -226,10 +244,11 @@ class DraggableText(QLabel):
         self.setWordWrap(True)
         self.handle.setFixedSize(self.handle_size, self.handle_size)
         self.handle.setMouseTracking(True)
-        self.handle.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
-        self.handle.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
+        self.handle.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, False)
+        # Remove transparent for mouse events - we want it visible!
+        self.handle.setCursor(Qt.CursorShape.SizeFDiagCursor)
+        self.handle.setStyleSheet("background: transparent; border: none; margin: 0px; padding: 0px;")
         self.handle.hide()
-        self.handle.raise_()
 
         self.selected = False
         self.update_handle_position()
@@ -269,6 +288,12 @@ class DraggableText(QLabel):
             painter.setPen(pen)
             painter.setBrush(Qt.BrushStyle.NoBrush)
             painter.drawRect(rect.adjusted(2, 2, -2, -2))
+            
+            # Draw the cached drag handle in the bottom-right corner
+            if not self.drag_pixmap.isNull():
+                handle_x = self.width() - self.handle_size - 4
+                handle_y = self.height() - self.handle_size - 4
+                painter.drawPixmap(handle_x, handle_y, self.drag_pixmap)
 
     # -------------------------
     def setText(self, text: str):
@@ -281,13 +306,12 @@ class DraggableText(QLabel):
     # -------------------------
     def select(self):
         self.selected = True
+        self.raise_()
         self.setStyleSheet("""
             border: 5px solid #66ccff;
             background: transparent;
         """)
-        self.handle.setStyleSheet("border: none; background: transparent;")
-        self.handle.show()
-        self.update_handle_position()
+        self.update()  # Trigger paint event to show the drag handle
 
     def deselect(self):
         self.selected = False
@@ -295,8 +319,7 @@ class DraggableText(QLabel):
             border: none;
             background: transparent;
         """)
-        self.handle.setStyleSheet("border: none; background: transparent;")
-        self.handle.hide()
+        self.update()  # Trigger paint event to hide the drag handle
 
     # -------------------------
 
@@ -320,13 +343,12 @@ class DraggableText(QLabel):
             self.move(self.x(), center_y - self.height() // 2)
 
     def update_handle_position(self):
-        self.handle.move(
-            self.width() - self.handle_size,
-            self.height() - self.handle_size
-        )
-        
+        # Position handle in bottom-right corner, outside the text area
+        handle_x = self.width() - self.handle_size - 4
+        handle_y = self.height() - self.handle_size - 4
+        self.handle.move(handle_x, handle_y)
         self.handle.raise_()
-        self.setContentsMargins(0, 0, self.handle_size, self.handle_size)
+        self.handle.setGeometry(handle_x, handle_y, self.handle_size, self.handle_size)
 
     def is_on_resize_corner(self, pos):
         margin = self.handle_size
@@ -362,6 +384,8 @@ class DraggableText(QLabel):
             new_width = min(new_width, parent_rect.width() - self.x())
             new_height = min(new_height, parent_rect.height() - self.y())
             self.resize(new_width, new_height)
+            if self.selected:
+                self.handle.raise_()
             return
 
         if self.dragging:
@@ -516,6 +540,9 @@ class Elements:
     # -------------------------
 
     def rename_text_element(self, element: DraggableText):
+        # Hide the original element while editing
+        element.hide()
+        
         def finish():
             text = editor.toPlainText().strip() or "Empty"
             element.setText(text)
@@ -524,35 +551,63 @@ class Elements:
                 element.data_ref["text"] = text
 
             editor.deleteLater()
+            element.show()
             element.update()
             self.parent.RenderElementsList()
             self.parent.on_element_changed()
             self.parent.save()
 
+        def update_padding():
+            """Recalculate and apply padding to center text vertically"""
+            fm = editor.fontMetrics()
+            text_height = fm.height()
+            lines = editor.toPlainText().count("\n") + 1
+            total_text_height = text_height * lines
+            padding = max(0, (editor.height() - total_text_height) // 2)
+            
+            editor.setStyleSheet(f"""
+                background: rgba(100, 100, 255, 51);
+                color: white;
+                font-weight: bold;
+                padding-top: {padding}px;
+            """)
+
         editor = MultiLineTextEdit(element.parent(), finish_callback=finish)
         editor.setPlainText(element.text())
         editor.setGeometry(element.x(), element.y(), element.width(), element.height())
         editor.setFont(element.font())
-        editor.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        editor.setStyleSheet("""
-            background: rgb(100, 100, 255);
-            color: black;
-        """)
+        # Connect to text changed to recalculate padding dynamically
+        editor.textChanged.connect(update_padding)
+
+        # Set all text blocks to center alignment
+        def center_all_blocks():
+            cursor = editor.textCursor()
+            cursor.select(QTextCursor.SelectionType.Document)
+            fmt = QTextBlockFormat()
+            fmt.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            cursor.mergeBlockCharFormat(QTextCharFormat())
+            cursor.clearSelection()
+            
+            # Alternative: iterate through blocks
+            block = editor.document().firstBlock()
+            while block.isValid():
+                cursor.setPosition(block.position())
+                fmt = QTextBlockFormat()
+                fmt.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                cursor.setBlockFormat(fmt)
+                block = block.next()
+
+        # Import QTextCursor and QTextBlockFormat if not already imported
+        from PyQt6.QtGui import QTextCursor, QTextBlockFormat, QTextCharFormat
+        
+        center_all_blocks()
+
+        # Initial padding calculation
+        update_padding()
 
         editor.show()
         editor.setFocus()
-        fm = editor.fontMetrics()
-        text_height = fm.height()
-
-        lines = editor.toPlainText().count("\n") + 1
-        padding = max(0, (editor.height() - text_height * lines) // 2)
-
-        editor.setStyleSheet(f"""
-            background: rgb(100, 100, 255);
-            color: black;
-            padding-top: {padding}px;
-        """)
 
         def on_focus_out(event):
             finish()
