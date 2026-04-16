@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Editor</class>
+ <widget class="QWidget" name="Editor">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1280</width>
+    <height>666</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Holy Presenter Editor</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="ui/assets.qrc">
+    <normaloff>:/icon/icon.png</normaloff>:/icon/icon.png</iconset>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(53, 56, 64);</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,9">
+   <item>
+    <widget class="QWidget" name="list" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,20,1">
+      <item>
+       <widget class="QWidget" name="slide_tools" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QPushButton" name="NewSlide">
+           <property name="toolTip">
+            <string>New slide</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="ui/assets.qrc">
+             <normaloff>:/buttons/new.png</normaloff>:/buttons/new.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="DeleteSlide">
+           <property name="toolTip">
+            <string>Delete selected slide</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="ui/assets.qrc">
+             <normaloff>:/buttons/delete.png</normaloff>:/buttons/delete.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="SlideUp">
+           <property name="toolTip">
+            <string>Move selected slide up</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="ui/assets.qrc">
+             <normaloff>:/buttons/up.png</normaloff>:/buttons/up.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="SlideDown">
+           <property name="toolTip">
+            <string>Move selected slide down</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="ui/assets.qrc">
+             <normaloff>:/buttons/down.png</normaloff>:/buttons/down.png</iconset>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="divider" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QSplitter" name="splitter">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <widget class="QScrollArea" name="SlidesList">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(35, 37, 42)</string>
+            </property>
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="scrollAreaWidgetContents_2">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>190</width>
+               <height>254</height>
+              </rect>
+             </property>
+            </widget>
+           </widget>
+           <widget class="QScrollArea" name="ElementsList">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(35, 37, 42)</string>
+            </property>
+            <property name="widgetResizable">
+             <bool>true</bool>
+            </property>
+            <widget class="QWidget" name="scrollAreaWidgetContents_3">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>0</y>
+               <width>190</width>
+               <height>253</height>
+              </rect>
+             </property>
+            </widget>
+           </widget>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="slide_items_tools" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QPushButton" name="ElementUp">
+           <property name="toolTip">
+            <string>Move selected element up</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="ui/assets.qrc">
+             <normaloff>:/buttons/up.png</normaloff>:/buttons/up.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="ElementDown">
+           <property name="toolTip">
+            <string>Move selected element down</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="ui/assets.qrc">
+             <normaloff>:/buttons/down.png</normaloff>:/buttons/down.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="DeleteElement">
+           <property name="toolTip">
+            <string>Delete selected element</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="ui/assets.qrc">
+             <normaloff>:/buttons/delete.png</normaloff>:/buttons/delete.png</iconset>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="preview" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,18">
+      <item>
+       <widget class="QWidget" name="slide_options" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,1,1,1,1,3,15,4">
+         <item>
+          <widget class="QPushButton" name="NewText">
+           <property name="toolTip">
+            <string>Add new text element</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(35, 37, 42)</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="ui/assets.qrc">
+             <normaloff>:/buttons/newtext.png</normaloff>:/buttons/newtext.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="RenameText">
+           <property name="toolTip">
+            <string>Rename selected text element</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(35, 37, 42)</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="ui/assets.qrc">
+             <normaloff>:/buttons/renametext.png</normaloff>:/buttons/renametext.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="Center">
+           <property name="toolTip">
+            <string>Center selected element</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(35, 37, 42)</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="ui/assets.qrc">
+             <normaloff>:/buttons/center.png</normaloff>:/buttons/center.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="Upload">
+           <property name="toolTip">
+            <string>Upload image</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(35, 37, 42)</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="ui/assets.qrc">
+             <normaloff>:/buttons/upload.png</normaloff>:/buttons/upload.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="Music">
+           <property name="toolTip">
+            <string>Choose the tag for the slide</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(35, 37, 42); color: white;</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="ui/assets.qrc">
+             <normaloff>:/buttons/music.png</normaloff>:/buttons/music.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonStyle::ToolButtonTextBesideIcon</enum>
+           </property>
+           <property name="autoRaise">
+            <bool>false</bool>
+           </property>
+           <property name="arrowType">
+            <enum>Qt::ArrowType::NoArrow</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="taglabel">
+           <property name="styleSheet">
+            <string notr="true">color: white; font-weight: bold;</string>
+           </property>
+           <property name="text">
+            <string>Tag: None</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="editingslide">
+           <property name="styleSheet">
+            <string notr="true">font-weight: bold; font-size: 15px; color: white;</string>
+           </property>
+           <property name="text">
+            <string>Editing slide: None</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget_5" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QFrame" name="preview_slide">
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(35, 37, 42);
+border: 5px solid white;</string>
+           </property>
+           <property name="frameShape">
+            <enum>QFrame::Shape::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Shadow::Raised</enum>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="ui/assets.qrc"/>
+ </resources>
+ <connections/>
+</ui>
