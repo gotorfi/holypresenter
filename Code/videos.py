@@ -1,4 +1,5 @@
 import os
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
 from pathlib import Path
 from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout, QGridLayout
 from PyQt6.QtGui import QPixmap, QImage

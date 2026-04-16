@@ -1,0 +1,33 @@
+name: Build macOS App
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: |
+          pip install pyinstaller
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - run: |
+          pyinstaller Code/heart.py \
+            --noconfirm \
+            --onedir \
+            --windowed \
+            --clean \
+            --add-data "asset:asset"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mac-app
+          path: dist/

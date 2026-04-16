@@ -7,6 +7,8 @@ from PyQt6.QtWidgets import QGraphicsOpacityEffect
 from PyQt6.QtCore import QPropertyAnimation
 from program_output import ProgramOutput
 
+from paths import data_path
+
 class ShowManager(QObject):
     def __init__(self, main_window):
         super().__init__()
@@ -602,7 +604,7 @@ class ShowManager(QObject):
 
             # IMAGE
             if el["type"] == "image":
-                img = QPixmap(el["path"])
+                img = QPixmap(data_path(el["path"]))
                 if not img.isNull():
                     painter.drawPixmap(
                         x, y,
@@ -691,7 +693,7 @@ class ShowManager(QObject):
 
             # IMAGE
             if el["type"] == "image":
-                img = QPixmap(el["path"])
+                img = QPixmap(data_path(el["path"]))
                 if not img.isNull():
                     painter.drawPixmap(
                         x, y,

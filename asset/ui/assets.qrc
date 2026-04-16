@@ -4,6 +4,7 @@
     <file>icon.png</file>
   </qresource>
   <qresource prefix="Installer">
+    <file>InstallerThumb3.png</file>
     <file>InstallerBar3.png</file>
     <file>InstallerBar2.png</file>
     <file>InstallerBar1.png</file>

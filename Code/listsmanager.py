@@ -25,6 +25,28 @@ TAG_COLORS = {
     "Bridge": (255, 183, 89),
     None: (150, 150, 150)
 }
+
+
+def clone_slide(slide):
+    return {
+        "id": str(uuid.uuid4()),
+        "type": slide.get("type"),
+        "name": slide.get("name"),
+        "slides": [
+            {
+                "thumbnail": s.get("thumbnail"),
+                "tag": s.get("tag"),
+                "elements": [
+                    {
+                        k: v for k, v in el.items()
+                        if k in ("type", "text", "path", "x", "y", "w", "h")
+                    }
+                    for el in s.get("elements", [])
+                ]
+            }
+            for s in slide.get("slides", [])
+        ]
+    }
 class DropIndicator(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
@@ -86,15 +108,7 @@ class PlaylistListWidget(QListWidget):
         
         if old_playlist == self.manager.songs_playlist or new_playlist == self.manager.songs_playlist:
             # Clean widget references before deepcopy
-            slide_copy = {k: v for k, v in slide.items() if k != "ref"}
-            if "elements" in slide_copy and isinstance(slide_copy["elements"], list):
-                slide_copy["elements"] = [
-                    {ek: ev for ek, ev in e.items() if ek != "ref"} 
-                    for e in slide_copy["elements"]
-                ]
-            new_slide = copy.deepcopy(slide_copy)
-            new_slide["id"] = str(uuid.uuid4())
-            new_playlist["slides"].append(new_slide)
+            new_playlist["slides"].append(clone_slide(slide))
         else:
             old_playlist["slides"].remove(slide)
             new_playlist["slides"].append(slide)
@@ -149,9 +163,7 @@ class SlideListWidget(QListWidget):
             return
 
         if old_playlist == self.manager.songs_playlist or new_playlist == self.manager.songs_playlist:
-            new_slide = copy.deepcopy(slide)
-            new_slide["id"] = str(uuid.uuid4())
-            new_playlist["slides"].append(new_slide)
+            new_playlist["slides"].append(clone_slide(slide))
         else:
             slides.remove(slide)
             new_playlist["slides"].append(slide)
@@ -875,7 +887,7 @@ class PlayList(QObject):
 
                 # ---------- IMAGE ----------
                 if el["type"] == "image":
-                    img = QPixmap(el["path"])
+                    img = QPixmap(data_path(el["path"]))
                     if not img.isNull():
                         painter.drawPixmap(
                             x, y,

@@ -9,6 +9,7 @@ from PyQt6.QtCore import Qt
 
 from elements import DraggableText, Elements, DraggableImage
 from paths import resource_path
+from paths import data_path
 from PyQt6.QtGui import QPainterPath, QPen, QBrush
 from PyQt6.QtGui import QPixmap, QPainter
 from PyQt6.QtGui import QFont
@@ -354,10 +355,7 @@ class Editor:
                     painter.drawPath(path)
 
             elif el["type"] == "image":
-                base = Path(__file__).resolve().parent
-                img_path = base / el["path"]
-
-                img = QPixmap(str(img_path))
+                img = QPixmap(data_path(el["path"]))
                 if not img.isNull():
                     painter.drawPixmap(x, y, img.scaled(w, h, 
                         Qt.AspectRatioMode.KeepAspectRatio, 
@@ -477,7 +475,7 @@ class Editor:
 
                 element.setGeometry(data["x"], data["y"], data["w"], data["h"])
                 base = Path(__file__).resolve().parent
-                pix = QPixmap(str(base / data["path"]))
+                pix = QPixmap(data_path(data["path"]))
                 element.original_pixmap = pix
                 element.update_pixmap()
 

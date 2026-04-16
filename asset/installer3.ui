@@ -187,12 +187,12 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="next">
+          <widget class="QPushButton" name="install">
            <property name="styleSheet">
             <string notr="true">background-color: rgb(46, 54, 61); color: white;</string>
            </property>
            <property name="text">
-            <string>Next</string>
+            <string>Install</string>
            </property>
           </widget>
          </item>
@@ -206,7 +206,7 @@
  </widget>
  <resources>
   <include location="ui/assets.qrc"/>
-  <include location="../../Users/nikla/miniconda3/Library/bin/ui/assets.qrc"/>
+  <include location="ui/assets.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -16,13 +16,7 @@ from paths import resource_path, data_path, load_icon
 
 import sys
 from const import *
-try:
-    if sys.platform == "darwin":
-        import assets_rc_mac as assets_rc
-    else:
-        import assets_rc
-except Exception:
-    import assets_rc
+import assets_rc
 
 class MessagingService:
     def __init__(self):

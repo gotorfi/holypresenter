@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>700</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Holy Presenter UnInstaller</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="ui/assets.qrc">
+    <normaloff>:/icon/InstallerIcon.png</normaloff>:/icon/InstallerIcon.png</iconset>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,7">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap resource="ui/assets.qrc">:/Installer/InstallerThumb3.png</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget" native="true">
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(21, 24, 28);</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout" stretch="5,3,10,1">
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="styleSheet">
+         <string notr="true">font-size: 35px; font-weight: bold; color: white;</string>
+        </property>
+        <property name="text">
+         <string>Welcome to the Holy Presenter Uninstaller.</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignCenter</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_3">
+        <property name="styleSheet">
+         <string notr="true">font-size: 16px; color: white;</string>
+        </property>
+        <property name="text">
+         <string>Before you proceed with uninstalling Holy Presenter, please make sure that you really want to remove it. The uninstallation is permanent and cannot be undone.
+
+If you wish to proceed, choose which items you want to remove along with the Holy Presenter application:</string>
+        </property>
+        <property name="scaledContents">
+         <bool>false</bool>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignTop</set>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+        <property name="margin">
+         <number>50</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget_3" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QCheckBox" name="opt_1">
+           <property name="styleSheet">
+            <string notr="true">color: white; font-weight: bold</string>
+           </property>
+           <property name="text">
+            <string>All items (includes every single file related to Holy Presenter)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="opt_2">
+           <property name="styleSheet">
+            <string notr="true">color: white; font-weight: bold</string>
+           </property>
+           <property name="text">
+            <string>Save Cloud (all saved items)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="opt_3">
+           <property name="styleSheet">
+            <string notr="true">color: white; font-weight: bold</string>
+           </property>
+           <property name="text">
+            <string>Slideshows and playlists (excluding Songs)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="opt_4">
+           <property name="styleSheet">
+            <string notr="true">color: white; font-weight: bold</string>
+           </property>
+           <property name="text">
+            <string>Background videos</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="opt_5">
+           <property name="styleSheet">
+            <string notr="true">color: white; font-weight: bold</string>
+           </property>
+           <property name="text">
+            <string>Media</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="opt_6">
+           <property name="styleSheet">
+            <string notr="true">color: white; font-weight: bold</string>
+           </property>
+           <property name="text">
+            <string>Songs list</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget_2" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="5,3">
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>48</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="uninstall">
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(46, 54, 61); color: white;</string>
+           </property>
+           <property name="text">
+            <string>Uninstall</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="ui/assets.qrc"/>
+  <include location="../../Users/nikla/miniconda3/Library/bin/ui/assets.qrc"/>
+ </resources>
+ <connections/>
+</ui>

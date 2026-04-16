@@ -1,0 +1,442 @@
+{
+    "playlists": [
+        {
+            "id": "b1b800ef-eb10-409b-94c7-b6cfbc0dc629",
+            "type": "playlist",
+            "name": "Tutorial",
+            "slides": [
+                {
+                    "id": "f4cdd680-b50e-4d25-86bf-1054d443e61b",
+                    "type": "lyricsshow",
+                    "name": "Brave",
+                    "slides": [
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Verse1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "My feet were made to march like thunder\nMy lips to praise in all and wonder",
+                                    "x": 151,
+                                    "y": 257,
+                                    "w": 1212,
+                                    "h": 342
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "Verse1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "My hands hold power and my lungs breath fire\nHoly spirit fire, holy spirit fire",
+                                    "x": 151,
+                                    "y": 257,
+                                    "w": 1212,
+                                    "h": 342
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": "PreChorus1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "On your love I stand\nBecause of who you are\nI know who I am",
+                                    "x": 151,
+                                    "y": 257,
+                                    "w": 1212,
+                                    "h": 342
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                            "tag": "Chorus1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Wherever I will go\nWherever you will lead",
+                                    "x": 151,
+                                    "y": 257,
+                                    "w": 1212,
+                                    "h": 342
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                            "tag": "Chorus1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "I'll never walk alone\nYour spirit is with me",
+                                    "x": 151,
+                                    "y": 257,
+                                    "w": 1212,
+                                    "h": 342
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                            "tag": "Chorus1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "oh oh oh oh oh\nYou're with me as I go",
+                                    "x": 151,
+                                    "y": 257,
+                                    "w": 1212,
+                                    "h": 342
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                            "tag": "Chorus1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "So I will not be afraid",
+                                    "x": 151,
+                                    "y": 257,
+                                    "w": 1212,
+                                    "h": 342
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                            "tag": "Chorus1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "You call me to be brave\nIn you, in you",
+                                    "x": 151,
+                                    "y": 257,
+                                    "w": 1212,
+                                    "h": 342
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                            "tag": "Chorus1",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Brave\nIn you, you call me to be brave",
+                                    "x": 151,
+                                    "y": 257,
+                                    "w": 1212,
+                                    "h": 342
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                            "tag": "Verse2",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "No height, no death, no fear can shake me\nHeld firm, your hands will never fail me",
+                                    "x": 151,
+                                    "y": 257,
+                                    "w": 1212,
+                                    "h": 342
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                            "tag": "Verse2",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "I won't lose strength, for your strength is mine\nYou will be my light through the darkest night",
+                                    "x": 151,
+                                    "y": 257,
+                                    "w": 1212,
+                                    "h": 342
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                            "tag": "PreChorus2",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "All on Your love I stand\nBecause of who you are\nI know who I am",
+                                    "x": 151,
+                                    "y": 257,
+                                    "w": 1212,
+                                    "h": 342
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                            "tag": "Bridge",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Rise up, stand on faith\nI will not be afraid",
+                                    "x": 151,
+                                    "y": 257,
+                                    "w": 1212,
+                                    "h": 342
+                                }
+                            ]
+                        },
+                        {
+                            "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                            "tag": "Bridge",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Your spirit lives inside\nYour spirit is alive",
+                                    "x": 151,
+                                    "y": 257,
+                                    "w": 1212,
+                                    "h": 342
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "eef28dfe-5bee-4485-81f3-081f7ccec03d",
+                    "type": "slideshow",
+                    "name": "New Slideshow",
+                    "slides": [
+                        {
+                            "thumbnail": "asset/ui/transparent.png",
+                            "tag": null,
+                            "elements": [
+                                {
+                                    "type": "image",
+                                    "path": "slideimages/_8687863F-7EB4-4F31-8184-157FCA690793_-removebg-preview.png",
+                                    "x": 714,
+                                    "y": 0,
+                                    "w": 801,
+                                    "h": 721
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "slides": [],
+    "songs": [
+        {
+            "id": "f9941a53-7cdb-4d1a-b9b6-bf2e0ee96e4c",
+            "type": "lyricsshow",
+            "name": "Brave",
+            "slides": [
+                {
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Verse1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "My feet were made to march like thunder\nMy lips to praise in all and wonder",
+                            "x": 151,
+                            "y": 257,
+                            "w": 1212,
+                            "h": 342
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "Verse1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "My hands hold power and my lungs breath fire\nHoly spirit fire, holy spirit fire",
+                            "x": 151,
+                            "y": 257,
+                            "w": 1212,
+                            "h": 342
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "asset/ui/transparent.png",
+                    "tag": "PreChorus1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "On your love I stand\nBecause of who you are\nI know who I am",
+                            "x": 151,
+                            "y": 257,
+                            "w": 1212,
+                            "h": 342
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                    "tag": "Chorus1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "Wherever I will go\nWherever you will lead",
+                            "x": 151,
+                            "y": 257,
+                            "w": 1212,
+                            "h": 342
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                    "tag": "Chorus1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "I'll never walk alone\nYour spirit is with me",
+                            "x": 151,
+                            "y": 257,
+                            "w": 1212,
+                            "h": 342
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                    "tag": "Chorus1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "oh oh oh oh oh\nYou're with me as I go",
+                            "x": 151,
+                            "y": 257,
+                            "w": 1212,
+                            "h": 342
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                    "tag": "Chorus1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "So I will not be afraid",
+                            "x": 151,
+                            "y": 257,
+                            "w": 1212,
+                            "h": 342
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                    "tag": "Chorus1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "You call me to be brave\nIn you, in you",
+                            "x": 151,
+                            "y": 257,
+                            "w": 1212,
+                            "h": 342
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                    "tag": "Chorus1",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "Brave\nIn you, you call me to be brave",
+                            "x": 151,
+                            "y": 257,
+                            "w": 1212,
+                            "h": 342
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                    "tag": "Verse2",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "No height, no death, no fear can shake me\nHeld firm, your hands will never fail me",
+                            "x": 151,
+                            "y": 257,
+                            "w": 1212,
+                            "h": 342
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                    "tag": "Verse2",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "I won't lose strength, for your strength is mine\nYou will be my light through the darkest night",
+                            "x": 151,
+                            "y": 257,
+                            "w": 1212,
+                            "h": 342
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                    "tag": "PreChorus2",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "All on Your love I stand\nBecause of who you are\nI know who I am",
+                            "x": 151,
+                            "y": 257,
+                            "w": 1212,
+                            "h": 342
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                    "tag": "Bridge",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "Rise up, stand on faith\nI will not be afraid",
+                            "x": 151,
+                            "y": 257,
+                            "w": 1212,
+                            "h": 342
+                        }
+                    ]
+                },
+                {
+                    "thumbnail": "C:\\holypresenter-1\\asset\\ui\\transparent.png",
+                    "tag": "Bridge",
+                    "elements": [
+                        {
+                            "type": "text",
+                            "text": "Your spirit lives inside\nYour spirit is alive",
+                            "x": 151,
+                            "y": 257,
+                            "w": 1212,
+                            "h": 342
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "images": []
+}

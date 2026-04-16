@@ -4,9 +4,9 @@ from PyQt6.QtWidgets import QLabel, QLineEdit
 from PyQt6.QtCore import QPointF, Qt, QPoint, QRect
 from PyQt6.QtGui import QMouseEvent, QPen, QPixmap
 
-from paths import resource_path, data_path
-
-
+from paths import resource_path
+from paths import data_path
+from paths import get_app_path
 
 from PyQt6.QtWidgets import QLabel, QLineEdit
 from PyQt6.QtCore import Qt, QPoint
@@ -19,9 +19,6 @@ from PyQt6.QtWidgets import QFileDialog
 
 
 BASE_DIR = Path(__file__).resolve().parent
-
-def resource_path(rel):
-    return str(BASE_DIR / rel)
 
 
 class MultiLineTextEdit(QTextEdit):
@@ -424,8 +421,10 @@ class Elements:
     # -------------------------
 
 
+    
+
     def get_image_folder(self):
-        base = Path(__file__).resolve().parent / "savecloud" / "slideimages"
+        base = Path(get_app_path()) / "savecloud" / "slideimages"
         base.mkdir(parents=True, exist_ok=True)
         return base
     def add_image_element(self, slide):
@@ -439,12 +438,24 @@ class Elements:
         if not file_path:
             return
 
-        folder = Path(self.get_image_folder())
+        folder = self.get_image_folder()
         filename = Path(file_path).name
         target_path = folder / filename
 
-        project_root = Path(__file__).resolve().parent
-        relative_path = target_path.relative_to(project_root)
+        print("COPY FROM:", file_path)
+        print("COPY TO:", target_path)
+
+        try:
+            folder.mkdir(parents=True, exist_ok=True)
+
+            shutil.copy2(file_path, target_path)
+
+            print("COPY SUCCESS")
+        except Exception as e:
+            print("COPY FAILED:", e)
+            return
+
+        relative_path = f"slideimages/{filename}"
 
         if not target_path.exists():
             shutil.copy(file_path, target_path)
