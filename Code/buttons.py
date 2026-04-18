@@ -8,7 +8,7 @@ from PyQt6.QtWidgets import QMenu, QToolButton
 from PyQt6.QtGui import QAction
 
 from pathlib import Path
-from paths import data_path, get_app_path
+from paths import data_path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 

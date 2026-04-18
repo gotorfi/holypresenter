@@ -7,8 +7,9 @@ from pathlib import Path
 from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QStackedWidget
 from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6 import uic
+from PyQt6.QtCore import QThread, pyqtSignal, Qt
 
-from paths import resource_path
+from paths import data_path, resource_path
 import assets_rc
 
 
@@ -102,14 +103,32 @@ class Installer(QMainWindow):
 
         self.install_path = ""
 
+
+        self.setWindowFlags(
+            Qt.WindowType.Window |
+            Qt.WindowType.WindowMinimizeButtonHint |
+            Qt.WindowType.WindowCloseButtonHint
+        )
+
+        self.apply_page_size(self.page1)
         self.init_pages()
         self.set_sizes()
+
+        
 
     # =========================
     # NAVIGATION
     # =========================
+    def apply_page_size(self, page):
+        if page == self.page4:
+            self.setFixedSize(900, 400)
+        else:
+            self.setFixedSize(800, 700)
     def set_page(self, page):
         self.stack.setCurrentWidget(page)
+        self.apply_page_size(page)
+        if page == self.page4:
+            self.page4.Bar.setFixedWidth(0)
 
     # =========================
     # INIT
@@ -214,14 +233,63 @@ class Installer(QMainWindow):
     # FINISH
     # =========================
     def extract_all(self):
+        zips = list(Path(self.install_path).glob("*.zip"))
+
+        app_root = None
+        for file in zips:
+            if file.name in [FILES["core_windows"], FILES["core_mac"]]:
+                try:
+                    with zipfile.ZipFile(file, 'r') as zip_ref:
+                        zip_ref.extractall(self.install_path)
+                    file.unlink()
+                except Exception as e:
+                    print("Extract error (core):", e)
+
+        for exe in Path(self.install_path).rglob("*.exe"):
+            app_root = exe.parent
+            break
+
+        if app_root is None:
+            for app in Path(self.install_path).rglob("*.app"):
+                app_root = Path(app)
+                break
+
+        if app_root is None:
+            print("ERROR: app root not found")
+            return
+
         for file in Path(self.install_path).glob("*.zip"):
             try:
-                with zipfile.ZipFile(file, 'r') as zip_ref:
-                    zip_ref.extractall(self.install_path)
+                if file.name == FILES["savecloud"]:
+                    target = Path(data_path())
+
+                    with zipfile.ZipFile(file, 'r') as zip_ref:
+                        for member in zip_ref.namelist():
+                            dest = target / member
+
+                            if dest.exists():
+                                continue
+
+                            zip_ref.extract(member, target)
+
+                else:
+                    target = app_root
+                    target.mkdir(parents=True, exist_ok=True)
+
+                    with zipfile.ZipFile(file, 'r') as zip_ref:
+                        zip_ref.extractall(target)
+
                 file.unlink()
+
             except Exception as e:
                 print("Extract error:", e)
+        try:
+            savecloud_root = Path(data_path(""))
+            savecloud_root.mkdir(parents=True, exist_ok=True)
 
+            Path(data_path("install_path.txt")).write_text(str(app_root))
+        except Exception as e:
+            print("Failed to save install path:", e)
     def launch_app(self):
         if sys.platform == "darwin":
             os.system(f'open "{self.install_path}/HolyPresenter.app"')

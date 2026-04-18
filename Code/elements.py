@@ -6,8 +6,6 @@ from PyQt6.QtGui import QMouseEvent, QPen, QPixmap
 
 from paths import resource_path
 from paths import data_path
-from paths import get_app_path
-
 from PyQt6.QtWidgets import QLabel, QLineEdit
 from PyQt6.QtCore import Qt, QPoint
 from PyQt6.QtGui import QPixmap, QMouseEvent, QPainter, QColor, QFont
@@ -424,7 +422,7 @@ class Elements:
     
 
     def get_image_folder(self):
-        base = Path(get_app_path()) / "savecloud" / "slideimages"
+        base = Path(data_path()) / "savecloud" / "slideimages"
         base.mkdir(parents=True, exist_ok=True)
         return base
     def add_image_element(self, slide):

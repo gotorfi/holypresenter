@@ -1,11 +1,10 @@
+VERSION = "v.1.0.0"
 ################################
 #  const.py
 ################################
 
 import os
 
-
-VERSION = "v.1.3.2"
 
 # This file contains constants used throughout the codebase.
 

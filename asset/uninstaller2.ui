@@ -65,7 +65,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="status">
         <property name="styleSheet">
          <string notr="true">font-size: 16px; color: white;</string>
         </property>
@@ -148,7 +148,7 @@
  </widget>
  <resources>
   <include location="ui/assets.qrc"/>
-  <include location="../../Users/nikla/miniconda3/Library/bin/ui/assets.qrc"/>
+  <include location="ui/assets.qrc"/>
  </resources>
  <connections/>
 </ui>

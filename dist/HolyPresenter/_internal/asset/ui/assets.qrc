@@ -1,0 +1,45 @@
+<RCC>
+  <qresource prefix="icon">
+    <file>InstallerIcon.png</file>
+    <file>icon.png</file>
+  </qresource>
+  <qresource prefix="Installer">
+    <file>InstallerThumb3.png</file>
+    <file>InstallerBar3.png</file>
+    <file>InstallerBar2.png</file>
+    <file>InstallerBar1.png</file>
+    <file>InstallerThumb.png</file>
+    <file>InstallerThumb2.png</file>
+  </qresource>
+  <qresource prefix="buttons">
+    <file>backgrounds.png</file>
+    <file>center.png</file>
+    <file>delete.png</file>
+    <file>down.png</file>
+    <file>drag.png</file>
+    <file>edit.png</file>
+    <file>fade.png</file>
+    <file>music.png</file>
+    <file>new.png</file>
+    <file>newslide.png</file>
+    <file>newtext.png</file>
+    <file>playlist.png</file>
+    <file>rename.png</file>
+    <file>renametext.png</file>
+    <file>run.png</file>
+    <file>search.png</file>
+    <file>slide.png</file>
+    <file>songs.png</file>
+    <file>textstyle.png</file>
+    <file>up.png</file>
+    <file>upload.png</file>
+  </qresource>
+  <qresource prefix="other">
+    <file>gear.png</file>
+    <file>style.png</file>
+    <file>pc.png</file>
+    <file>centerslide.png</file>
+    <file>NoImg.png</file>
+    <file>transparent.png</file>
+  </qresource>
+</RCC>

@@ -32,6 +32,7 @@ from editor import Editor
 from messageservice import MessagingService
 from listsmanager import PlayList
 from jsonmanager import JsonManager
+from updatemanager import UpdateManager
 
 
 
@@ -127,6 +128,8 @@ class heart(QMainWindow):
         self.push_notification.clicked.connect(self.push_notification_live)
         self.clear_notification.clicked.connect(self.clear_notification_live)
 
+        self.actionUpdate_Holy_Presenter.triggered.connect(self.open_updater)
+
         
     def initUI(self):
 
@@ -203,6 +206,9 @@ class heart(QMainWindow):
                 }}
             """
             app.setStyle("Fusion")
+
+    def open_updater(self):
+        self.updater = UpdateManager(self)
     def keyPressEvent(self, event):
         if event.isAutoRepeat():
             return
